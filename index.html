@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>WOLFtaxi</title>
+
 <style>
 body {
   margin: 0;
@@ -43,7 +44,7 @@ input {
   width: 100%;
   box-sizing: border-box;
   padding: 15px;
-  margin: 8px 0;
+  margin: 8px 0 20px;
   border: 1px solid #ddd;
   border-radius: 10px;
   font-size: 16px;
@@ -52,7 +53,7 @@ input {
 button {
   width: 100%;
   padding: 16px;
-  margin-top: 15px;
+  margin-top: 5px;
   border: none;
   border-radius: 12px;
   background: #111;
@@ -66,6 +67,19 @@ button {
   margin-top: 15px;
   font-size: 14px;
 }
+
+#result {
+  display: none;
+  margin-top: 20px;
+  padding: 15px;
+  background: #f1f1f1;
+  border-radius: 12px;
+}
+
+.confirm {
+  background: #e60023;
+}
+
 </style>
 </head>
 
@@ -77,20 +91,59 @@ button {
 </div>
 
 <div class="card">
-  <h2>📍 お迎え先</h2>
 
-  <input type="text" placeholder="お迎え先を入力">
+  <h2>📍 お迎え先</h2>
+  <input id="pickup" type="text" placeholder="お迎え先を入力">
 
   <h2>🏁 目的地</h2>
+  <input id="destination" type="text" placeholder="目的地を入力">
 
-  <input type="text" placeholder="目的地を入力">
+  <button onclick="callTaxi()">🚕 タクシーを呼ぶ</button>
 
-  <button>🚕 タクシーを呼ぶ</button>
+  <div id="result">
+    <h2>🚕 配車内容</h2>
+    <p>📍 お迎え先</p>
+    <p id="showPickup"></p>
+
+    <p>🏁 目的地</p>
+    <p id="showDestination"></p>
+
+    <button class="confirm" onclick="confirmTaxi()">
+      ✅ この内容で配車する
+    </button>
+  </div>
 
   <div class="driver">
     ドライバー　001
   </div>
+
 </div>
+
+<script>
+
+function callTaxi() {
+
+  const pickup = document.getElementById("pickup").value;
+  const destination = document.getElementById("destination").value;
+
+  if (pickup === "" || destination === "") {
+    alert("お迎え先と目的地を入力してください🚕");
+    return;
+  }
+
+  document.getElementById("showPickup").textContent = pickup;
+  document.getElementById("showDestination").textContent = destination;
+
+  document.getElementById("result").style.display = "block";
+}
+
+function confirmTaxi() {
+
+  alert("🚕 配車を受け付けました！\nドライバー001がお迎えに向かいます。");
+
+}
+
+</script>
 
 </body>
 </html>

@@ -218,6 +218,7 @@ button:disabled{
   0%,100%{
     opacity:1;
   }
+
   50%{
     opacity:.82;
   }
@@ -231,6 +232,7 @@ button:disabled{
   from{
     box-shadow:inset 0 0 0 0 rgba(230,0,35,0);
   }
+
   to{
     box-shadow:inset 0 0 0 8px rgba(230,0,35,.5);
   }
@@ -501,7 +503,6 @@ const db =
   getFirestore(app);
 
 
-
 /* =========================================
    Firebase認証状態
 ========================================= */
@@ -512,11 +513,6 @@ let firebaseReady =
 let firebaseAuthError =
   null;
 
-
-/*
-  匿名ログインが完了するまで
-  配車送信できないようにする
-*/
 
 const authReady =
   signInAnonymously(auth)
@@ -558,7 +554,6 @@ const authReady =
     });
 
 
-
 /* =========================================
    音声ファイル
 ========================================= */
@@ -580,7 +575,6 @@ const sounds = {
 };
 
 
-
 /* =========================================
    通知関係
 ========================================= */
@@ -591,10 +585,7 @@ let notificationEnabled =
 let notificationRunning =
   false;
 
-let soundTimer =
-  null;
-
-let soundEndTimer =
+let notificationCloseTimer =
   null;
 
 let speechTimer =
@@ -605,7 +596,6 @@ let currentAudio =
 
 let currentRideId =
   null;
-
 
 
 /* =========================================
@@ -664,9 +654,9 @@ function getSoundFile(ride){
 }
 
 
-
 /* =========================================
    効果音再生
+   ※4秒ごとの強制再スタートを廃止
 ========================================= */
 
 function playNotificationSound(ride){
@@ -687,6 +677,9 @@ function playNotificationSound(ride){
       currentAudio.currentTime =
         0;
 
+      currentAudio =
+        null;
+
     }
 
 
@@ -702,7 +695,20 @@ function playNotificationSound(ride){
       1.0;
 
 
+    /*
+      ファイルを最初から最後まで
+      そのまま再生する
+    */
+
     currentAudio.play()
+      .then(()=>{
+
+        console.log(
+          "通知音再生開始",
+          soundFile
+        );
+
+      })
       .catch(error=>{
 
         console.error(
@@ -711,6 +717,24 @@ function playNotificationSound(ride){
         );
 
       });
+
+
+    /*
+      音声が終了したら
+      Audioオブジェクトを解放
+    */
+
+    currentAudio.onended =
+      ()=>{
+
+        console.log(
+          "通知音再生終了"
+        );
+
+        currentAudio =
+          null;
+
+      };
 
   }
   catch(error){
@@ -723,7 +747,6 @@ function playNotificationSound(ride){
   }
 
 }
-
 
 
 /* =========================================
@@ -782,7 +805,6 @@ function speakTaxi(){
 }
 
 
-
 /* =========================================
    通知開始
 ========================================= */
@@ -792,22 +814,9 @@ function startNotification(
   rideId
 ){
 
-  if(
-    !notificationEnabled
-  ){
-
-    showNotice(
-      ride,
-      rideId
-    );
-
-    return;
-
-  }
-
-
   /*
-    同じ通知なら無視
+    すでに同じ配車を通知中なら
+    二重通知しない
   */
 
   if(
@@ -837,12 +846,17 @@ function startNotification(
 
 
   /*
-    最初の音
+    最初の通知音
+    → 36秒なら36秒そのまま再生
   */
 
-  playNotificationSound(
-    ride
-  );
+  if(notificationEnabled){
+
+    playNotificationSound(
+      ride
+    );
+
+  }
 
 
   /*
@@ -853,33 +867,8 @@ function startNotification(
 
 
   /*
-    約4秒ごとに音を繰り返す
-  */
-
-  soundTimer =
-    setInterval(
-
-      ()=>{
-
-        if(
-          notificationRunning
-        ){
-
-          playNotificationSound(
-            ride
-          );
-
-        }
-
-      },
-
-      4000
-
-    );
-
-
-  /*
-    約6秒ごとに読み上げ
+    読み上げだけ6秒ごと
+    ※サイレンは再スタートしない
   */
 
   speechTimer =
@@ -903,15 +892,18 @@ function startNotification(
 
 
   /*
-    最大30秒
+    30秒後に
+    「通知画面」と読み上げだけ終了
+     
+    ★配車データは削除しない
   */
 
-  soundEndTimer =
+  notificationCloseTimer =
     setTimeout(
 
       ()=>{
 
-        stopNotification();
+        finishNotificationDisplay();
 
       },
 
@@ -920,7 +912,6 @@ function startNotification(
     );
 
 }
-
 
 
 /* =========================================
@@ -971,24 +962,12 @@ function showNotice(
 }
 
 
-
 /* =========================================
-   音停止
+   通知表示だけ終了
+   ★Firestoreの配車は残す
 ========================================= */
 
-function stopSound(){
-
-  if(soundTimer){
-
-    clearInterval(
-      soundTimer
-    );
-
-    soundTimer =
-      null;
-
-  }
-
+function finishNotificationDisplay(){
 
   if(speechTimer){
 
@@ -1002,17 +981,61 @@ function stopSound(){
   }
 
 
-  if(soundEndTimer){
+  if(notificationCloseTimer){
 
     clearTimeout(
-      soundEndTimer
+      notificationCloseTimer
     );
 
-    soundEndTimer =
+    notificationCloseTimer =
       null;
 
   }
 
+
+  /*
+    読み上げ停止
+  */
+
+  if(
+    "speechSynthesis"
+    in window
+  ){
+
+    window.speechSynthesis.cancel();
+
+  }
+
+
+  /*
+    サイレンはここで強制停止しない。
+    再生中なら、そのまま最後まで鳴らす。
+  */
+
+  notificationRunning =
+    false;
+
+
+  document
+    .getElementById(
+      "notice"
+    )
+    .style.display =
+      "none";
+
+
+  document.body.classList.remove(
+    "flash"
+  );
+
+}
+
+
+/* =========================================
+   音停止
+========================================= */
+
+function stopSound(){
 
   if(currentAudio){
 
@@ -1039,9 +1062,9 @@ function stopSound(){
 }
 
 
-
 /* =========================================
    通知確認＋配車削除
+   ★了解ボタンを押したときだけ削除
 ========================================= */
 
 window.stopNotification =
@@ -1051,12 +1074,39 @@ async function(){
     currentRideId;
 
 
+  /*
+    通知・音声を停止
+  */
+
+  if(speechTimer){
+
+    clearInterval(
+      speechTimer
+    );
+
+    speechTimer =
+      null;
+
+  }
+
+
+  if(notificationCloseTimer){
+
+    clearTimeout(
+      notificationCloseTimer
+    );
+
+    notificationCloseTimer =
+      null;
+
+  }
+
+
   stopSound();
 
 
   notificationRunning =
     false;
-
 
   currentRideId =
     null;
@@ -1076,7 +1126,7 @@ async function(){
 
 
   /*
-    了解した配車を削除
+    ★ここで初めてFirestoreから削除
   */
 
   if(rideId){
@@ -1091,6 +1141,12 @@ async function(){
         )
       );
 
+
+      console.log(
+        "配車削除成功",
+        rideId
+      );
+
     }
     catch(error){
 
@@ -1099,8 +1155,9 @@ async function(){
         error
       );
 
-      showError(
-        "配車の削除に失敗しました。\n" +
+
+      alert(
+        "配車の処理に失敗しました。\n\n" +
         getErrorMessage(error)
       );
 
@@ -1109,7 +1166,6 @@ async function(){
   }
 
 };
-
 
 
 /* =========================================
@@ -1186,7 +1242,6 @@ function(){
 };
 
 
-
 /* =========================================
    エラー表示
 ========================================= */
@@ -1214,7 +1269,6 @@ function showError(message){
     "block";
 
 }
-
 
 
 /* =========================================
@@ -1245,7 +1299,6 @@ function clearError(){
 }
 
 
-
 /* =========================================
    Firebaseエラー内容
 ========================================= */
@@ -1270,7 +1323,6 @@ function getErrorMessage(error){
   );
 
 }
-
 
 
 /* =========================================
@@ -1335,7 +1387,6 @@ function(){
       "block";
 
 };
-
 
 
 /* =========================================
@@ -1559,7 +1610,6 @@ async function(){
     button.textContent =
       "🚕 配車を送信する";
 
-
   }
   catch(error){
 
@@ -1593,7 +1643,6 @@ async function(){
   }
 
 };
-
 
 
 /* =========================================
@@ -1697,7 +1746,7 @@ function startDriverMode(){
 
 
         busyMessage.textContent =
-          "🚕 ただいま別の方の配車依頼対応中（" +
+          "🚕 配車依頼あり（" +
           rideCount +
           "件）";
 
@@ -1822,7 +1871,7 @@ function startDriverMode(){
 
 
           /*
-            新規配車だけ通知
+            新しく追加された配車だけ通知
           */
 
           if(
@@ -1911,7 +1960,6 @@ function startDriverMode(){
 }
 
 
-
 /* =========================================
    一覧から直接了解
 ========================================= */
@@ -1930,7 +1978,32 @@ async function acceptRide(
     rideId
   ){
 
+    if(speechTimer){
+
+      clearInterval(
+        speechTimer
+      );
+
+      speechTimer =
+        null;
+
+    }
+
+
+    if(notificationCloseTimer){
+
+      clearTimeout(
+        notificationCloseTimer
+      );
+
+      notificationCloseTimer =
+        null;
+
+    }
+
+
     stopSound();
+
 
     notificationRunning =
       false;
@@ -1944,7 +2017,7 @@ async function acceptRide(
         "notice"
       )
       .style.display =
-      "none";
+        "none";
 
 
     document.body.classList.remove(
@@ -1987,7 +2060,6 @@ async function acceptRide(
   }
 
 }
-
 
 
 /* =========================================

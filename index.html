@@ -221,7 +221,6 @@ button:disabled{
   <div class="sub">かんたんタクシー配車</div>
 </div>
 
-
 <!-- ========================= -->
 <!-- お客様画面 -->
 <!-- ========================= -->
@@ -248,7 +247,6 @@ button:disabled{
     🚕 タクシーを呼ぶ
   </button>
 
-
   <div id="result">
 
     <h2>🚕 配車内容</h2>
@@ -269,7 +267,6 @@ button:disabled{
 
   </div>
 
-
   <div id="complete">
 
     <h2>🚕 配車を受け付けました</h2>
@@ -286,14 +283,11 @@ button:disabled{
 
   </div>
 
-
   <div class="driver">
     ドライバー　001
   </div>
 
 </div>
-
-
 
 <!-- ========================= -->
 <!-- ドライバー画面 -->
@@ -307,7 +301,6 @@ button:disabled{
     ドライバー　001
   </div>
 
-
   <button
     id="soundButton"
     class="notifyOn"
@@ -316,14 +309,12 @@ button:disabled{
     🔔 配車通知をON
   </button>
 
-
   <p
     id="soundStatus"
     class="driver"
   >
     配車通知をONにしてください
   </p>
-
 
   <div
     id="busyMessage"
@@ -332,9 +323,7 @@ button:disabled{
   >
   </div>
 
-
   <hr>
-
 
   <div id="rideList">
 
@@ -345,8 +334,6 @@ button:disabled{
   </div>
 
 </div>
-
-
 
 <!-- ========================= -->
 <!-- 配車通知画面 -->
@@ -380,8 +367,6 @@ button:disabled{
 
 </div>
 
-
-
 <script type="module">
 
 /* =========================================
@@ -394,14 +379,12 @@ import {
 from
 "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 
-
 import {
   getAuth,
   signInAnonymously
 }
 from
 "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-
 
 import {
   getFirestore,
@@ -416,7 +399,6 @@ import {
 }
 from
 "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
-
 
 /* =========================================
    Firebase設定
@@ -447,7 +429,6 @@ const firebaseConfig = {
 
 };
 
-
 /* =========================================
    Firebase起動
 ========================================= */
@@ -461,29 +442,41 @@ const auth =
 const db =
   getFirestore(app);
 
-
-
 /* =========================================
    音声ファイル
 ========================================= */
 
 const sounds = {
 
+  /*
+    通常
+    → インターフェース
+  */
   normal:
     "mixkit-software-interface-start-2574.wav",
 
+  /*
+    羽田
+    → アーケードボーナス
+  */
   haneda:
     "mixkit-arcade-bonus-alert-767.wav",
 
+  /*
+    成田
+    → マニュアルサイレン
+  */
   narita:
     "mixkit-manual-siren-fire-alert-1652.wav",
 
+  /*
+    ザイオン
+    → Guitar
+  */
   zaion:
     "mixkit-guitar-notification-alert-2320.wav"
 
 };
-
-
 
 /* =========================================
    通知関係
@@ -510,8 +503,6 @@ let currentAudio =
 let currentRideId =
   null;
 
-
-
 /* =========================================
    配車ごとの音を選択
 ========================================= */
@@ -526,14 +517,20 @@ function getSoundFile(ride){
     (ride.destination || "")
       .trim();
 
-
   /*
-    優先順位
+    音声優先順位
 
-    1. ザイオン
-    2. 成田
-    3. 羽田
-    4. 通常
+    1. お迎え先「ザイオン」
+       → Guitar
+
+    2. 目的地「成田」
+       → マニュアルサイレン
+
+    3. 目的地「羽田」
+       → アーケードボーナス
+
+    4. その他
+       → インターフェース
   */
 
   if(
@@ -544,7 +541,6 @@ function getSoundFile(ride){
 
   }
 
-
   if(
     destination.includes("成田")
   ){
@@ -552,7 +548,6 @@ function getSoundFile(ride){
     return sounds.narita;
 
   }
-
 
   if(
     destination.includes("羽田")
@@ -562,12 +557,9 @@ function getSoundFile(ride){
 
   }
 
-
   return sounds.normal;
 
 }
-
-
 
 /* =========================================
    効果音再生
@@ -578,7 +570,6 @@ function playNotificationSound(ride){
   if(!notificationEnabled){
     return;
   }
-
 
   try{
 
@@ -591,18 +582,14 @@ function playNotificationSound(ride){
 
     }
 
-
     const soundFile =
       getSoundFile(ride);
-
 
     currentAudio =
       new Audio(soundFile);
 
-
     currentAudio.volume =
       1.0;
-
 
     currentAudio.play()
       .catch(error=>{
@@ -626,8 +613,6 @@ function playNotificationSound(ride){
 
 }
 
-
-
 /* =========================================
    音声読み上げ
 ========================================= */
@@ -644,15 +629,12 @@ function speakTaxi(){
 
     }
 
-
     window.speechSynthesis.cancel();
-
 
     const message =
       new SpeechSynthesisUtterance(
         "配車です。配車です。了解ボタンを押してください。"
       );
-
 
     message.lang =
       "ja-JP";
@@ -665,7 +647,6 @@ function speakTaxi(){
 
     message.volume =
       1.0;
-
 
     window.speechSynthesis.speak(
       message
@@ -682,8 +663,6 @@ function speakTaxi(){
   }
 
 }
-
-
 
 /* =========================================
    通知開始
@@ -704,7 +683,6 @@ function startNotification(ride, rideId){
 
   }
 
-
   /*
     同じ通知なら無視
   */
@@ -718,22 +696,18 @@ function startNotification(ride, rideId){
 
   }
 
-
   notificationRunning =
     true;
 
   currentRideId =
     rideId;
 
-
   showNotice(
     ride,
     rideId
   );
 
-
   stopSound();
-
 
   /*
     最初の音
@@ -743,13 +717,11 @@ function startNotification(ride, rideId){
     ride
   );
 
-
   /*
     最初の読み上げ
   */
 
   speakTaxi();
-
 
   /*
     約4秒ごとに音を繰り返す
@@ -776,7 +748,6 @@ function startNotification(ride, rideId){
 
     );
 
-
   /*
     約6秒ごとに読み上げ
   */
@@ -800,7 +771,6 @@ function startNotification(ride, rideId){
 
     );
 
-
   /*
     最大30秒
   */
@@ -820,8 +790,6 @@ function startNotification(ride, rideId){
 
 }
 
-
-
 /* =========================================
    通知画面表示
 ========================================= */
@@ -836,7 +804,6 @@ function showNotice(
       "notice"
     );
 
-
   document
     .getElementById(
       "noticePickup"
@@ -844,7 +811,6 @@ function showNotice(
     .textContent =
       "📍 お迎え先： " +
       (ride.pickup || "");
-
 
   document
     .getElementById(
@@ -854,22 +820,17 @@ function showNotice(
       "🏁 目的地： " +
       (ride.destination || "");
 
-
   notice.dataset.rideId =
     rideId || "";
 
-
   notice.style.display =
     "block";
-
 
   document.body.classList.add(
     "flash"
   );
 
 }
-
-
 
 /* =========================================
    音停止
@@ -888,7 +849,6 @@ function stopSound(){
 
   }
 
-
   if(speechTimer){
 
     clearInterval(
@@ -900,7 +860,6 @@ function stopSound(){
 
   }
 
-
   if(soundEndTimer){
 
     clearTimeout(
@@ -911,7 +870,6 @@ function stopSound(){
       null;
 
   }
-
 
   if(currentAudio){
 
@@ -925,7 +883,6 @@ function stopSound(){
 
   }
 
-
   if(
     "speechSynthesis"
     in window
@@ -937,8 +894,6 @@ function stopSound(){
 
 }
 
-
-
 /* =========================================
    通知確認＋配車削除
 ========================================= */
@@ -949,17 +904,13 @@ async function(){
   const rideId =
     currentRideId;
 
-
   stopSound();
-
 
   notificationRunning =
     false;
 
-
   currentRideId =
     null;
-
 
   document
     .getElementById(
@@ -968,11 +919,9 @@ async function(){
     .style.display =
       "none";
 
-
   document.body.classList.remove(
     "flash"
   );
-
 
   /*
     了解した配車を削除
@@ -1009,8 +958,6 @@ async function(){
 
 };
 
-
-
 /* =========================================
    通知ON
 ========================================= */
@@ -1020,7 +967,6 @@ function(){
 
   notificationEnabled =
     true;
-
 
   /*
     ブラウザの音声再生許可を
@@ -1034,10 +980,8 @@ function(){
         sounds.normal
       );
 
-
     testAudio.volume =
       0;
-
 
     testAudio.play()
       .then(()=>{
@@ -1064,14 +1008,12 @@ function(){
 
   }
 
-
   document
     .getElementById(
       "soundButton"
     )
     .textContent =
       "🔔 配車通知ON";
-
 
   document
     .getElementById(
@@ -1081,8 +1023,6 @@ function(){
       "🔔 配車通知がONになっています";
 
 };
-
-
 
 /* =========================================
    Firebase匿名ログイン
@@ -1096,7 +1036,6 @@ signInAnonymously(auth)
     "Firebase認証OK"
   );
 
-
   startDriverMode();
 
 })
@@ -1105,14 +1044,11 @@ signInAnonymously(auth)
 
   console.error(error);
 
-
   alert(
     "Firebaseへの接続に失敗しました"
   );
 
 });
-
-
 
 /* =========================================
    お客様画面
@@ -1127,13 +1063,11 @@ function(){
       .value
       .trim();
 
-
   const destination =
     document
       .getElementById("destination")
       .value
       .trim();
-
 
   if(
     !pickup ||
@@ -1148,7 +1082,6 @@ function(){
 
   }
 
-
   document
     .getElementById(
       "showPickup"
@@ -1156,14 +1089,12 @@ function(){
     .textContent =
       pickup;
 
-
   document
     .getElementById(
       "showDestination"
     )
     .textContent =
       destination;
-
 
   document
     .getElementById(
@@ -1174,15 +1105,12 @@ function(){
 
 };
 
-
-
 /* =========================================
    配車送信
 ========================================= */
 
 let sendingRide =
   false;
-
 
 window.confirmTaxi =
 async function(){
@@ -1193,20 +1121,17 @@ async function(){
 
   }
 
-
   const pickup =
     document
       .getElementById("pickup")
       .value
       .trim();
 
-
   const destination =
     document
       .getElementById("destination")
       .value
       .trim();
-
 
   if(
     !pickup ||
@@ -1221,24 +1146,19 @@ async function(){
 
   }
 
-
   sendingRide =
     true;
-
 
   const button =
     document.getElementById(
       "confirmButton"
     );
 
-
   button.disabled =
     true;
 
-
   button.textContent =
     "🚕 配車を送信中…";
-
 
   try{
 
@@ -1270,14 +1190,12 @@ async function(){
 
     );
 
-
     document
       .getElementById(
         "completePickup"
       )
       .textContent =
       pickup;
-
 
     document
       .getElementById(
@@ -1286,14 +1204,12 @@ async function(){
       .textContent =
       destination;
 
-
     document
       .getElementById(
         "result"
       )
       .style.display =
       "none";
-
 
     document
       .getElementById(
@@ -1302,14 +1218,12 @@ async function(){
       .style.display =
       "block";
 
-
     document
       .getElementById(
         "pickup"
       )
       .value =
       "";
-
 
     document
       .getElementById(
@@ -1318,24 +1232,19 @@ async function(){
       .value =
       "";
 
-
   }
   catch(error){
 
     console.error(error);
 
-
     sendingRide =
       false;
-
 
     button.disabled =
       false;
 
-
     button.textContent =
       "✅ この内容で配車する";
-
 
     alert(
       "配車の送信に失敗しました。\n" +
@@ -1345,8 +1254,6 @@ async function(){
   }
 
 };
-
-
 
 /* =========================================
    ドライバー画面
@@ -1358,7 +1265,6 @@ function startDriverMode(){
     new URLSearchParams(
       window.location.search
     );
-
 
   /*
     ?driver=001
@@ -1373,7 +1279,6 @@ function startDriverMode(){
 
   }
 
-
   document
     .getElementById(
       "customerScreen"
@@ -1381,14 +1286,12 @@ function startDriverMode(){
     .style.display =
       "none";
 
-
   document
     .getElementById(
       "driverScreen"
     )
     .style.display =
       "block";
-
 
   const ridesQuery =
     query(
@@ -1405,14 +1308,11 @@ function startDriverMode(){
 
     );
 
-
   let firstSnapshot =
     true;
 
-
   const knownRides =
     new Set();
-
 
   onSnapshot(
 
@@ -1425,12 +1325,10 @@ function startDriverMode(){
           "rideList"
         );
 
-
       const busyMessage =
         document.getElementById(
           "busyMessage"
         );
-
 
       /*
         配車件数
@@ -1439,14 +1337,12 @@ function startDriverMode(){
       const rideCount =
         snapshot.size;
 
-
       if(
         rideCount > 0
       ){
 
         busyMessage.style.display =
           "block";
-
 
         busyMessage.textContent =
           "🚕 ただいま別の方の配車依頼対応中（" +
@@ -1460,7 +1356,6 @@ function startDriverMode(){
           "none";
 
       }
-
 
       /*
         配車なし
@@ -1477,10 +1372,8 @@ function startDriverMode(){
 
       }
 
-
       list.innerHTML =
         "";
-
 
       snapshot.forEach(
         rideDoc=>{
@@ -1488,20 +1381,16 @@ function startDriverMode(){
           const ride =
             rideDoc.data();
 
-
           const rideId =
             rideDoc.id;
-
 
           const div =
             document.createElement(
               "div"
             );
 
-
           div.className =
             "ride";
-
 
           div.innerHTML = `
 
@@ -1546,17 +1435,14 @@ function startDriverMode(){
 
           `;
 
-
           list.appendChild(
             div
           );
-
 
           const acceptButton =
             div.querySelector(
               ".manualAccept"
             );
-
 
           acceptButton.addEventListener(
             "click",
@@ -1568,7 +1454,6 @@ function startDriverMode(){
 
             }
           );
-
 
           /*
             新規配車だけ通知
@@ -1594,14 +1479,12 @@ function startDriverMode(){
 
           }
 
-
           knownRides.add(
             rideId
           );
 
         }
       );
-
 
       /*
         初回読み込み済み
@@ -1618,7 +1501,6 @@ function startDriverMode(){
         error
       );
 
-
       document
         .getElementById(
           "rideList"
@@ -1631,8 +1513,6 @@ function startDriverMode(){
   );
 
 }
-
-
 
 /* =========================================
    一覧から直接了解
@@ -1660,7 +1540,6 @@ async function acceptRide(
     currentRideId =
       null;
 
-
     document
       .getElementById(
         "notice"
@@ -1668,13 +1547,11 @@ async function acceptRide(
       .style.display =
       "none";
 
-
     document.body.classList.remove(
       "flash"
     );
 
   }
-
 
   try{
 
@@ -1703,8 +1580,6 @@ async function acceptRide(
 
 }
 
-
-
 /* =========================================
    安全なHTML表示
 ========================================= */
@@ -1716,10 +1591,8 @@ function escapeHtml(text){
       "div"
     );
 
-
   div.textContent =
     text;
-
 
   return div.innerHTML;
 

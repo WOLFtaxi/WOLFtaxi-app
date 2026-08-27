@@ -80,6 +80,19 @@ button {
   background: #e60023;
 }
 
+#complete {
+  display: none;
+  margin-top: 20px;
+  padding: 20px;
+  background: #fff0f2;
+  border-radius: 12px;
+  text-align: center;
+}
+
+#complete h2 {
+  color: #e60023;
+}
+
 </style>
 </head>
 
@@ -102,6 +115,7 @@ button {
 
   <div id="result">
     <h2>🚕 配車内容</h2>
+
     <p>📍 お迎え先</p>
     <p id="showPickup"></p>
 
@@ -111,6 +125,17 @@ button {
     <button class="confirm" onclick="confirmTaxi()">
       ✅ この内容で配車する
     </button>
+  </div>
+
+  <div id="complete">
+    <h2>🚕 配車を受け付けました</h2>
+    <p>ドライバー001がお迎えにあがります。</p>
+
+    <p>📍 お迎え先</p>
+    <p id="completePickup"></p>
+
+    <p>🏁 目的地</p>
+    <p id="completeDestination"></p>
   </div>
 
   <div class="driver">
@@ -139,7 +164,14 @@ function callTaxi() {
 
 function confirmTaxi() {
 
-  alert("🚕 配車を受け付けました！\nドライバー001がお迎えに向かいます。");
+  const pickup = document.getElementById("pickup").value;
+  const destination = document.getElementById("destination").value;
+
+  document.getElementById("completePickup").textContent = pickup;
+  document.getElementById("completeDestination").textContent = destination;
+
+  document.getElementById("result").style.display = "none";
+  document.getElementById("complete").style.display = "block";
 
 }
 

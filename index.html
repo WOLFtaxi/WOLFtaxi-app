@@ -184,6 +184,12 @@ button:disabled{
   margin-top:25px;
 }
 
+.noticeHint{
+  font-size:20px;
+  font-weight:bold;
+  margin-top:18px;
+}
+
 @keyframes blink{
   0%,100%{
     opacity:1;
@@ -243,8 +249,6 @@ button:disabled{
   </button>
 
 
-  <!-- 確認画面 -->
-
   <div id="result">
 
     <h2>🚕 配車内容</h2>
@@ -265,8 +269,6 @@ button:disabled{
 
   </div>
 
-
-  <!-- 受付完了 -->
 
   <div id="complete">
 
@@ -368,9 +370,12 @@ button:disabled{
 
   </div>
 
+  <div class="noticeHint">
+    了解ボタンを押してください
+  </div>
 
   <button onclick="stopNotification()">
-    🔕 確認しました
+    ✅ 了解
   </button>
 
 </div>
@@ -405,7 +410,9 @@ import {
   serverTimestamp,
   query,
   orderBy,
-  onSnapshot
+  onSnapshot,
+  deleteDoc,
+  doc
 }
 from
 "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
@@ -457,132 +464,155 @@ const db =
 
 
 /* =========================================
-   通知関係
+   音声ファイル
 ========================================= */
 
-let audioContext = null;
+const sounds = {
 
-let soundTimer = null;
+  normal:
+    "mixkit-software-interface-start-2574.wav",
 
-let soundEndTimer = null;
+  haneda:
+    "mixkit-arcade-bonus-alert-767.wav",
 
-let notificationEnabled = false;
+  narita:
+    "mixkit-manual-siren-fire-alert-1652.wav",
 
-let notificationRunning = false;
+  zaion:
+    "mixkit-guitar-notification-alert-2320.wav"
+
+};
 
 
 
 /* =========================================
-   電子音
+   通知関係
 ========================================= */
 
-function playBeep(){
+let notificationEnabled =
+  false;
+
+let notificationRunning =
+  false;
+
+let soundTimer =
+  null;
+
+let soundEndTimer =
+  null;
+
+let speechTimer =
+  null;
+
+let currentAudio =
+  null;
+
+let currentRideId =
+  null;
+
+
+
+/* =========================================
+   配車ごとの音を選択
+========================================= */
+
+function getSoundFile(ride){
+
+  const pickup =
+    (ride.pickup || "")
+      .trim();
+
+  const destination =
+    (ride.destination || "")
+      .trim();
+
+
+  /*
+    優先順位
+
+    1. ザイオン
+    2. 成田
+    3. 羽田
+    4. 通常
+  */
+
+  if(
+    pickup.includes("ザイオン")
+  ){
+
+    return sounds.zaion;
+
+  }
+
+
+  if(
+    destination.includes("成田")
+  ){
+
+    return sounds.narita;
+
+  }
+
+
+  if(
+    destination.includes("羽田")
+  ){
+
+    return sounds.haneda;
+
+  }
+
+
+  return sounds.normal;
+
+}
+
+
+
+/* =========================================
+   効果音再生
+========================================= */
+
+function playNotificationSound(ride){
 
   if(!notificationEnabled){
     return;
   }
 
+
   try{
 
-    if(!audioContext){
+    if(currentAudio){
 
-      audioContext =
-        new (
-          window.AudioContext ||
-          window.webkitAudioContext
-        )();
+      currentAudio.pause();
 
-    }
-
-
-    if(
-      audioContext.state ===
-      "suspended"
-    ){
-
-      audioContext.resume();
+      currentAudio.currentTime =
+        0;
 
     }
 
 
-    const now =
-      audioContext.currentTime;
+    const soundFile =
+      getSoundFile(ride);
 
 
-    const osc1 =
-      audioContext.createOscillator();
-
-    const osc2 =
-      audioContext.createOscillator();
-
-    const gain =
-      audioContext.createGain();
+    currentAudio =
+      new Audio(soundFile);
 
 
-    /*
-      WOLFtaxi専用の
-      電子呼び出し音
-    */
-
-    osc1.frequency.setValueAtTime(
-      880,
-      now
-    );
-
-    osc1.frequency.setValueAtTime(
-      1320,
-      now + .12
-    );
+    currentAudio.volume =
+      1.0;
 
 
-    osc2.frequency.setValueAtTime(
-      660,
-      now
-    );
+    currentAudio.play()
+      .catch(error=>{
 
-    osc2.frequency.setValueAtTime(
-      990,
-      now + .12
-    );
+        console.error(
+          "音声再生エラー",
+          error
+        );
 
-
-    gain.gain.setValueAtTime(
-      .0001,
-      now
-    );
-
-    gain.gain.exponentialRampToValueAtTime(
-      .25,
-      now + .02
-    );
-
-    gain.gain.exponentialRampToValueAtTime(
-      .0001,
-      now + .38
-    );
-
-
-    osc1.connect(gain);
-
-    osc2.connect(gain);
-
-    gain.connect(
-      audioContext.destination
-    );
-
-
-    osc1.start(now);
-
-    osc2.start(now);
-
-
-    osc1.stop(
-      now + .42
-    );
-
-    osc2.stop(
-      now + .42
-    );
+      });
 
   }
   catch(error){
@@ -599,58 +629,6 @@ function playBeep(){
 
 
 /* =========================================
-   通知ON
-========================================= */
-
-window.enableNotification =
-function(){
-
-  notificationEnabled = true;
-
-
-  try{
-
-    audioContext =
-      new (
-        window.AudioContext ||
-        window.webkitAudioContext
-      )();
-
-    audioContext.resume();
-
-
-    /*
-      ボタンを押した瞬間に
-      音を鳴らしてブラウザの
-      音声再生許可を取得
-    */
-
-    playBeep();
-
-  }
-  catch(error){
-
-    console.error(error);
-
-  }
-
-
-  document
-    .getElementById("soundButton")
-    .textContent =
-      "🔔 配車通知ON";
-
-
-  document
-    .getElementById("soundStatus")
-    .textContent =
-      "🔔 配車通知がONになっています";
-
-};
-
-
-
-/* =========================================
    音声読み上げ
 ========================================= */
 
@@ -661,7 +639,9 @@ function speakTaxi(){
     if(
       !("speechSynthesis" in window)
     ){
+
       return;
+
     }
 
 
@@ -670,7 +650,7 @@ function speakTaxi(){
 
     const message =
       new SpeechSynthesisUtterance(
-        "配車です"
+        "配車です。配車です。了解ボタンを押してください。"
       );
 
 
@@ -709,73 +689,133 @@ function speakTaxi(){
    通知開始
 ========================================= */
 
-function startNotification(ride){
+function startNotification(ride, rideId){
 
-  if(!notificationEnabled){
+  if(
+    !notificationEnabled
+  ){
 
-    /*
-      通知ON前でも画面表示はする
-    */
-
-    showNotice(ride);
-
-    return;
-
-  }
-
-
-  if(notificationRunning){
-
-    /*
-      すでに通知中なら
-      画面を新しい配車に更新するだけ
-    */
-
-    showNotice(ride);
+    showNotice(
+      ride,
+      rideId
+    );
 
     return;
 
   }
 
 
-  notificationRunning = true;
+  /*
+    同じ通知なら無視
+  */
+
+  if(
+    notificationRunning &&
+    currentRideId === rideId
+  ){
+
+    return;
+
+  }
 
 
-  showNotice(ride);
+  notificationRunning =
+    true;
+
+  currentRideId =
+    rideId;
+
+
+  showNotice(
+    ride,
+    rideId
+  );
 
 
   stopSound();
 
 
   /*
-    音声
+    最初の音
+  */
+
+  playNotificationSound(
+    ride
+  );
+
+
+  /*
+    最初の読み上げ
   */
 
   speakTaxi();
 
 
   /*
-    電子音
+    約4秒ごとに音を繰り返す
   */
-
-  playBeep();
-
 
   soundTimer =
     setInterval(
-      playBeep,
-      1200
+
+      ()=>{
+
+        if(
+          notificationRunning
+        ){
+
+          playNotificationSound(
+            ride
+          );
+
+        }
+
+      },
+
+      4000
+
     );
 
 
   /*
-    最大15秒
+    約6秒ごとに読み上げ
+  */
+
+  speechTimer =
+    setInterval(
+
+      ()=>{
+
+        if(
+          notificationRunning
+        ){
+
+          speakTaxi();
+
+        }
+
+      },
+
+      6000
+
+    );
+
+
+  /*
+    最大30秒
   */
 
   soundEndTimer =
     setTimeout(
-      stopSound,
-      15000
+
+      ()=>{
+
+        stopNotification();
+
+      },
+
+      30000
+
     );
 
 }
@@ -786,7 +826,10 @@ function startNotification(ride){
    通知画面表示
 ========================================= */
 
-function showNotice(ride){
+function showNotice(
+  ride,
+  rideId
+){
 
   const notice =
     document.getElementById(
@@ -799,7 +842,7 @@ function showNotice(ride){
       "noticePickup"
     )
     .textContent =
-      "📍 " +
+      "📍 お迎え先： " +
       (ride.pickup || "");
 
 
@@ -808,8 +851,12 @@ function showNotice(ride){
       "noticeDestination"
     )
     .textContent =
-      "🏁 " +
+      "🏁 目的地： " +
       (ride.destination || "");
+
+
+  notice.dataset.rideId =
+    rideId || "";
 
 
   notice.style.display =
@@ -825,7 +872,7 @@ function showNotice(ride){
 
 
 /* =========================================
-   通知停止
+   音停止
 ========================================= */
 
 function stopSound(){
@@ -836,7 +883,20 @@ function stopSound(){
       soundTimer
     );
 
-    soundTimer = null;
+    soundTimer =
+      null;
+
+  }
+
+
+  if(speechTimer){
+
+    clearInterval(
+      speechTimer
+    );
+
+    speechTimer =
+      null;
 
   }
 
@@ -847,26 +907,23 @@ function stopSound(){
       soundEndTimer
     );
 
-    soundEndTimer = null;
+    soundEndTimer =
+      null;
 
   }
 
-}
 
+  if(currentAudio){
 
+    currentAudio.pause();
 
-/* =========================================
-   通知確認
-========================================= */
+    currentAudio.currentTime =
+      0;
 
-window.stopNotification =
-function(){
+    currentAudio =
+      null;
 
-  stopSound();
-
-
-  notificationRunning =
-    false;
+  }
 
 
   if(
@@ -878,9 +935,36 @@ function(){
 
   }
 
+}
+
+
+
+/* =========================================
+   通知確認＋配車削除
+========================================= */
+
+window.stopNotification =
+async function(){
+
+  const rideId =
+    currentRideId;
+
+
+  stopSound();
+
+
+  notificationRunning =
+    false;
+
+
+  currentRideId =
+    null;
+
 
   document
-    .getElementById("notice")
+    .getElementById(
+      "notice"
+    )
     .style.display =
       "none";
 
@@ -888,6 +972,113 @@ function(){
   document.body.classList.remove(
     "flash"
   );
+
+
+  /*
+    了解した配車を削除
+  */
+
+  if(rideId){
+
+    try{
+
+      await deleteDoc(
+        doc(
+          db,
+          "rides",
+          rideId
+        )
+      );
+
+    }
+    catch(error){
+
+      console.error(
+        "配車削除エラー",
+        error
+      );
+
+      alert(
+        "配車の削除に失敗しました。\n" +
+        error.message
+      );
+
+    }
+
+  }
+
+};
+
+
+
+/* =========================================
+   通知ON
+========================================= */
+
+window.enableNotification =
+function(){
+
+  notificationEnabled =
+    true;
+
+
+  /*
+    ブラウザの音声再生許可を
+    ボタン操作で取得
+  */
+
+  try{
+
+    const testAudio =
+      new Audio(
+        sounds.normal
+      );
+
+
+    testAudio.volume =
+      0;
+
+
+    testAudio.play()
+      .then(()=>{
+
+        testAudio.pause();
+
+        testAudio.currentTime =
+          0;
+
+      })
+      .catch(error=>{
+
+        console.log(
+          "音声許可取得待ち",
+          error
+        );
+
+      });
+
+  }
+  catch(error){
+
+    console.error(error);
+
+  }
+
+
+  document
+    .getElementById(
+      "soundButton"
+    )
+    .textContent =
+      "🔔 配車通知ON";
+
+
+  document
+    .getElementById(
+      "soundStatus"
+    )
+    .textContent =
+      "🔔 配車通知がONになっています";
 
 };
 
@@ -997,7 +1188,9 @@ window.confirmTaxi =
 async function(){
 
   if(sendingRide){
+
     return;
+
   }
 
 
@@ -1083,7 +1276,7 @@ async function(){
         "completePickup"
       )
       .textContent =
-        pickup;
+      pickup;
 
 
     document
@@ -1091,7 +1284,7 @@ async function(){
         "completeDestination"
       )
       .textContent =
-        destination;
+      destination;
 
 
     document
@@ -1099,7 +1292,7 @@ async function(){
         "result"
       )
       .style.display =
-        "none";
+      "none";
 
 
     document
@@ -1107,7 +1300,7 @@ async function(){
         "complete"
       )
       .style.display =
-        "block";
+      "block";
 
 
     document
@@ -1115,7 +1308,7 @@ async function(){
         "pickup"
       )
       .value =
-        "";
+      "";
 
 
     document
@@ -1123,7 +1316,7 @@ async function(){
         "destination"
       )
       .value =
-        "";
+      "";
 
 
   }
@@ -1247,7 +1440,9 @@ function startDriverMode(){
         snapshot.size;
 
 
-      if(rideCount > 0){
+      if(
+        rideCount > 0
+      ){
 
         busyMessage.style.display =
           "block";
@@ -1288,10 +1483,14 @@ function startDriverMode(){
 
 
       snapshot.forEach(
-        doc=>{
+        rideDoc=>{
 
           const ride =
-            doc.data();
+            rideDoc.data();
+
+
+          const rideId =
+            rideDoc.id;
 
 
           const div =
@@ -1338,11 +1537,36 @@ function startDriverMode(){
               👨‍✈️ ドライバー：001
             </div>
 
+            <button
+              data-ride-id="${rideId}"
+              class="manualAccept"
+            >
+              ✅ この配車を了解
+            </button>
+
           `;
 
 
           list.appendChild(
             div
+          );
+
+
+          const acceptButton =
+            div.querySelector(
+              ".manualAccept"
+            );
+
+
+          acceptButton.addEventListener(
+            "click",
+            ()=>{
+
+              acceptRide(
+                rideId
+              );
+
+            }
           );
 
 
@@ -1358,25 +1582,30 @@ function startDriverMode(){
             "requested" &&
 
             !knownRides.has(
-              doc.id
+              rideId
             )
 
           ){
 
             startNotification(
-              ride
+              ride,
+              rideId
             );
 
           }
 
 
           knownRides.add(
-            doc.id
+            rideId
           );
 
         }
       );
 
+
+      /*
+        初回読み込み済み
+      */
 
       firstSnapshot =
         false;
@@ -1400,6 +1629,77 @@ function startDriverMode(){
     }
 
   );
+
+}
+
+
+
+/* =========================================
+   一覧から直接了解
+========================================= */
+
+async function acceptRide(
+  rideId
+){
+
+  /*
+    通知中の配車なら
+    通知も止める
+  */
+
+  if(
+    currentRideId ===
+    rideId
+  ){
+
+    stopSound();
+
+    notificationRunning =
+      false;
+
+    currentRideId =
+      null;
+
+
+    document
+      .getElementById(
+        "notice"
+      )
+      .style.display =
+      "none";
+
+
+    document.body.classList.remove(
+      "flash"
+    );
+
+  }
+
+
+  try{
+
+    await deleteDoc(
+      doc(
+        db,
+        "rides",
+        rideId
+      )
+    );
+
+  }
+  catch(error){
+
+    console.error(
+      "配車削除エラー",
+      error
+    );
+
+    alert(
+      "配車の処理に失敗しました。\n" +
+      error.message
+    );
+
+  }
 
 }
 

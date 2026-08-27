@@ -6,7 +6,9 @@
 <title>WOLFtaxi</title>
 
 <style>
-*{box-sizing:border-box}
+*{
+  box-sizing:border-box;
+}
 
 body{
   margin:0;
@@ -38,7 +40,9 @@ body{
   box-shadow:0 4px 12px rgba(0,0,0,.12);
 }
 
-h2{margin-top:0}
+h2{
+  margin-top:0;
+}
 
 input{
   width:100%;
@@ -100,41 +104,22 @@ button:disabled{
   display:none;
 }
 
-.notice{
-  display:none;
-  position:fixed;
-  z-index:9999;
-  inset:0;
-  background:#e60023;
-  color:white;
-  padding:30px 20px;
-  text-align:center;
-  animation:blink 1s infinite;
+.notifyOn{
+  background:#087f23;
 }
 
-.notice h1{
-  font-size:42px;
-  margin:20px 0;
-}
-
-.notice p{
-  font-size:24px;
+#soundStatus{
   font-weight:bold;
 }
 
-.notice button{
-  background:white;
-  color:#e60023;
-  margin-top:30px;
-}
-
-@keyframes blink{
-  0%,100%{opacity:1}
-  50%{opacity:.82}
-}
-
-.notifyOn{
-  background:#087f23;
+.busy{
+  margin-top:15px;
+  padding:14px;
+  background:#fff4d6;
+  border-radius:12px;
+  text-align:center;
+  font-weight:bold;
+  color:#8a5a00;
 }
 
 .ride{
@@ -156,18 +141,69 @@ button:disabled{
   margin-bottom:12px;
 }
 
-.accepted{
-  border-color:#087f23;
-}
-
-.accepted .status{
-  color:#087f23;
-}
-
 .empty{
   text-align:center;
   padding:20px;
   color:#777;
+}
+
+.notice{
+  display:none;
+  position:fixed;
+  z-index:9999;
+  inset:0;
+  background:#e60023;
+  color:white;
+  padding:30px 20px;
+  text-align:center;
+  animation:blink .8s infinite;
+}
+
+.notice h1{
+  font-size:44px;
+  margin:20px 0;
+}
+
+.notice p{
+  font-size:24px;
+  font-weight:bold;
+  margin:15px 0;
+}
+
+.notice .noticeBox{
+  background:white;
+  color:#222;
+  border-radius:18px;
+  padding:20px;
+  margin-top:20px;
+}
+
+.notice button{
+  background:white;
+  color:#e60023;
+  margin-top:25px;
+}
+
+@keyframes blink{
+  0%,100%{
+    opacity:1;
+  }
+  50%{
+    opacity:.82;
+  }
+}
+
+.flash{
+  animation:flashScreen .5s infinite alternate;
+}
+
+@keyframes flashScreen{
+  from{
+    box-shadow:inset 0 0 0 0 rgba(230,0,35,0);
+  }
+  to{
+    box-shadow:inset 0 0 0 8px rgba(230,0,35,.5);
+  }
 }
 </style>
 </head>
@@ -179,18 +215,35 @@ button:disabled{
   <div class="sub">かんたんタクシー配車</div>
 </div>
 
+
+<!-- ========================= -->
 <!-- お客様画面 -->
+<!-- ========================= -->
+
 <div class="card" id="customerScreen">
 
   <h2>📍 お迎え先</h2>
-  <input id="pickup" type="text" placeholder="お迎え先を入力">
+
+  <input
+    id="pickup"
+    type="text"
+    placeholder="お迎え先を入力"
+  >
 
   <h2>🏁 目的地</h2>
-  <input id="destination" type="text" placeholder="目的地を入力">
+
+  <input
+    id="destination"
+    type="text"
+    placeholder="目的地を入力"
+  >
 
   <button onclick="callTaxi()">
     🚕 タクシーを呼ぶ
   </button>
+
+
+  <!-- 確認画面 -->
 
   <div id="result">
 
@@ -205,17 +258,23 @@ button:disabled{
     <button
       id="confirmButton"
       class="confirm"
-      onclick="confirmTaxi()">
+      onclick="confirmTaxi()"
+    >
       ✅ この内容で配車する
     </button>
 
   </div>
 
+
+  <!-- 受付完了 -->
+
   <div id="complete">
 
     <h2>🚕 配車を受け付けました</h2>
 
-    <p>ドライバー001がお迎えにあがります。</p>
+    <p>
+      ドライバー001がお迎えにあがります。
+    </p>
 
     <p>📍 お迎え先</p>
     <p id="completePickup"></p>
@@ -225,6 +284,7 @@ button:disabled{
 
   </div>
 
+
   <div class="driver">
     ドライバー　001
   </div>
@@ -232,7 +292,11 @@ button:disabled{
 </div>
 
 
+
+<!-- ========================= -->
 <!-- ドライバー画面 -->
+<!-- ========================= -->
+
 <div class="card" id="driverScreen">
 
   <h2>🚕 ドライバー画面</h2>
@@ -241,37 +305,69 @@ button:disabled{
     ドライバー　001
   </div>
 
+
   <button
     id="soundButton"
     class="notifyOn"
-    onclick="enableNotification()">
+    onclick="enableNotification()"
+  >
     🔔 配車通知をON
   </button>
 
-  <p id="soundStatus" class="driver">
+
+  <p
+    id="soundStatus"
+    class="driver"
+  >
     配車通知をONにしてください
   </p>
 
+
+  <div
+    id="busyMessage"
+    class="busy"
+    style="display:none;"
+  >
+  </div>
+
+
   <hr>
 
+
   <div id="rideList">
+
     <div class="empty">
       配車を待っています…
     </div>
+
   </div>
 
 </div>
 
 
-<!-- 配車通知 -->
+
+<!-- ========================= -->
+<!-- 配車通知画面 -->
+<!-- ========================= -->
+
 <div id="notice" class="notice">
 
-  <div>🚕</div>
+  <div style="font-size:60px;">
+    🚕
+  </div>
 
-  <h1>配車です！</h1>
+  <h1>
+    配車です！
+  </h1>
 
-  <p id="noticePickup"></p>
-  <p id="noticeDestination"></p>
+  <div class="noticeBox">
+
+    <p id="noticePickup"></p>
+
+    <p id="noticeDestination"></p>
+
+  </div>
+
 
   <button onclick="stopNotification()">
     🔕 確認しました
@@ -280,16 +376,27 @@ button:disabled{
 </div>
 
 
+
 <script type="module">
 
-import {initializeApp}
-from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+/* =========================================
+   Firebase
+========================================= */
+
+import {
+  initializeApp
+}
+from
+"https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+
 
 import {
   getAuth,
   signInAnonymously
 }
-from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+from
+"https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+
 
 import {
   getFirestore,
@@ -300,12 +407,18 @@ import {
   orderBy,
   onSnapshot
 }
-from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+from
+"https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
+
+/* =========================================
+   Firebase設定
+========================================= */
 
 const firebaseConfig = {
 
-  apiKey:"AIzaSyDBe6rFCj51rGHfZnClQwyc-ANnQjjiZ54",
+  apiKey:
+    "AIzaSyDBe6rFCj51rGHfZnClQwyc-ANnQjjiZ54",
 
   authDomain:
     "wolftaxi-53314.firebaseapp.com",
@@ -324,289 +437,715 @@ const firebaseConfig = {
 
   measurementId:
     "G-SX3VMEZJ92"
+
 };
 
 
-const app=initializeApp(firebaseConfig);
-const auth=getAuth(app);
-const db=getFirestore(app);
+/* =========================================
+   Firebase起動
+========================================= */
+
+const app =
+  initializeApp(firebaseConfig);
+
+const auth =
+  getAuth(app);
+
+const db =
+  getFirestore(app);
 
 
-/* 通知音 */
 
-let audioContext=null;
-let soundTimer=null;
-let soundEndTimer=null;
-let notificationEnabled=false;
+/* =========================================
+   通知関係
+========================================= */
 
+let audioContext = null;
+
+let soundTimer = null;
+
+let soundEndTimer = null;
+
+let notificationEnabled = false;
+
+let notificationRunning = false;
+
+
+
+/* =========================================
+   電子音
+========================================= */
 
 function playBeep(){
 
-  if(!notificationEnabled)return;
+  if(!notificationEnabled){
+    return;
+  }
 
   try{
 
     if(!audioContext){
-      audioContext=
-        new (window.AudioContext ||
-        window.webkitAudioContext)();
+
+      audioContext =
+        new (
+          window.AudioContext ||
+          window.webkitAudioContext
+        )();
+
     }
 
-    if(audioContext.state==="suspended"){
+
+    if(
+      audioContext.state ===
+      "suspended"
+    ){
+
       audioContext.resume();
+
     }
 
-    const now=audioContext.currentTime;
 
-    const osc1=audioContext.createOscillator();
-    const osc2=audioContext.createOscillator();
+    const now =
+      audioContext.currentTime;
 
-    const gain=audioContext.createGain();
 
-    osc1.frequency.setValueAtTime(880,now);
-    osc1.frequency.setValueAtTime(1320,now+.12);
+    const osc1 =
+      audioContext.createOscillator();
 
-    osc2.frequency.setValueAtTime(660,now);
-    osc2.frequency.setValueAtTime(990,now+.12);
+    const osc2 =
+      audioContext.createOscillator();
 
-    gain.gain.setValueAtTime(.0001,now);
-    gain.gain.exponentialRampToValueAtTime(.25,now+.02);
-    gain.gain.exponentialRampToValueAtTime(.0001,now+.35);
+    const gain =
+      audioContext.createGain();
+
+
+    /*
+      WOLFtaxi専用の
+      電子呼び出し音
+    */
+
+    osc1.frequency.setValueAtTime(
+      880,
+      now
+    );
+
+    osc1.frequency.setValueAtTime(
+      1320,
+      now + .12
+    );
+
+
+    osc2.frequency.setValueAtTime(
+      660,
+      now
+    );
+
+    osc2.frequency.setValueAtTime(
+      990,
+      now + .12
+    );
+
+
+    gain.gain.setValueAtTime(
+      .0001,
+      now
+    );
+
+    gain.gain.exponentialRampToValueAtTime(
+      .25,
+      now + .02
+    );
+
+    gain.gain.exponentialRampToValueAtTime(
+      .0001,
+      now + .38
+    );
+
 
     osc1.connect(gain);
+
     osc2.connect(gain);
-    gain.connect(audioContext.destination);
+
+    gain.connect(
+      audioContext.destination
+    );
+
 
     osc1.start(now);
+
     osc2.start(now);
 
-    osc1.stop(now+.4);
-    osc2.stop(now+.4);
 
-  }catch(error){
+    osc1.stop(
+      now + .42
+    );
 
-    console.error("通知音エラー",error);
+    osc2.stop(
+      now + .42
+    );
+
+  }
+  catch(error){
+
+    console.error(
+      "通知音エラー",
+      error
+    );
 
   }
 
 }
 
 
-/* 通知音ON */
 
-window.enableNotification=function(){
+/* =========================================
+   通知ON
+========================================= */
 
-  notificationEnabled=true;
+window.enableNotification =
+function(){
+
+  notificationEnabled = true;
+
 
   try{
 
-    audioContext=
-      new (window.AudioContext ||
-      window.webkitAudioContext)();
+    audioContext =
+      new (
+        window.AudioContext ||
+        window.webkitAudioContext
+      )();
 
     audioContext.resume();
 
+
+    /*
+      ボタンを押した瞬間に
+      音を鳴らしてブラウザの
+      音声再生許可を取得
+    */
+
     playBeep();
 
-  }catch(error){
+  }
+  catch(error){
 
     console.error(error);
 
   }
 
-  document.getElementById("soundButton")
-    .textContent="🔔 配車通知ON";
 
-  document.getElementById("soundStatus")
-    .textContent="🔔 配車通知がONになっています";
+  document
+    .getElementById("soundButton")
+    .textContent =
+      "🔔 配車通知ON";
+
+
+  document
+    .getElementById("soundStatus")
+    .textContent =
+      "🔔 配車通知がONになっています";
 
 };
 
 
-/* 通知開始 */
+
+/* =========================================
+   音声読み上げ
+========================================= */
+
+function speakTaxi(){
+
+  try{
+
+    if(
+      !("speechSynthesis" in window)
+    ){
+      return;
+    }
+
+
+    window.speechSynthesis.cancel();
+
+
+    const message =
+      new SpeechSynthesisUtterance(
+        "配車です"
+      );
+
+
+    message.lang =
+      "ja-JP";
+
+    message.rate =
+      1.0;
+
+    message.pitch =
+      1.0;
+
+    message.volume =
+      1.0;
+
+
+    window.speechSynthesis.speak(
+      message
+    );
+
+  }
+  catch(error){
+
+    console.error(
+      "音声エラー",
+      error
+    );
+
+  }
+
+}
+
+
+
+/* =========================================
+   通知開始
+========================================= */
 
 function startNotification(ride){
 
-  document.getElementById("noticePickup")
-    .textContent="📍 "+(ride.pickup||"");
+  if(!notificationEnabled){
 
-  document.getElementById("noticeDestination")
-    .textContent="🏁 "+(ride.destination||"");
+    /*
+      通知ON前でも画面表示はする
+    */
 
-  document.getElementById("notice")
-    .style.display="block";
+    showNotice(ride);
+
+    return;
+
+  }
+
+
+  if(notificationRunning){
+
+    /*
+      すでに通知中なら
+      画面を新しい配車に更新するだけ
+    */
+
+    showNotice(ride);
+
+    return;
+
+  }
+
+
+  notificationRunning = true;
+
+
+  showNotice(ride);
+
 
   stopSound();
 
+
+  /*
+    音声
+  */
+
+  speakTaxi();
+
+
+  /*
+    電子音
+  */
+
   playBeep();
 
-  soundTimer=setInterval(
-    playBeep,
-    1400
-  );
 
-  soundEndTimer=setTimeout(
-    stopSound,
-    15000
+  soundTimer =
+    setInterval(
+      playBeep,
+      1200
+    );
+
+
+  /*
+    最大15秒
+  */
+
+  soundEndTimer =
+    setTimeout(
+      stopSound,
+      15000
+    );
+
+}
+
+
+
+/* =========================================
+   通知画面表示
+========================================= */
+
+function showNotice(ride){
+
+  const notice =
+    document.getElementById(
+      "notice"
+    );
+
+
+  document
+    .getElementById(
+      "noticePickup"
+    )
+    .textContent =
+      "📍 " +
+      (ride.pickup || "");
+
+
+  document
+    .getElementById(
+      "noticeDestination"
+    )
+    .textContent =
+      "🏁 " +
+      (ride.destination || "");
+
+
+  notice.style.display =
+    "block";
+
+
+  document.body.classList.add(
+    "flash"
   );
 
 }
 
 
-/* 通知停止 */
+
+/* =========================================
+   通知停止
+========================================= */
 
 function stopSound(){
 
   if(soundTimer){
-    clearInterval(soundTimer);
-    soundTimer=null;
+
+    clearInterval(
+      soundTimer
+    );
+
+    soundTimer = null;
+
   }
 
+
   if(soundEndTimer){
-    clearTimeout(soundEndTimer);
-    soundEndTimer=null;
+
+    clearTimeout(
+      soundEndTimer
+    );
+
+    soundEndTimer = null;
+
   }
 
 }
 
 
-window.stopNotification=function(){
+
+/* =========================================
+   通知確認
+========================================= */
+
+window.stopNotification =
+function(){
 
   stopSound();
 
-  document.getElementById("notice")
-    .style.display="none";
+
+  notificationRunning =
+    false;
+
+
+  if(
+    "speechSynthesis"
+    in window
+  ){
+
+    window.speechSynthesis.cancel();
+
+  }
+
+
+  document
+    .getElementById("notice")
+    .style.display =
+      "none";
+
+
+  document.body.classList.remove(
+    "flash"
+  );
 
 };
 
 
-/* Firebase匿名ログイン */
+
+/* =========================================
+   Firebase匿名ログイン
+========================================= */
 
 signInAnonymously(auth)
+
 .then(()=>{
 
-  console.log("Firebase認証OK");
+  console.log(
+    "Firebase認証OK"
+  );
+
 
   startDriverMode();
 
 })
+
 .catch(error=>{
 
   console.error(error);
 
-  alert("Firebaseへの接続に失敗しました");
+
+  alert(
+    "Firebaseへの接続に失敗しました"
+  );
 
 });
 
 
-/* お客様：確認画面 */
 
-window.callTaxi=function(){
+/* =========================================
+   お客様画面
+========================================= */
 
-  const pickup=
-    document.getElementById("pickup")
-    .value.trim();
+window.callTaxi =
+function(){
 
-  const destination=
-    document.getElementById("destination")
-    .value.trim();
+  const pickup =
+    document
+      .getElementById("pickup")
+      .value
+      .trim();
 
-  if(!pickup || !destination){
+
+  const destination =
+    document
+      .getElementById("destination")
+      .value
+      .trim();
+
+
+  if(
+    !pickup ||
+    !destination
+  ){
 
     alert(
       "お迎え先と目的地を入力してください🚕"
     );
 
     return;
+
   }
 
-  document.getElementById("showPickup")
-    .textContent=pickup;
 
-  document.getElementById("showDestination")
-    .textContent=destination;
+  document
+    .getElementById(
+      "showPickup"
+    )
+    .textContent =
+      pickup;
 
-  document.getElementById("result")
-    .style.display="block";
+
+  document
+    .getElementById(
+      "showDestination"
+    )
+    .textContent =
+      destination;
+
+
+  document
+    .getElementById(
+      "result"
+    )
+    .style.display =
+      "block";
 
 };
 
 
-/* お客様：配車確定 */
 
-let sendingRide=false;
+/* =========================================
+   配車送信
+========================================= */
 
-window.confirmTaxi=async function(){
+let sendingRide =
+  false;
 
-  if(sendingRide)return;
 
-  const pickup=
-    document.getElementById("pickup")
-    .value.trim();
+window.confirmTaxi =
+async function(){
 
-  const destination=
-    document.getElementById("destination")
-    .value.trim();
-
-  if(!pickup || !destination){
-
-    alert("入力内容を確認してください");
-
+  if(sendingRide){
     return;
   }
 
-  sendingRide=true;
 
-  const button=
-    document.getElementById("confirmButton");
+  const pickup =
+    document
+      .getElementById("pickup")
+      .value
+      .trim();
 
-  button.disabled=true;
-  button.textContent="🚕 配車を送信中…";
+
+  const destination =
+    document
+      .getElementById("destination")
+      .value
+      .trim();
+
+
+  if(
+    !pickup ||
+    !destination
+  ){
+
+    alert(
+      "入力内容を確認してください"
+    );
+
+    return;
+
+  }
+
+
+  sendingRide =
+    true;
+
+
+  const button =
+    document.getElementById(
+      "confirmButton"
+    );
+
+
+  button.disabled =
+    true;
+
+
+  button.textContent =
+    "🚕 配車を送信中…";
+
 
   try{
 
     await addDoc(
-      collection(db,"rides"),
+
+      collection(
+        db,
+        "rides"
+      ),
+
       {
-        pickup:pickup,
-        destination:destination,
-        driver:"001",
-        status:"requested",
-        createdAt:serverTimestamp()
+
+        pickup:
+          pickup,
+
+        destination:
+          destination,
+
+        driver:
+          "001",
+
+        status:
+          "requested",
+
+        createdAt:
+          serverTimestamp()
+
       }
+
     );
 
-    document.getElementById("completePickup")
-      .textContent=pickup;
 
-    document.getElementById("completeDestination")
-      .textContent=destination;
+    document
+      .getElementById(
+        "completePickup"
+      )
+      .textContent =
+        pickup;
 
-    document.getElementById("result")
-      .style.display="none";
 
-    document.getElementById("complete")
-      .style.display="block";
+    document
+      .getElementById(
+        "completeDestination"
+      )
+      .textContent =
+        destination;
 
-    document.getElementById("pickup")
-      .value="";
 
-    document.getElementById("destination")
-      .value="";
+    document
+      .getElementById(
+        "result"
+      )
+      .style.display =
+        "none";
 
-  }catch(error){
+
+    document
+      .getElementById(
+        "complete"
+      )
+      .style.display =
+        "block";
+
+
+    document
+      .getElementById(
+        "pickup"
+      )
+      .value =
+        "";
+
+
+    document
+      .getElementById(
+        "destination"
+      )
+      .value =
+        "";
+
+
+  }
+  catch(error){
 
     console.error(error);
 
-    sendingRide=false;
 
-    button.disabled=false;
+    sendingRide =
+      false;
 
-    button.textContent=
+
+    button.disabled =
+      false;
+
+
+    button.textContent =
       "✅ この内容で配車する";
 
+
     alert(
-      "配車の送信に失敗しました。\n"+
+      "配車の送信に失敗しました。\n" +
       error.message
     );
 
@@ -615,137 +1154,248 @@ window.confirmTaxi=async function(){
 };
 
 
-/* ドライバー画面 */
+
+/* =========================================
+   ドライバー画面
+========================================= */
 
 function startDriverMode(){
 
-  const params=
+  const params =
     new URLSearchParams(
       window.location.search
     );
 
-  if(params.get("driver")!=="001"){
+
+  /*
+    ?driver=001
+  */
+
+  if(
+    params.get("driver") !==
+    "001"
+  ){
+
     return;
+
   }
 
-  document.getElementById("customerScreen")
-    .style.display="none";
 
-  document.getElementById("driverScreen")
-    .style.display="block";
+  document
+    .getElementById(
+      "customerScreen"
+    )
+    .style.display =
+      "none";
 
 
-  const ridesQuery=
+  document
+    .getElementById(
+      "driverScreen"
+    )
+    .style.display =
+      "block";
+
+
+  const ridesQuery =
     query(
-      collection(db,"rides"),
-      orderBy("createdAt","desc")
+
+      collection(
+        db,
+        "rides"
+      ),
+
+      orderBy(
+        "createdAt",
+        "desc"
+      )
+
     );
 
 
-  let firstSnapshot=true;
-  let knownRides=new Set();
+  let firstSnapshot =
+    true;
+
+
+  const knownRides =
+    new Set();
 
 
   onSnapshot(
+
     ridesQuery,
 
     snapshot=>{
 
-      const list=
-        document.getElementById("rideList");
+      const list =
+        document.getElementById(
+          "rideList"
+        );
 
-      if(snapshot.empty){
 
-        list.innerHTML=
-          '<div class="empty">'+
-          '現在、配車依頼はありません。'+
-          '</div>';
+      const busyMessage =
+        document.getElementById(
+          "busyMessage"
+        );
 
-        return;
+
+      /*
+        配車件数
+      */
+
+      const rideCount =
+        snapshot.size;
+
+
+      if(rideCount > 0){
+
+        busyMessage.style.display =
+          "block";
+
+
+        busyMessage.textContent =
+          "🚕 ただいま別の方の配車依頼対応中（" +
+          rideCount +
+          "件）";
+
+      }
+      else{
+
+        busyMessage.style.display =
+          "none";
+
       }
 
 
-      list.innerHTML="";
+      /*
+        配車なし
+      */
+
+      if(snapshot.empty){
+
+        list.innerHTML =
+          '<div class="empty">' +
+          '現在、配車依頼はありません。' +
+          '</div>';
+
+        return;
+
+      }
 
 
-      snapshot.forEach(doc=>{
+      list.innerHTML =
+        "";
 
-        const ride=doc.data();
 
-        const div=
-          document.createElement("div");
+      snapshot.forEach(
+        doc=>{
 
-        div.className="ride";
+          const ride =
+            doc.data();
 
-        if(ride.status==="accepted"){
-          div.classList.add("accepted");
+
+          const div =
+            document.createElement(
+              "div"
+            );
+
+
+          div.className =
+            "ride";
+
+
+          div.innerHTML = `
+
+            <div class="status">
+              🚕 新しい配車
+            </div>
+
+            <div>
+              📍 お迎え先
+            </div>
+
+            <strong>
+              ${escapeHtml(
+                ride.pickup || ""
+              )}
+            </strong>
+
+            <br><br>
+
+            <div>
+              🏁 目的地
+            </div>
+
+            <strong>
+              ${escapeHtml(
+                ride.destination || ""
+              )}
+            </strong>
+
+            <br><br>
+
+            <div>
+              👨‍✈️ ドライバー：001
+            </div>
+
+          `;
+
+
+          list.appendChild(
+            div
+          );
+
+
+          /*
+            新規配車だけ通知
+          */
+
+          if(
+
+            !firstSnapshot &&
+
+            ride.status ===
+            "requested" &&
+
+            !knownRides.has(
+              doc.id
+            )
+
+          ){
+
+            startNotification(
+              ride
+            );
+
+          }
+
+
+          knownRides.add(
+            doc.id
+          );
+
         }
+      );
 
 
-        const statusText=
-          ride.status==="accepted"
-          ? "✅ 対応中"
-          : "🚕 新しい配車";
-
-
-        div.innerHTML=`
-
-          <div class="status">
-            ${statusText}
-          </div>
-
-          <div>📍 お迎え先</div>
-
-          <strong>
-            ${escapeHtml(ride.pickup||"")}
-          </strong>
-
-          <br><br>
-
-          <div>🏁 目的地</div>
-
-          <strong>
-            ${escapeHtml(ride.destination||"")}
-          </strong>
-
-          <br><br>
-
-          <div>
-            👨‍✈️ ドライバー：001
-          </div>
-
-        `;
-
-
-        list.appendChild(div);
-
-
-        if(
-          !firstSnapshot &&
-          ride.status==="requested" &&
-          !knownRides.has(doc.id)
-        ){
-
-          startNotification(ride);
-
-        }
-
-        knownRides.add(doc.id);
-
-      });
-
-
-      firstSnapshot=false;
+      firstSnapshot =
+        false;
 
     },
 
     error=>{
 
-      console.error(error);
+      console.error(
+        error
+      );
 
-      document.getElementById("rideList")
-        .textContent=
-        "配車情報の読み込みに失敗しました。";
+
+      document
+        .getElementById(
+          "rideList"
+        )
+        .textContent =
+          "配車情報の読み込みに失敗しました。";
 
     }
 
@@ -754,14 +1404,22 @@ function startDriverMode(){
 }
 
 
-/* 表示用安全処理 */
+
+/* =========================================
+   安全なHTML表示
+========================================= */
 
 function escapeHtml(text){
 
-  const div=
-    document.createElement("div");
+  const div =
+    document.createElement(
+      "div"
+    );
 
-  div.textContent=text;
+
+  div.textContent =
+    text;
+
 
   return div.innerHTML;
 

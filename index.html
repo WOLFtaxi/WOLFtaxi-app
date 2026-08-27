@@ -2,169 +2,172 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>WOLFtaxi</title>
 
 <style>
-body {
-  margin: 0;
-  font-family: sans-serif;
-  background: #f7f7f7;
-  color: #333;
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  font-family:sans-serif;
+  background:#f7f7f7;
+  color:#333;
 }
 
-.header {
-  background: #111;
-  color: white;
-  padding: 20px;
-  text-align: center;
-  font-size: 28px;
-  font-weight: bold;
+.header{
+  background:#111;
+  color:white;
+  padding:20px;
+  text-align:center;
+  font-size:28px;
+  font-weight:bold;
 }
 
-.sub {
-  font-size: 14px;
-  margin-top: 5px;
-  opacity: 0.8;
+.sub{
+  font-size:14px;
+  margin-top:5px;
+  opacity:.8;
 }
 
-.card {
-  background: white;
-  margin: 20px;
-  padding: 20px;
-  border-radius: 18px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+.card{
+  background:white;
+  margin:20px;
+  padding:20px;
+  border-radius:18px;
+  box-shadow:0 4px 12px rgba(0,0,0,.12);
 }
 
-h2 {
-  margin-top: 0;
+h2{margin-top:0}
+
+input{
+  width:100%;
+  padding:15px;
+  margin:8px 0 20px;
+  border:1px solid #ddd;
+  border-radius:10px;
+  font-size:16px;
 }
 
-input {
-  width: 100%;
-  box-sizing: border-box;
-  padding: 15px;
-  margin: 8px 0 20px;
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  font-size: 16px;
+button{
+  width:100%;
+  padding:16px;
+  margin-top:5px;
+  border:0;
+  border-radius:12px;
+  background:#111;
+  color:white;
+  font-size:18px;
+  font-weight:bold;
 }
 
-button {
-  width: 100%;
-  padding: 16px;
-  margin-top: 5px;
-  border: none;
-  border-radius: 12px;
-  background: #111;
-  color: white;
-  font-size: 18px;
-  font-weight: bold;
+button:disabled{
+  opacity:.5;
 }
 
-.confirm {
-  background: #e60023;
+.confirm{
+  background:#e60023;
 }
 
-.driver {
-  text-align: center;
-  margin-top: 15px;
-  font-size: 14px;
+.driver{
+  text-align:center;
+  margin-top:15px;
+  font-size:14px;
 }
 
-#result {
-  display: none;
-  margin-top: 20px;
-  padding: 15px;
-  background: #f1f1f1;
-  border-radius: 12px;
+#result{
+  display:none;
+  margin-top:20px;
+  padding:15px;
+  background:#f1f1f1;
+  border-radius:12px;
 }
 
-#complete {
-  display: none;
-  margin-top: 20px;
-  padding: 20px;
-  background: #fff0f2;
-  border-radius: 12px;
-  text-align: center;
+#complete{
+  display:none;
+  margin-top:20px;
+  padding:20px;
+  background:#fff0f2;
+  border-radius:12px;
+  text-align:center;
 }
 
-#complete h2 {
-  color: #e60023;
+#complete h2{
+  color:#e60023;
 }
 
-#driverScreen {
-  display: none;
+#driverScreen{
+  display:none;
 }
 
-.ride {
-  border: 2px solid #e60023;
-  border-radius: 14px;
-  padding: 15px;
-  margin-top: 15px;
-  background: white;
+.notice{
+  display:none;
+  position:fixed;
+  z-index:9999;
+  inset:0;
+  background:#e60023;
+  color:white;
+  padding:30px 20px;
+  text-align:center;
+  animation:blink 1s infinite;
 }
 
-.ride button {
-  background: #111;
+.notice h1{
+  font-size:42px;
+  margin:20px 0;
 }
 
-.status {
-  font-weight: bold;
-  color: #e60023;
-  font-size: 20px;
-  margin-bottom: 12px;
+.notice p{
+  font-size:24px;
+  font-weight:bold;
 }
 
-#notificationButton {
-  background: #e60023;
-  margin-bottom: 15px;
+.notice button{
+  background:white;
+  color:#e60023;
+  margin-top:30px;
 }
 
-#notificationStatus {
-  text-align: center;
-  font-size: 14px;
-  margin-bottom: 10px;
+@keyframes blink{
+  0%,100%{opacity:1}
+  50%{opacity:.82}
 }
 
-#newRideOverlay {
-  display: none;
-  position: fixed;
-  z-index: 9999;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.75);
-  align-items: center;
-  justify-content: center;
+.notifyOn{
+  background:#087f23;
 }
 
-#newRideBox {
-  width: calc(100% - 40px);
-  max-width: 450px;
-  background: white;
-  border-radius: 22px;
-  padding: 25px;
-  text-align: center;
-  box-sizing: border-box;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+.ride{
+  border:2px solid #e60023;
+  border-radius:14px;
+  padding:15px;
+  margin-top:15px;
+  background:white;
 }
 
-#newRideBox h2 {
-  color: #e60023;
-  font-size: 28px;
+.ride button{
+  background:#111;
 }
 
-#newRideBox .big {
-  font-size: 20px;
-  font-weight: bold;
-  margin: 12px 0;
+.status{
+  font-weight:bold;
+  color:#e60023;
+  font-size:18px;
+  margin-bottom:12px;
 }
 
-#closeOverlay {
-  background: #111;
-  margin-top: 20px;
+.accepted{
+  border-color:#087f23;
+}
+
+.accepted .status{
+  color:#087f23;
+}
+
+.empty{
+  text-align:center;
+  padding:20px;
+  color:#777;
 }
 </style>
 </head>
@@ -177,7 +180,6 @@ button {
 </div>
 
 <!-- お客様画面 -->
-
 <div class="card" id="customerScreen">
 
   <h2>📍 お迎え先</h2>
@@ -200,7 +202,10 @@ button {
     <p>🏁 目的地</p>
     <p id="showDestination"></p>
 
-    <button class="confirm" onclick="confirmTaxi()">
+    <button
+      id="confirmButton"
+      class="confirm"
+      onclick="confirmTaxi()">
       ✅ この内容で配車する
     </button>
 
@@ -228,7 +233,6 @@ button {
 
 
 <!-- ドライバー画面 -->
-
 <div class="card" id="driverScreen">
 
   <h2>🚕 ドライバー画面</h2>
@@ -237,68 +241,55 @@ button {
     ドライバー　001
   </div>
 
-  <button id="notificationButton" onclick="enableNotificationSound()">
+  <button
+    id="soundButton"
+    class="notifyOn"
+    onclick="enableNotification()">
     🔔 配車通知をON
   </button>
 
-  <div id="notificationStatus">
-    配車通知はOFFです
-  </div>
+  <p id="soundStatus" class="driver">
+    配車通知をONにしてください
+  </p>
 
   <hr>
 
   <div id="rideList">
-    配車を待っています…
+    <div class="empty">
+      配車を待っています…
+    </div>
   </div>
 
 </div>
 
 
-<!-- 新規配車ポップアップ -->
+<!-- 配車通知 -->
+<div id="notice" class="notice">
 
-<div id="newRideOverlay">
+  <div>🚕</div>
 
-  <div id="newRideBox">
+  <h1>配車です！</h1>
 
-    <h2>🚕 配車です</h2>
+  <p id="noticePickup"></p>
+  <p id="noticeDestination"></p>
 
-    <div class="big">
-      📍 お迎え先
-    </div>
-
-    <div class="big" id="overlayPickup">
-    </div>
-
-    <div class="big">
-      🏁 目的地
-    </div>
-
-    <div class="big" id="overlayDestination">
-    </div>
-
-    <div class="big">
-      👨‍✈️ ドライバー 001
-    </div>
-
-    <button id="closeOverlay" onclick="closeOverlay()">
-      確認しました
-    </button>
-
-  </div>
+  <button onclick="stopNotification()">
+    🔕 確認しました
+  </button>
 
 </div>
 
 
 <script type="module">
 
-import { initializeApp } from
-"https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+import {initializeApp}
+from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 
 import {
   getAuth,
   signInAnonymously
-} from
-"https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+}
+from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 
 import {
   getFirestore,
@@ -308,160 +299,219 @@ import {
   query,
   orderBy,
   onSnapshot
-} from
-"https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+}
+from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
-
-/* Firebase設定 */
 
 const firebaseConfig = {
 
-  apiKey:
-  "AIzaSyDBe6rFCj51rGHfZnClQwyc-ANnQjjiZ54",
+  apiKey:"AIzaSyDBe6rFCj51rGHfZnClQwyc-ANnQjjiZ54",
 
   authDomain:
-  "wolftaxi-53314.firebaseapp.com",
+    "wolftaxi-53314.firebaseapp.com",
 
   projectId:
-  "wolftaxi-53314",
+    "wolftaxi-53314",
 
   storageBucket:
-  "wolftaxi-53314.firebasestorage.app",
+    "wolftaxi-53314.firebasestorage.app",
 
   messagingSenderId:
-  "409259660325",
+    "409259660325",
 
   appId:
-  "1:409259660325:web:3506611653a617cccbdbcc",
+    "1:409259660325:web:3506611653a617cccbdbcc",
 
   measurementId:
-  "G-SX3VMEZJ92"
+    "G-SX3VMEZJ92"
 };
 
 
-/* Firebase起動 */
-
-const app = initializeApp(firebaseConfig);
-
-const auth = getAuth(app);
-
-const db = getFirestore(app);
+const app=initializeApp(firebaseConfig);
+const auth=getAuth(app);
+const db=getFirestore(app);
 
 
 /* 通知音 */
 
-let audioContext = null;
+let audioContext=null;
+let soundTimer=null;
+let soundEndTimer=null;
+let notificationEnabled=false;
 
-let soundEnabled = false;
 
-window.enableNotificationSound = function() {
+function playBeep(){
 
-  try {
+  if(!notificationEnabled)return;
 
-    audioContext =
-      new (window.AudioContext ||
-      window.webkitAudioContext)();
+  try{
 
-    if (audioContext.state === "suspended") {
+    if(!audioContext){
+      audioContext=
+        new (window.AudioContext ||
+        window.webkitAudioContext)();
+    }
+
+    if(audioContext.state==="suspended"){
       audioContext.resume();
     }
 
-    soundEnabled = true;
+    const now=audioContext.currentTime;
 
-    document.getElementById(
-      "notificationButton"
-    ).textContent = "🔔 配車通知ON";
+    const osc1=audioContext.createOscillator();
+    const osc2=audioContext.createOscillator();
 
-    document.getElementById(
-      "notificationStatus"
-    ).textContent =
-      "🔔 配車通知がONになっています";
+    const gain=audioContext.createGain();
 
-    playNotificationSound();
+    osc1.frequency.setValueAtTime(880,now);
+    osc1.frequency.setValueAtTime(1320,now+.12);
 
-  } catch (error) {
+    osc2.frequency.setValueAtTime(660,now);
+    osc2.frequency.setValueAtTime(990,now+.12);
 
-    console.error(error);
+    gain.gain.setValueAtTime(.0001,now);
+    gain.gain.exponentialRampToValueAtTime(.25,now+.02);
+    gain.gain.exponentialRampToValueAtTime(.0001,now+.35);
 
-    alert("通知音を有効にできませんでした");
+    osc1.connect(gain);
+    osc2.connect(gain);
+    gain.connect(audioContext.destination);
+
+    osc1.start(now);
+    osc2.start(now);
+
+    osc1.stop(now+.4);
+    osc2.stop(now+.4);
+
+  }catch(error){
+
+    console.error("通知音エラー",error);
 
   }
-
-};
-
-
-/* 電子音 */
-
-function playNotificationSound() {
-
-  if (!soundEnabled || !audioContext) {
-    return;
-  }
-
-  const now = audioContext.currentTime;
-
-  const oscillator =
-    audioContext.createOscillator();
-
-  const gain =
-    audioContext.createGain();
-
-  oscillator.type = "sine";
-
-  oscillator.frequency.setValueAtTime(
-    880,
-    now
-  );
-
-  oscillator.frequency.setValueAtTime(
-    660,
-    now + 0.15
-  );
-
-  oscillator.frequency.setValueAtTime(
-    880,
-    now + 0.30
-  );
-
-  gain.gain.setValueAtTime(
-    0.001,
-    now
-  );
-
-  gain.gain.exponentialRampToValueAtTime(
-    0.5,
-    now + 0.02
-  );
-
-  gain.gain.exponentialRampToValueAtTime(
-    0.001,
-    now + 0.45
-  );
-
-  oscillator.connect(gain);
-
-  gain.connect(audioContext.destination);
-
-  oscillator.start(now);
-
-  oscillator.stop(now + 0.5);
 
 }
 
 
-/* 呼ぶボタン */
+/* 通知音ON */
 
-window.callTaxi = function() {
+window.enableNotification=function(){
 
-  const pickup =
+  notificationEnabled=true;
+
+  try{
+
+    audioContext=
+      new (window.AudioContext ||
+      window.webkitAudioContext)();
+
+    audioContext.resume();
+
+    playBeep();
+
+  }catch(error){
+
+    console.error(error);
+
+  }
+
+  document.getElementById("soundButton")
+    .textContent="🔔 配車通知ON";
+
+  document.getElementById("soundStatus")
+    .textContent="🔔 配車通知がONになっています";
+
+};
+
+
+/* 通知開始 */
+
+function startNotification(ride){
+
+  document.getElementById("noticePickup")
+    .textContent="📍 "+(ride.pickup||"");
+
+  document.getElementById("noticeDestination")
+    .textContent="🏁 "+(ride.destination||"");
+
+  document.getElementById("notice")
+    .style.display="block";
+
+  stopSound();
+
+  playBeep();
+
+  soundTimer=setInterval(
+    playBeep,
+    1400
+  );
+
+  soundEndTimer=setTimeout(
+    stopSound,
+    15000
+  );
+
+}
+
+
+/* 通知停止 */
+
+function stopSound(){
+
+  if(soundTimer){
+    clearInterval(soundTimer);
+    soundTimer=null;
+  }
+
+  if(soundEndTimer){
+    clearTimeout(soundEndTimer);
+    soundEndTimer=null;
+  }
+
+}
+
+
+window.stopNotification=function(){
+
+  stopSound();
+
+  document.getElementById("notice")
+    .style.display="none";
+
+};
+
+
+/* Firebase匿名ログイン */
+
+signInAnonymously(auth)
+.then(()=>{
+
+  console.log("Firebase認証OK");
+
+  startDriverMode();
+
+})
+.catch(error=>{
+
+  console.error(error);
+
+  alert("Firebaseへの接続に失敗しました");
+
+});
+
+
+/* お客様：確認画面 */
+
+window.callTaxi=function(){
+
+  const pickup=
     document.getElementById("pickup")
     .value.trim();
 
-  const destination =
+  const destination=
     document.getElementById("destination")
     .value.trim();
 
-  if (!pickup || !destination) {
+  if(!pickup || !destination){
 
     alert(
       "お迎え先と目的地を入力してください🚕"
@@ -470,89 +520,93 @@ window.callTaxi = function() {
     return;
   }
 
-  document.getElementById(
-    "showPickup"
-  ).textContent = pickup;
+  document.getElementById("showPickup")
+    .textContent=pickup;
 
-  document.getElementById(
-    "showDestination"
-  ).textContent = destination;
+  document.getElementById("showDestination")
+    .textContent=destination;
 
-  document.getElementById(
-    "result"
-  ).style.display = "block";
+  document.getElementById("result")
+    .style.display="block";
 
 };
 
 
-/* 配車確定 */
+/* お客様：配車確定 */
 
-window.confirmTaxi = async function() {
+let sendingRide=false;
 
-  const pickup =
+window.confirmTaxi=async function(){
+
+  if(sendingRide)return;
+
+  const pickup=
     document.getElementById("pickup")
     .value.trim();
 
-  const destination =
+  const destination=
     document.getElementById("destination")
     .value.trim();
 
-  if (!pickup || !destination) {
+  if(!pickup || !destination){
 
     alert("入力内容を確認してください");
 
     return;
   }
 
-  try {
+  sendingRide=true;
+
+  const button=
+    document.getElementById("confirmButton");
+
+  button.disabled=true;
+  button.textContent="🚕 配車を送信中…";
+
+  try{
 
     await addDoc(
-      collection(db, "rides"),
+      collection(db,"rides"),
       {
-
-        pickup: pickup,
-
-        destination: destination,
-
-        driver: "001",
-
-        status: "requested",
-
-        createdAt: serverTimestamp()
-
+        pickup:pickup,
+        destination:destination,
+        driver:"001",
+        status:"requested",
+        createdAt:serverTimestamp()
       }
     );
 
-    document.getElementById(
-      "completePickup"
-    ).textContent = pickup;
+    document.getElementById("completePickup")
+      .textContent=pickup;
 
-    document.getElementById(
-      "completeDestination"
-    ).textContent = destination;
+    document.getElementById("completeDestination")
+      .textContent=destination;
 
-    document.getElementById(
-      "result"
-    ).style.display = "none";
+    document.getElementById("result")
+      .style.display="none";
 
-    document.getElementById(
-      "complete"
-    ).style.display = "block";
+    document.getElementById("complete")
+      .style.display="block";
 
-    document.getElementById(
-      "pickup"
-    ).value = "";
+    document.getElementById("pickup")
+      .value="";
 
-    document.getElementById(
-      "destination"
-    ).value = "";
+    document.getElementById("destination")
+      .value="";
 
-  } catch (error) {
+  }catch(error){
 
     console.error(error);
 
+    sendingRide=false;
+
+    button.disabled=false;
+
+    button.textContent=
+      "✅ この内容で配車する";
+
     alert(
-      "配車の送信に失敗しました。\n" +
+      "配車の送信に失敗しました。\n"+
       error.message
     );
 
@@ -563,88 +617,95 @@ window.confirmTaxi = async function() {
 
 /* ドライバー画面 */
 
-function startDriverMode() {
+function startDriverMode(){
 
-  const params =
+  const params=
     new URLSearchParams(
       window.location.search
     );
 
-  if (params.get("driver") !== "001") {
+  if(params.get("driver")!=="001"){
     return;
   }
 
-  document.getElementById(
-    "customerScreen"
-  ).style.display = "none";
+  document.getElementById("customerScreen")
+    .style.display="none";
 
-  document.getElementById(
-    "driverScreen"
-  ).style.display = "block";
+  document.getElementById("driverScreen")
+    .style.display="block";
 
 
-  const ridesQuery =
+  const ridesQuery=
     query(
-      collection(db, "rides"),
-      orderBy("createdAt", "desc")
+      collection(db,"rides"),
+      orderBy("createdAt","desc")
     );
 
 
-  let firstSnapshot = true;
+  let firstSnapshot=true;
+  let knownRides=new Set();
+
 
   onSnapshot(
     ridesQuery,
 
-    (snapshot) => {
+    snapshot=>{
 
-      const list =
-        document.getElementById(
-          "rideList"
-        );
+      const list=
+        document.getElementById("rideList");
 
-      if (snapshot.empty) {
+      if(snapshot.empty){
 
-        list.textContent =
-          "現在、配車依頼はありません。";
+        list.innerHTML=
+          '<div class="empty">'+
+          '現在、配車依頼はありません。'+
+          '</div>';
 
         return;
       }
 
 
-      list.innerHTML = "";
+      list.innerHTML="";
 
 
-      snapshot.forEach((doc) => {
+      snapshot.forEach(doc=>{
 
-        const ride = doc.data();
+        const ride=doc.data();
 
-        const div =
+        const div=
           document.createElement("div");
 
-        div.className = "ride";
+        div.className="ride";
 
-        div.innerHTML = `
+        if(ride.status==="accepted"){
+          div.classList.add("accepted");
+        }
+
+
+        const statusText=
+          ride.status==="accepted"
+          ? "✅ 対応中"
+          : "🚕 新しい配車";
+
+
+        div.innerHTML=`
 
           <div class="status">
-            🚕 新しい配車
+            ${statusText}
           </div>
 
-          <div>
-            📍 お迎え先
-          </div>
+          <div>📍 お迎え先</div>
 
           <strong>
-            ${escapeHtml(ride.pickup || "")}
+            ${escapeHtml(ride.pickup||"")}
           </strong>
 
           <br><br>
 
-          <div>
-            🏁 目的地
-          </div>
+          <div>🏁 目的地</div>
 
           <strong>
-            ${escapeHtml(ride.destination || "")}
+            ${escapeHtml(ride.destination||"")}
           </strong>
 
           <br><br>
@@ -655,137 +716,56 @@ function startDriverMode() {
 
         `;
 
+
         list.appendChild(div);
+
+
+        if(
+          !firstSnapshot &&
+          ride.status==="requested" &&
+          !knownRides.has(doc.id)
+        ){
+
+          startNotification(ride);
+
+        }
+
+        knownRides.add(doc.id);
 
       });
 
 
-      /* 最初の読み込みでは鳴らさない */
-
-      if (firstSnapshot) {
-
-        firstSnapshot = false;
-
-        return;
-
-      }
-
-
-      /* 新しい配車が来た */
-
-      const latest =
-        snapshot.docs[0];
-
-      if (!latest) {
-        return;
-      }
-
-      const ride =
-        latest.data();
-
-      showNewRide(
-        ride.pickup || "",
-        ride.destination || ""
-      );
+      firstSnapshot=false;
 
     },
 
-    (error) => {
+    error=>{
 
       console.error(error);
 
-      document.getElementById(
-        "rideList"
-      ).textContent =
+      document.getElementById("rideList")
+        .textContent=
         "配車情報の読み込みに失敗しました。";
 
     }
+
   );
 
 }
-
-
-/* 新規配車表示 */
-
-function showNewRide(
-  pickup,
-  destination
-) {
-
-  document.getElementById(
-    "overlayPickup"
-  ).textContent = pickup;
-
-  document.getElementById(
-    "overlayDestination"
-  ).textContent = destination;
-
-  document.getElementById(
-    "newRideOverlay"
-  ).style.display = "flex";
-
-
-  playNotificationSound();
-
-
-  /* もう一度鳴らす */
-
-  setTimeout(
-    playNotificationSound,
-    700
-  );
-
-}
-
-
-/* ポップアップを閉じる */
-
-window.closeOverlay = function() {
-
-  document.getElementById(
-    "newRideOverlay"
-  ).style.display = "none";
-
-};
 
 
 /* 表示用安全処理 */
 
-function escapeHtml(text) {
+function escapeHtml(text){
 
-  const div =
+  const div=
     document.createElement("div");
 
-  div.textContent = text;
+  div.textContent=text;
 
   return div.innerHTML;
 
 }
-
-
-/* 匿名ログイン */
-
-signInAnonymously(auth)
-
-.then(() => {
-
-  console.log(
-    "Firebase認証OK"
-  );
-
-  startDriverMode();
-
-})
-
-.catch((error) => {
-
-  console.error(error);
-
-  alert(
-    "Firebaseへの接続に失敗しました"
-  );
-
-});
 
 </script>
 

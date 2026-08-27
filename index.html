@@ -3,9 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
+
 <title>WOLFtaxi</title>
 
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+/>
+
 <style>
+
 *{
   box-sizing:border-box;
 }
@@ -34,7 +41,7 @@ body{
 
 .card{
   background:white;
-  margin:20px;
+  margin:15px;
   padding:20px;
   border-radius:18px;
   box-shadow:0 4px 12px rgba(0,0,0,.12);
@@ -56,12 +63,12 @@ input{
 button{
   width:100%;
   padding:16px;
-  margin-top:5px;
+  margin-top:7px;
   border:0;
   border-radius:12px;
   background:#111;
   color:white;
-  font-size:18px;
+  font-size:17px;
   font-weight:bold;
 }
 
@@ -73,10 +80,31 @@ button:disabled{
   background:#e60023;
 }
 
+.green{
+  background:#087f23;
+}
+
+.blue{
+  background:#174ea6;
+}
+
+.orange{
+  background:#d97700;
+}
+
+.gray{
+  background:#666;
+}
+
 .driver{
   text-align:center;
-  margin-top:15px;
+  margin-top:12px;
   font-size:14px;
+}
+
+#customerScreen,
+#driverScreen{
+  display:none;
 }
 
 #result{
@@ -100,94 +128,15 @@ button:disabled{
   color:#e60023;
 }
 
-#driverScreen{
+.loadingBox{
   display:none;
-}
-
-.notifyOn{
-  background:#087f23;
-}
-
-#soundStatus{
-  font-weight:bold;
-}
-
-.busy{
   margin-top:15px;
-  padding:14px;
-  background:#fff4d6;
+  padding:15px;
+  background:#eef5ff;
+  color:#174ea6;
   border-radius:12px;
   text-align:center;
   font-weight:bold;
-  color:#8a5a00;
-}
-
-.ride{
-  border:2px solid #e60023;
-  border-radius:14px;
-  padding:15px;
-  margin-top:15px;
-  background:white;
-}
-
-.ride button{
-  background:#111;
-}
-
-.status{
-  font-weight:bold;
-  color:#e60023;
-  font-size:18px;
-  margin-bottom:12px;
-}
-
-.empty{
-  text-align:center;
-  padding:20px;
-  color:#777;
-}
-
-.notice{
-  display:none;
-  position:fixed;
-  z-index:9999;
-  inset:0;
-  background:#e60023;
-  color:white;
-  padding:30px 20px;
-  text-align:center;
-  animation:blink .8s infinite;
-}
-
-.notice h1{
-  font-size:44px;
-  margin:20px 0;
-}
-
-.notice p{
-  font-size:24px;
-  font-weight:bold;
-  margin:15px 0;
-}
-
-.notice .noticeBox{
-  background:white;
-  color:#222;
-  border-radius:18px;
-  padding:20px;
-  margin-top:20px;
-}
-
-.notice button{
-  background:white;
-  color:#e60023;
-  margin-top:25px;
-}
-
-.noticeHint{
-  font-size:20px;
-  font-weight:bold;
-  margin-top:18px;
 }
 
 .errorBox{
@@ -203,40 +152,161 @@ button:disabled{
   word-break:break-word;
 }
 
-.loadingBox{
+.notice{
   display:none;
-  margin-top:15px;
-  padding:15px;
-  background:#eef5ff;
-  color:#174ea6;
-  border-radius:12px;
+  position:fixed;
+  z-index:9999;
+  inset:0;
+  background:#e60023;
+  color:white;
+  padding:25px 20px;
   text-align:center;
+}
+
+.notice h1{
+  font-size:42px;
+  margin:15px 0;
+}
+
+.noticeBox{
+  background:white;
+  color:#222;
+  border-radius:18px;
+  padding:20px;
+  margin-top:20px;
+}
+
+.notice button{
+  background:white;
+  color:#e60023;
+  margin-top:25px;
+}
+
+.statusCard{
+  padding:14px;
+  margin:10px 0;
+  border-radius:14px;
+  background:#f5f5f5;
+  border-left:7px solid #777;
+}
+
+.statusCard.available{
+  border-left-color:#087f23;
+}
+
+.statusCard.pickup{
+  border-left-color:#d97700;
+}
+
+.statusCard.riding{
+  border-left-color:#e60023;
+}
+
+.statusCard.arrived{
+  border-left-color:#174ea6;
+}
+
+.statusName{
+  font-size:19px;
   font-weight:bold;
 }
 
-@keyframes blink{
-  0%,100%{
-    opacity:1;
-  }
-
-  50%{
-    opacity:.82;
-  }
+.statusText{
+  font-weight:bold;
+  margin-top:5px;
 }
 
-.flash{
-  animation:flashScreen .5s infinite alternate;
+.small{
+  font-size:13px;
+  color:#777;
+  margin-top:5px;
 }
 
-@keyframes flashScreen{
-  from{
-    box-shadow:inset 0 0 0 0 rgba(230,0,35,0);
-  }
-
-  to{
-    box-shadow:inset 0 0 0 8px rgba(230,0,35,.5);
-  }
+.ride{
+  border:2px solid #e60023;
+  border-radius:14px;
+  padding:15px;
+  margin-top:15px;
+  background:white;
 }
+
+.rideTitle{
+  color:#e60023;
+  font-weight:bold;
+  font-size:19px;
+  margin-bottom:15px;
+}
+
+.ackList{
+  background:#f5f5f5;
+  border-radius:12px;
+  padding:12px;
+  margin:12px 0;
+}
+
+.ackRow{
+  padding:5px 0;
+}
+
+.map{
+  width:100%;
+  height:280px;
+  border-radius:15px;
+  margin-top:15px;
+  overflow:hidden;
+}
+
+#driverMap{
+  height:300px;
+}
+
+.registration{
+  text-align:center;
+}
+
+.registration p{
+  color:#666;
+}
+
+.infoBox{
+  padding:14px;
+  border-radius:12px;
+  background:#eef5ff;
+  color:#174ea6;
+  margin:12px 0;
+}
+
+.queueBox{
+  padding:16px;
+  background:#fff4d6;
+  color:#8a5a00;
+  border-radius:12px;
+  text-align:center;
+  font-weight:bold;
+  margin-top:15px;
+}
+
+.customerRideStatus{
+  border-radius:15px;
+  padding:18px;
+  margin-top:15px;
+  background:#f5f5f5;
+  text-align:center;
+}
+
+.customerRideStatus .big{
+  font-size:22px;
+  font-weight:bold;
+}
+
+#driverRegistration{
+  display:none;
+}
+
+#customerRideInfo{
+  display:none;
+}
+
 </style>
 </head>
 
@@ -248,11 +318,59 @@ button:disabled{
 </div>
 
 
-<!-- ========================= -->
-<!-- お客様画面 -->
-<!-- ========================= -->
+<!-- ================================================= -->
+<!-- ドライバー登録 -->
+<!-- ================================================= -->
+
+<div class="card" id="driverRegistration">
+
+  <div class="registration">
+
+    <h2>👨‍✈️ ドライバー登録</h2>
+
+    <p>
+      お客さんに表示する名前を入力してください。
+    </p>
+
+    <input
+      id="driverNameInput"
+      type="text"
+      placeholder="例：001 / Wolf / ウルフ"
+      maxlength="30"
+    >
+
+    <button
+      class="confirm"
+      onclick="registerDriver()"
+    >
+      🚕 この名前で登録
+    </button>
+
+  </div>
+
+</div>
+
+
+<!-- ================================================= -->
+<!-- お客さん画面 -->
+<!-- ================================================= -->
 
 <div class="card" id="customerScreen">
+
+  <h2>🚕 現在のタクシー</h2>
+
+  <div id="driverStatusList">
+    読み込み中…
+  </div>
+
+  <div
+    id="customerMap"
+    class="map"
+  ></div>
+
+
+  <hr style="margin:25px 0;">
+
 
   <h2>📍 お迎え先</h2>
 
@@ -262,6 +380,7 @@ button:disabled{
     placeholder="お迎え先を入力"
   >
 
+
   <h2>🏁 目的地</h2>
 
   <input
@@ -269,6 +388,7 @@ button:disabled{
     type="text"
     placeholder="目的地を入力"
   >
+
 
   <button onclick="callTaxi()">
     🚕 タクシーを呼ぶ
@@ -280,10 +400,10 @@ button:disabled{
     <h2>🚕 配車内容</h2>
 
     <p>📍 お迎え先</p>
-    <p id="showPickup"></p>
+    <strong id="showPickup"></strong>
 
     <p>🏁 目的地</p>
-    <p id="showDestination"></p>
+    <strong id="showDestination"></strong>
 
     <button
       id="confirmButton"
@@ -307,7 +427,33 @@ button:disabled{
   <div
     id="errorBox"
     class="errorBox"
-  >
+  ></div>
+
+
+  <div id="customerRideInfo">
+
+    <div class="customerRideStatus">
+
+      <div class="big">
+        🚕 配車受付済み
+      </div>
+
+      <p id="customerQueueText">
+        配車状況を確認しています…
+      </p>
+
+    </div>
+
+    <div
+      id="customerAckList"
+      class="ackList"
+    ></div>
+
+    <div
+      id="customerRideMap"
+      class="map"
+    ></div>
+
   </div>
 
 
@@ -315,43 +461,43 @@ button:disabled{
 
     <h2>🚕 配車を受け付けました</h2>
 
-    <p>
-      ドライバー001がお迎えにあがります。
-    </p>
+    <p>ドライバーがお迎えにあがります。</p>
 
     <p>📍 お迎え先</p>
-    <p id="completePickup"></p>
+    <strong id="completePickup"></strong>
 
     <p>🏁 目的地</p>
-    <p id="completeDestination"></p>
+    <strong id="completeDestination"></strong>
 
-  </div>
-
-
-  <div class="driver">
-    ドライバー　001
   </div>
 
 </div>
 
 
-
-<!-- ========================= -->
+<!-- ================================================= -->
 <!-- ドライバー画面 -->
-<!-- ========================= -->
+<!-- ================================================= -->
 
 <div class="card" id="driverScreen">
 
   <h2>🚕 ドライバー画面</h2>
 
   <div class="driver">
-    ドライバー　001
+    <strong id="driverDisplayName"></strong>
+  </div>
+
+
+  <div
+    id="driverCurrentStatus"
+    class="infoBox"
+  >
+    状態：🟢 空車
   </div>
 
 
   <button
     id="soundButton"
-    class="notifyOn"
+    class="green"
     onclick="enableNotification()"
   >
     🔔 配車通知をON
@@ -366,32 +512,34 @@ button:disabled{
   </p>
 
 
-  <div
-    id="busyMessage"
-    class="busy"
-    style="display:none;"
-  >
+  <hr>
+
+
+  <h2>🚕 配車一覧</h2>
+
+  <div id="rideList">
+    <div class="small">
+      配車を待っています…
+    </div>
   </div>
 
 
   <hr>
 
 
-  <div id="rideList">
+  <h2>🗺️ 現在位置</h2>
 
-    <div class="empty">
-      配車を待っています…
-    </div>
-
-  </div>
+  <div
+    id="driverMap"
+    class="map"
+  ></div>
 
 </div>
 
 
-
-<!-- ========================= -->
-<!-- 配車通知画面 -->
-<!-- ========================= -->
+<!-- ================================================= -->
+<!-- 通知 -->
+<!-- ================================================= -->
 
 <div id="notice" class="notice">
 
@@ -411,23 +559,18 @@ button:disabled{
 
   </div>
 
-  <div class="noticeHint">
-    了解ボタンを押してください
-  </div>
-
-  <button onclick="stopNotification()">
-    ✅ 了解
+  <button onclick="closeNoticeOnly()">
+    🔔 通知を確認
   </button>
 
 </div>
 
 
-
 <script type="module">
 
-/* =========================================
+/* =====================================================
    Firebase
-========================================= */
+===================================================== */
 
 import {
   initializeApp
@@ -448,20 +591,29 @@ import {
   getFirestore,
   collection,
   addDoc,
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc,
+  deleteDoc,
   serverTimestamp,
   query,
   orderBy,
   onSnapshot,
-  deleteDoc,
-  doc
+  runTransaction
 }
 from
 "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
 
-/* =========================================
+import L
+from
+"https://unpkg.com/leaflet@1.9.4/dist/leaflet-src.esm.js";
+
+
+/* =====================================================
    Firebase設定
-========================================= */
+===================================================== */
 
 const firebaseConfig = {
 
@@ -489,10 +641,6 @@ const firebaseConfig = {
 };
 
 
-/* =========================================
-   Firebase起動
-========================================= */
-
 const app =
   initializeApp(firebaseConfig);
 
@@ -503,60 +651,70 @@ const db =
   getFirestore(app);
 
 
-/* =========================================
-   Firebase認証状態
-========================================= */
+/* =====================================================
+   状態
+===================================================== */
 
-let firebaseReady =
+let currentUser = null;
+
+let driverName =
+  localStorage.getItem(
+    "wolftaxi_driver_name"
+  ) || "";
+
+let driverDocId = "";
+
+let notificationEnabled =
   false;
 
-let firebaseAuthError =
+let currentAudio =
   null;
 
+let notificationRunning =
+  false;
 
-const authReady =
-  signInAnonymously(auth)
+let notificationRideId =
+  null;
 
-    .then(()=>{
+let soundTimer =
+  null;
 
-      firebaseReady =
-        true;
+let speechTimer =
+  null;
 
-      firebaseAuthError =
-        null;
+let soundEndTimer =
+  null;
 
-      console.log(
-        "Firebase認証OK"
-      );
+let driverMap =
+  null;
 
-      startDriverMode();
+let driverMarker =
+  null;
 
-    })
+let customerMap =
+  null;
 
-    .catch(error=>{
+let customerMarkers =
+  {};
 
-      firebaseReady =
-        false;
+let customerRideMap =
+  null;
 
-      firebaseAuthError =
-        error;
+let customerRideMarkers =
+  {};
 
-      console.error(
-        "Firebase認証エラー",
-        error
-      );
+let currentCustomerRideId =
+  localStorage.getItem(
+    "wolftaxi_customer_ride"
+  ) || "";
 
-      showError(
-        "Firebase認証に失敗しました。\n" +
-        getErrorMessage(error)
-      );
-
-    });
+let sendingRide =
+  false;
 
 
-/* =========================================
-   音声ファイル
-========================================= */
+/* =====================================================
+   音声
+===================================================== */
 
 const sounds = {
 
@@ -575,229 +733,62 @@ const sounds = {
 };
 
 
-/* =========================================
-   通知関係
-========================================= */
+/* =====================================================
+   八丈島の初期地図位置
+===================================================== */
 
-let notificationEnabled =
-  false;
-
-let notificationRunning =
-  false;
-
-let notificationCloseTimer =
-  null;
-
-let speechTimer =
-  null;
-
-let currentAudio =
-  null;
-
-let currentRideId =
-  null;
+const HACHIJO =
+  [33.1127,139.7858];
 
 
-/* =========================================
-   配車ごとの音を選択
-========================================= */
+/* =====================================================
+   Firebaseログイン
+===================================================== */
 
-function getSoundFile(ride){
-
-  const pickup =
-    (ride.pickup || "")
-      .trim();
-
-  const destination =
-    (ride.destination || "")
-      .trim();
-
-
-  /*
-    優先順位
-
-    1. ザイオン
-    2. 成田
-    3. 羽田
-    4. 通常
-  */
-
-  if(
-    pickup.includes("ザイオン")
-  ){
-
-    return sounds.zaion;
-
-  }
-
-
-  if(
-    destination.includes("成田")
-  ){
-
-    return sounds.narita;
-
-  }
-
-
-  if(
-    destination.includes("羽田")
-  ){
-
-    return sounds.haneda;
-
-  }
-
-
-  return sounds.normal;
-
-}
-
-
-/* =========================================
-   効果音再生
-   ※4秒ごとの強制再スタートを廃止
-========================================= */
-
-function playNotificationSound(ride){
-
-  if(!notificationEnabled){
-
-    return;
-
-  }
-
+async function start(){
 
   try{
 
-    if(currentAudio){
+    const credential =
+      await signInAnonymously(auth);
 
-      currentAudio.pause();
+    currentUser =
+      credential.user;
 
-      currentAudio.currentTime =
-        0;
-
-      currentAudio =
-        null;
-
-    }
-
-
-    const soundFile =
-      getSoundFile(ride);
-
-
-    currentAudio =
-      new Audio(soundFile);
-
-
-    currentAudio.volume =
-      1.0;
-
-
-    /*
-      ファイルを最初から最後まで
-      そのまま再生する
-    */
-
-    currentAudio.play()
-      .then(()=>{
-
-        console.log(
-          "通知音再生開始",
-          soundFile
-        );
-
-      })
-      .catch(error=>{
-
-        console.error(
-          "音声再生エラー",
-          error
-        );
-
-      });
-
-
-    /*
-      音声が終了したら
-      Audioオブジェクトを解放
-    */
-
-    currentAudio.onended =
-      ()=>{
-
-        console.log(
-          "通知音再生終了"
-        );
-
-        currentAudio =
-          null;
-
-      };
-
-  }
-  catch(error){
-
-    console.error(
-      "通知音エラー",
-      error
+    console.log(
+      "Firebase認証OK",
+      currentUser.uid
     );
 
-  }
-
-}
-
-
-/* =========================================
-   音声読み上げ
-========================================= */
-
-function speakTaxi(){
-
-  try{
 
     if(
-      !("speechSynthesis" in window)
+      driverName
     ){
 
-      return;
+      driverDocId =
+        currentUser.uid;
+
+      await ensureDriverDocument();
+
+      showDriverScreen();
 
     }
+    else{
 
+      showCustomerScreen();
 
-    window.speechSynthesis.cancel();
-
-
-    const message =
-      new SpeechSynthesisUtterance(
-        "配車です。配車です。了解ボタンを押してください。"
-      );
-
-
-    message.lang =
-      "ja-JP";
-
-    message.rate =
-      1.0;
-
-    message.pitch =
-      1.0;
-
-    message.volume =
-      1.0;
-
-
-    window.speechSynthesis.speak(
-      message
-    );
+    }
 
   }
   catch(error){
 
     console.error(
-      "音声エラー",
       error
+    );
+
+    alert(
+      "Firebaseに接続できません。\n\n" +
+      getErrorMessage(error)
     );
 
   }
@@ -805,529 +796,421 @@ function speakTaxi(){
 }
 
 
-/* =========================================
-   通知開始
-========================================= */
+/* =====================================================
+   ドライバー登録
+===================================================== */
 
-function startNotification(
-  ride,
-  rideId
-){
+window.registerDriver =
+async function(){
 
-  /*
-    すでに同じ配車を通知中なら
-    二重通知しない
-  */
+  const input =
+    document
+      .getElementById(
+        "driverNameInput"
+      );
 
-  if(
-    notificationRunning &&
-    currentRideId === rideId
-  ){
+  const name =
+    input.value.trim();
+
+
+  if(!name){
+
+    alert(
+      "表示名を入力してください❤️"
+    );
 
     return;
 
   }
 
 
-  notificationRunning =
-    true;
+  driverName =
+    name;
 
-  currentRideId =
-    rideId;
-
-
-  showNotice(
-    ride,
-    rideId
+  localStorage.setItem(
+    "wolftaxi_driver_name",
+    name
   );
 
+  driverDocId =
+    currentUser.uid;
 
-  stopSound();
+
+  await ensureDriverDocument();
+
+  showDriverScreen();
+
+};
 
 
-  /*
-    最初の通知音
-    → 36秒なら36秒そのまま再生
-  */
+/* =====================================================
+   ドライバー情報作成
+===================================================== */
 
-  if(notificationEnabled){
+async function ensureDriverDocument(){
 
-    playNotificationSound(
-      ride
-    );
+  if(!currentUser){
+
+    return;
 
   }
 
 
-  /*
-    最初の読み上げ
-  */
-
-  speakTaxi();
-
-
-  /*
-    読み上げだけ6秒ごと
-    ※サイレンは再スタートしない
-  */
-
-  speechTimer =
-    setInterval(
-
-      ()=>{
-
-        if(
-          notificationRunning
-        ){
-
-          speakTaxi();
-
-        }
-
-      },
-
-      6000
-
+  const ref =
+    doc(
+      db,
+      "drivers",
+      currentUser.uid
     );
 
 
-  /*
-    30秒後に
-    「通知画面」と読み上げだけ終了
-     
-    ★配車データは削除しない
-  */
+  const snap =
+    await getDoc(ref);
 
-  notificationCloseTimer =
-    setTimeout(
 
-      ()=>{
+  if(!snap.exists()){
 
-        finishNotificationDisplay();
+    await setDoc(
+      ref,
+      {
 
-      },
+        name:
+          driverName,
 
-      30000
+        status:
+          "available",
 
+        latitude:
+          null,
+
+        longitude:
+          null,
+
+        updatedAt:
+          serverTimestamp()
+
+      }
     );
+
+  }
+  else{
+
+    await updateDoc(
+      ref,
+      {
+
+        name:
+          driverName,
+
+        status:
+          "available",
+
+        updatedAt:
+          serverTimestamp()
+
+      }
+    );
+
+  }
 
 }
 
 
-/* =========================================
-   通知画面表示
-========================================= */
+/* =====================================================
+   画面切り替え
+===================================================== */
 
-function showNotice(
-  ride,
-  rideId
-){
-
-  const notice =
-    document.getElementById(
-      "notice"
-    );
-
+function showCustomerScreen(){
 
   document
     .getElementById(
-      "noticePickup"
+      "customerScreen"
     )
-    .textContent =
-      "📍 お迎え先： " +
-      (ride.pickup || "");
+    .style.display =
+      "block";
 
 
   document
     .getElementById(
-      "noticeDestination"
-    )
-    .textContent =
-      "🏁 目的地： " +
-      (ride.destination || "");
-
-
-  notice.dataset.rideId =
-    rideId || "";
-
-
-  notice.style.display =
-    "block";
-
-
-  document.body.classList.add(
-    "flash"
-  );
-
-}
-
-
-/* =========================================
-   通知表示だけ終了
-   ★Firestoreの配車は残す
-========================================= */
-
-function finishNotificationDisplay(){
-
-  if(speechTimer){
-
-    clearInterval(
-      speechTimer
-    );
-
-    speechTimer =
-      null;
-
-  }
-
-
-  if(notificationCloseTimer){
-
-    clearTimeout(
-      notificationCloseTimer
-    );
-
-    notificationCloseTimer =
-      null;
-
-  }
-
-
-  /*
-    読み上げ停止
-  */
-
-  if(
-    "speechSynthesis"
-    in window
-  ){
-
-    window.speechSynthesis.cancel();
-
-  }
-
-
-  /*
-    サイレンはここで強制停止しない。
-    再生中なら、そのまま最後まで鳴らす。
-  */
-
-  notificationRunning =
-    false;
-
-
-  document
-    .getElementById(
-      "notice"
+      "driverScreen"
     )
     .style.display =
       "none";
 
 
-  document.body.classList.remove(
-    "flash"
-  );
-
-}
-
-
-/* =========================================
-   音停止
-========================================= */
-
-function stopSound(){
-
-  if(currentAudio){
-
-    currentAudio.pause();
-
-    currentAudio.currentTime =
-      0;
-
-    currentAudio =
-      null;
-
-  }
-
-
-  if(
-    "speechSynthesis"
-    in window
-  ){
-
-    window.speechSynthesis.cancel();
-
-  }
-
-}
-
-
-/* =========================================
-   通知確認＋配車削除
-   ★了解ボタンを押したときだけ削除
-========================================= */
-
-window.stopNotification =
-async function(){
-
-  const rideId =
-    currentRideId;
-
-
-  /*
-    通知・音声を停止
-  */
-
-  if(speechTimer){
-
-    clearInterval(
-      speechTimer
-    );
-
-    speechTimer =
-      null;
-
-  }
-
-
-  if(notificationCloseTimer){
-
-    clearTimeout(
-      notificationCloseTimer
-    );
-
-    notificationCloseTimer =
-      null;
-
-  }
-
-
-  stopSound();
-
-
-  notificationRunning =
-    false;
-
-  currentRideId =
-    null;
-
-
   document
     .getElementById(
-      "notice"
+      "driverRegistration"
     )
     .style.display =
       "none";
 
 
-  document.body.classList.remove(
-    "flash"
-  );
+  initCustomerMap();
+
+  listenDrivers();
+
+  if(currentCustomerRideId){
+
+    listenCustomerRide(
+      currentCustomerRideId
+    );
+
+  }
+
+}
 
 
-  /*
-    ★ここで初めてFirestoreから削除
-  */
+function showDriverScreen(){
 
-  if(rideId){
-
-    try{
-
-      await deleteDoc(
-        doc(
-          db,
-          "rides",
-          rideId
-        )
-      );
+  document
+    .getElementById(
+      "customerScreen"
+    )
+    .style.display =
+      "none";
 
 
-      console.log(
-        "配車削除成功",
-        rideId
-      );
+  document
+    .getElementById(
+      "driverRegistration"
+    )
+    .style.display =
+      "none";
+
+
+  document
+    .getElementById(
+      "driverScreen"
+    )
+    .style.display =
+      "block";
+
+
+  document
+    .getElementById(
+      "driverDisplayName"
+    )
+    .textContent =
+      "👨‍✈️ " + driverName;
+
+
+  initDriverMap();
+
+  listenRides();
+
+  startGPS();
+
+}
+
+
+/* =====================================================
+   ドライバー画面のURL判定
+===================================================== */
+
+function detectMode(){
+
+  const params =
+    new URLSearchParams(
+      window.location.search
+    );
+
+
+  if(
+    params.get("driver") === "1"
+  ){
+
+    if(driverName){
+
+      showDriverScreen();
 
     }
-    catch(error){
+    else{
+
+      document
+        .getElementById(
+          "driverRegistration"
+        )
+        .style.display =
+          "block";
+
+      document
+        .getElementById(
+          "customerScreen"
+        )
+        .style.display =
+          "none";
+
+    }
+
+  }
+  else{
+
+    showCustomerScreen();
+
+  }
+
+}
+
+
+/* =====================================================
+   タクシー一覧監視
+===================================================== */
+
+function listenDrivers(){
+
+  const q =
+    query(
+      collection(
+        db,
+        "drivers"
+      )
+    );
+
+
+  onSnapshot(
+    q,
+    snapshot=>{
+
+      const list =
+        document.getElementById(
+          "driverStatusList"
+        );
+
+
+      list.innerHTML =
+        "";
+
+
+      if(snapshot.empty){
+
+        list.innerHTML =
+          '<div class="small">' +
+          '現在登録されているタクシーはありません。' +
+          '</div>';
+
+        return;
+
+      }
+
+
+      snapshot.forEach(
+        driverDoc=>{
+
+          const driver =
+            driverDoc.data();
+
+
+          const id =
+            driverDoc.id;
+
+
+          const card =
+            document.createElement(
+              "div"
+            );
+
+
+          const status =
+            driver.status ||
+            "available";
+
+
+          card.className =
+            "statusCard " +
+            status;
+
+
+          card.innerHTML = `
+
+            <div class="statusName">
+              🚕 ${escapeHtml(
+                driver.name || "タクシー"
+              )}
+            </div>
+
+            <div class="statusText">
+              ${statusLabel(status)}
+            </div>
+
+            <div class="small">
+              ${
+                driver.updatedAt
+                  ? "現在位置を約60秒ごとに更新"
+                  : "位置情報取得待ち"
+              }
+            </div>
+
+          `;
+
+
+          list.appendChild(
+            card
+          );
+
+
+          if(
+            driver.latitude != null &&
+            driver.longitude != null
+          ){
+
+            updateCustomerMarker(
+              id,
+              driver
+            );
+
+          }
+
+        }
+      );
+
+    },
+
+    error=>{
 
       console.error(
-        "配車削除エラー",
+        "ドライバー監視エラー",
         error
       );
 
-
-      alert(
-        "配車の処理に失敗しました。\n\n" +
-        getErrorMessage(error)
-      );
-
     }
 
-  }
-
-};
-
-
-/* =========================================
-   通知ON
-========================================= */
-
-window.enableNotification =
-function(){
-
-  notificationEnabled =
-    true;
-
-
-  /*
-    ブラウザの音声再生許可を
-    ボタン操作で取得
-  */
-
-  try{
-
-    const testAudio =
-      new Audio(
-        sounds.normal
-      );
-
-
-    testAudio.volume =
-      0;
-
-
-    testAudio.play()
-      .then(()=>{
-
-        testAudio.pause();
-
-        testAudio.currentTime =
-          0;
-
-      })
-      .catch(error=>{
-
-        console.log(
-          "音声許可取得待ち",
-          error
-        );
-
-      });
-
-  }
-  catch(error){
-
-    console.error(
-      error
-    );
-
-  }
-
-
-  document
-    .getElementById(
-      "soundButton"
-    )
-    .textContent =
-      "🔔 配車通知ON";
-
-
-  document
-    .getElementById(
-      "soundStatus"
-    )
-    .textContent =
-      "🔔 配車通知がONになっています";
-
-};
-
-
-/* =========================================
-   エラー表示
-========================================= */
-
-function showError(message){
-
-  const errorBox =
-    document.getElementById(
-      "errorBox"
-    );
-
-
-  if(!errorBox){
-
-    return;
-
-  }
-
-
-  errorBox.textContent =
-    "❌ " + message;
-
-
-  errorBox.style.display =
-    "block";
-
-}
-
-
-/* =========================================
-   エラー表示を消す
-========================================= */
-
-function clearError(){
-
-  const errorBox =
-    document.getElementById(
-      "errorBox"
-    );
-
-
-  if(!errorBox){
-
-    return;
-
-  }
-
-
-  errorBox.textContent =
-    "";
-
-  errorBox.style.display =
-    "none";
-
-}
-
-
-/* =========================================
-   Firebaseエラー内容
-========================================= */
-
-function getErrorMessage(error){
-
-  if(!error){
-
-    return "原因不明のエラーです。";
-
-  }
-
-
-  return (
-    error.code
-      ? error.code + "\n"
-      : ""
-  ) +
-  (
-    error.message ||
-    String(error)
   );
 
 }
 
 
-/* =========================================
-   お客様画面
-========================================= */
+/* =====================================================
+   ステータス表示
+===================================================== */
+
+function statusLabel(status){
+
+  switch(status){
+
+    case "available":
+      return "🟢 空車";
+
+    case "pickup":
+      return "🟡 迎車中";
+
+    case "arrived":
+      return "🔵 到着";
+
+    case "riding":
+      return "🔴 乗車中";
+
+    default:
+      return "⚫ 休車";
+
+  }
+
+}
+
+
+/* =====================================================
+   配車送信
+===================================================== */
 
 window.callTaxi =
 function(){
@@ -1337,16 +1220,18 @@ function(){
 
   const pickup =
     document
-      .getElementById("pickup")
-      .value
-      .trim();
+      .getElementById(
+        "pickup"
+      )
+      .value.trim();
 
 
   const destination =
     document
-      .getElementById("destination")
-      .value
-      .trim();
+      .getElementById(
+        "destination"
+      )
+      .value.trim();
 
 
   if(
@@ -1389,13 +1274,9 @@ function(){
 };
 
 
-/* =========================================
-   配車送信
-========================================= */
-
-let sendingRide =
-  false;
-
+/* =====================================================
+   配車確定
+===================================================== */
 
 window.confirmTaxi =
 async function(){
@@ -1412,61 +1293,24 @@ async function(){
 
   const pickup =
     document
-      .getElementById("pickup")
-      .value
-      .trim();
+      .getElementById(
+        "pickup"
+      )
+      .value.trim();
 
 
   const destination =
     document
-      .getElementById("destination")
-      .value
-      .trim();
+      .getElementById(
+        "destination"
+      )
+      .value.trim();
 
 
   if(
     !pickup ||
     !destination
   ){
-
-    alert(
-      "入力内容を確認してください"
-    );
-
-    return;
-
-  }
-
-
-  /*
-    Firebase認証が完了するまで待つ
-  */
-
-  try{
-
-    await authReady;
-
-  }
-  catch(error){
-
-    showError(
-      "Firebaseへの接続に失敗しました。\n" +
-      getErrorMessage(
-        firebaseAuthError || error
-      )
-    );
-
-    return;
-
-  }
-
-
-  if(!firebaseReady){
-
-    showError(
-      "Firebaseに接続できていません。\n" +
-      "ページを再読み込みして、もう一度お試しください。"
-    );
 
     return;
 
@@ -1483,12 +1327,6 @@ async function(){
     );
 
 
-  const loadingBox =
-    document.getElementById(
-      "loadingBox"
-    );
-
-
   button.disabled =
     true;
 
@@ -1497,13 +1335,13 @@ async function(){
     "🚕 配車を送信中…";
 
 
-  loadingBox.style.display =
-    "block";
+  document
+    .getElementById(
+      "loadingBox"
+    )
+    .style.display =
+      "block";
 
-
-  /*
-    Firestore書き込み
-  */
 
   try{
 
@@ -1523,11 +1361,17 @@ async function(){
           destination:
             destination,
 
-          driver:
-            "001",
-
           status:
             "requested",
+
+          acknowledgements:
+            {},
+
+          assignedDriverId:
+            null,
+
+          assignedDriverName:
+            null,
 
           createdAt:
             serverTimestamp()
@@ -1537,8 +1381,12 @@ async function(){
       );
 
 
-    console.log(
-      "配車送信成功",
+    currentCustomerRideId =
+      rideRef.id;
+
+
+    localStorage.setItem(
+      "wolftaxi_customer_ride",
       rideRef.id
     );
 
@@ -1567,7 +1415,11 @@ async function(){
       "none";
 
 
-    loadingBox.style.display =
+    document
+      .getElementById(
+        "loadingBox"
+      )
+      .style.display =
       "none";
 
 
@@ -1581,41 +1433,14 @@ async function(){
 
     document
       .getElementById(
-        "pickup"
+        "customerRideInfo"
       )
-      .value =
-      "";
+      .style.display =
+      "block";
 
 
-    document
-      .getElementById(
-        "destination"
-      )
-      .value =
-      "";
-
-
-    /*
-      次の配車に備える
-    */
-
-    sendingRide =
-      false;
-
-
-    button.disabled =
-      false;
-
-
-    button.textContent =
-      "🚕 配車を送信する";
-
-  }
-  catch(error){
-
-    console.error(
-      "配車送信エラー",
-      error
+    listenCustomerRide(
+      rideRef.id
     );
 
 
@@ -1628,10 +1453,29 @@ async function(){
 
 
     button.textContent =
-      "✅ この内容で配車する";
+      "🚕 この内容で配車する";
 
 
-    loadingBox.style.display =
+  }
+  catch(error){
+
+    sendingRide =
+      false;
+
+
+    button.disabled =
+      false;
+
+
+    button.textContent =
+      "🚕 この内容で配車する";
+
+
+    document
+      .getElementById(
+        "loadingBox"
+      )
+      .style.display =
       "none";
 
 
@@ -1645,61 +1489,22 @@ async function(){
 };
 
 
-/* =========================================
-   ドライバー画面
-========================================= */
+/* =====================================================
+   ドライバー配車監視
+===================================================== */
 
-function startDriverMode(){
+function listenRides(){
 
-  const params =
-    new URLSearchParams(
-      window.location.search
-    );
-
-
-  /*
-    ?driver=001
-  */
-
-  if(
-    params.get("driver") !==
-    "001"
-  ){
-
-    return;
-
-  }
-
-
-  document
-    .getElementById(
-      "customerScreen"
-    )
-    .style.display =
-      "none";
-
-
-  document
-    .getElementById(
-      "driverScreen"
-    )
-    .style.display =
-      "block";
-
-
-  const ridesQuery =
+  const q =
     query(
-
       collection(
         db,
         "rides"
       ),
-
       orderBy(
         "createdAt",
         "desc"
       )
-
     );
 
 
@@ -1713,7 +1518,7 @@ function startDriverMode(){
 
   onSnapshot(
 
-    ridesQuery,
+    q,
 
     snapshot=>{
 
@@ -1723,50 +1528,14 @@ function startDriverMode(){
         );
 
 
-      const busyMessage =
-        document.getElementById(
-          "busyMessage"
-        );
+      list.innerHTML =
+        "";
 
-
-      /*
-        配車件数
-      */
-
-      const rideCount =
-        snapshot.size;
-
-
-      if(
-        rideCount > 0
-      ){
-
-        busyMessage.style.display =
-          "block";
-
-
-        busyMessage.textContent =
-          "🚕 配車依頼あり（" +
-          rideCount +
-          "件）";
-
-      }
-      else{
-
-        busyMessage.style.display =
-          "none";
-
-      }
-
-
-      /*
-        配車なし
-      */
 
       if(snapshot.empty){
 
         list.innerHTML =
-          '<div class="empty">' +
+          '<div class="small">' +
           '現在、配車依頼はありません。' +
           '</div>';
 
@@ -1776,10 +1545,6 @@ function startDriverMode(){
         return;
 
       }
-
-
-      list.innerHTML =
-        "";
 
 
       snapshot.forEach(
@@ -1803,10 +1568,170 @@ function startDriverMode(){
             "ride";
 
 
+          const acknowledgements =
+            ride.acknowledgements ||
+            {};
+
+
+          const alreadyAcknowledged =
+            !!acknowledgements[
+              currentUser.uid
+            ];
+
+
+          const assigned =
+            ride.assignedDriverId;
+
+
+          let buttons = "";
+
+
+          if(
+            ride.status ===
+            "requested"
+          ){
+
+            if(
+              alreadyAcknowledged
+            ){
+
+              buttons += `
+
+                <button
+                  class="gray"
+                  disabled
+                >
+                  ✅ 了解済み
+                </button>
+
+              `;
+
+            }
+            else{
+
+              buttons += `
+
+                <button
+                  class="blue"
+                  data-action="ack"
+                >
+                  ✅ この配車を了解
+                </button>
+
+              `;
+
+            }
+
+
+            if(
+              assigned ===
+              currentUser.uid
+            ){
+
+              buttons += `
+
+                <button
+                  class="orange"
+                  data-action="pickup"
+                >
+                  🚕 迎車開始
+                </button>
+
+              `;
+
+            }
+
+          }
+
+
+          if(
+            ride.status ===
+            "pickup" &&
+            assigned ===
+            currentUser.uid
+          ){
+
+            buttons += `
+
+              <button
+                class="blue"
+                data-action="arrived"
+              >
+                📍 到着報告
+              </button>
+
+            `;
+
+          }
+
+
+          if(
+            ride.status ===
+            "arrived" &&
+            assigned ===
+            currentUser.uid
+          ){
+
+            buttons += `
+
+              <button
+                class="orange"
+                data-action="riding"
+              >
+                🚕 お送り中
+              </button>
+
+            `;
+
+          }
+
+
+          if(
+            ride.status ===
+            "riding" &&
+            assigned ===
+            currentUser.uid
+          ){
+
+            buttons += `
+
+              <button
+                class="confirm"
+                data-action="complete"
+              >
+                ✅ 完了報告
+              </button>
+
+            `;
+
+          }
+
+
+          if(
+            assigned &&
+            assigned !==
+            currentUser.uid
+          ){
+
+            buttons += `
+
+              <div class="infoBox">
+                🚕 ${escapeHtml(
+                  ride.assignedDriverName ||
+                  "他のドライバー"
+                )}
+                が担当しています。
+              </div>
+
+            `;
+
+          }
+
+
           div.innerHTML = `
 
-            <div class="status">
-              🚕 新しい配車
+            <div class="rideTitle">
+              🚕 配車
             </div>
 
             <div>
@@ -1831,18 +1756,19 @@ function startDriverMode(){
               )}
             </strong>
 
-            <br><br>
+            <div class="ackList">
 
-            <div>
-              👨‍✈️ ドライバー：001
+              <strong>
+                👨‍✈️ 了解状況
+              </strong>
+
+              <div
+                class="ackContainer"
+              ></div>
+
             </div>
 
-            <button
-              data-ride-id="${rideId}"
-              class="manualAccept"
-            >
-              ✅ この配車を了解
-            </button>
+            ${buttons}
 
           `;
 
@@ -1852,27 +1778,147 @@ function startDriverMode(){
           );
 
 
-          const acceptButton =
+          const ackContainer =
             div.querySelector(
-              ".manualAccept"
+              ".ackContainer"
             );
 
 
-          acceptButton.addEventListener(
-            "click",
-            ()=>{
+          Object.entries(
+            acknowledgements
+          ).forEach(
+            ([uid,data])=>{
 
-              acceptRide(
-                rideId
+              const row =
+                document.createElement(
+                  "div"
+                );
+
+              row.className =
+                "ackRow";
+
+
+              row.textContent =
+                "🟢 " +
+                (
+                  data.name ||
+                  "ドライバー"
+                ) +
+                "　了解済み";
+
+
+              ackContainer.appendChild(
+                row
               );
 
             }
           );
 
 
-          /*
-            新しく追加された配車だけ通知
-          */
+          if(
+            Object.keys(
+              acknowledgements
+            ).length === 0
+          ){
+
+            ackContainer.innerHTML =
+              '<div class="small">' +
+              'まだ了解した車両はありません。' +
+              '</div>';
+
+          }
+
+
+          const ackButton =
+            div.querySelector(
+              '[data-action="ack"]'
+            );
+
+
+          if(ackButton){
+
+            ackButton.onclick =
+              ()=>{
+                acknowledgeRide(
+                  rideId
+                );
+              };
+
+          }
+
+
+          const pickupButton =
+            div.querySelector(
+              '[data-action="pickup"]'
+            );
+
+
+          if(pickupButton){
+
+            pickupButton.onclick =
+              ()=>{
+                startPickup(
+                  rideId
+                );
+              };
+
+          }
+
+
+          const arrivedButton =
+            div.querySelector(
+              '[data-action="arrived"]'
+            );
+
+
+          if(arrivedButton){
+
+            arrivedButton.onclick =
+              ()=>{
+                reportArrived(
+                  rideId
+                );
+              };
+
+          }
+
+
+          const ridingButton =
+            div.querySelector(
+              '[data-action="riding"]'
+            );
+
+
+          if(ridingButton){
+
+            ridingButton.onclick =
+              ()=>{
+                startRiding(
+                  rideId,
+                  ride.destination
+                );
+              };
+
+          }
+
+
+          const completeButton =
+            div.querySelector(
+              '[data-action="complete"]'
+            );
+
+
+          if(completeButton){
+
+            completeButton.onclick =
+              ()=>{
+                completeRide(
+                  rideId
+                );
+              };
+
+          }
+
 
           if(
 
@@ -1903,10 +1949,6 @@ function startDriverMode(){
       );
 
 
-      /*
-        初回読み込み済み
-      */
-
       firstSnapshot =
         false;
 
@@ -1919,38 +1961,780 @@ function startDriverMode(){
         error
       );
 
+    }
 
-      const list =
-        document.getElementById(
-          "rideList"
+  );
+
+}
+
+
+/* =====================================================
+   配車を了解
+===================================================== */
+
+async function acknowledgeRide(
+  rideId
+){
+
+  try{
+
+    const ref =
+      doc(
+        db,
+        "rides",
+        rideId
+      );
+
+
+    const snap =
+      await getDoc(ref);
+
+
+    if(!snap.exists()){
+
+      return;
+
+    }
+
+
+    const ride =
+      snap.data();
+
+
+    const acknowledgements =
+      ride.acknowledgements ||
+      {};
+
+
+    acknowledgements[
+      currentUser.uid
+    ] = {
+
+      name:
+        driverName,
+
+      at:
+        new Date().toISOString()
+
+    };
+
+
+    await updateDoc(
+      ref,
+      {
+
+        acknowledgements:
+          acknowledgements
+
+      }
+    );
+
+
+    alert(
+      "✅ 了解済みにしました❤️"
+    );
+
+  }
+  catch(error){
+
+    alert(
+      "了解処理に失敗しました。\n\n" +
+      getErrorMessage(error)
+    );
+
+  }
+
+}
+
+
+/* =====================================================
+   迎車開始
+===================================================== */
+
+async function startPickup(
+  rideId
+){
+
+  try{
+
+    const ref =
+      doc(
+        db,
+        "rides",
+        rideId
+      );
+
+
+    await runTransaction(
+      db,
+      async transaction=>{
+
+        const snap =
+          await transaction.get(
+            ref
+          );
+
+
+        if(!snap.exists()){
+
+          throw new Error(
+            "配車が見つかりません。"
+          );
+
+        }
+
+
+        const ride =
+          snap.data();
+
+
+        if(
+          ride.assignedDriverId &&
+          ride.assignedDriverId !==
+          currentUser.uid
+        ){
+
+          throw new Error(
+            "この配車は他のドライバーが担当しています。"
+          );
+
+        }
+
+
+        transaction.update(
+          ref,
+          {
+
+            assignedDriverId:
+              currentUser.uid,
+
+            assignedDriverName:
+              driverName,
+
+            status:
+              "pickup",
+
+            startedAt:
+              serverTimestamp()
+
+          }
         );
 
+      }
+    );
 
-      list.innerHTML =
-        "";
+
+    await setDriverStatus(
+      "pickup"
+    );
+
+  }
+  catch(error){
+
+    alert(
+      "迎車開始に失敗しました。\n\n" +
+      getErrorMessage(error)
+    );
+
+  }
+
+}
 
 
-      const errorDiv =
-        document.createElement(
-          "div"
+/* =====================================================
+   到着
+===================================================== */
+
+async function reportArrived(
+  rideId
+){
+
+  try{
+
+    await updateDoc(
+
+      doc(
+        db,
+        "rides",
+        rideId
+      ),
+
+      {
+
+        status:
+          "arrived",
+
+        arrivedAt:
+          serverTimestamp()
+
+      }
+
+    );
+
+
+    await setDriverStatus(
+      "arrived"
+    );
+
+  }
+  catch(error){
+
+    alert(
+      "到着報告に失敗しました。\n\n" +
+      getErrorMessage(error)
+    );
+
+  }
+
+}
+
+
+/* =====================================================
+   お送り中
+===================================================== */
+
+async function startRiding(
+  rideId,
+  destination
+){
+
+  try{
+
+    await updateDoc(
+
+      doc(
+        db,
+        "rides",
+        rideId
+      ),
+
+      {
+
+        status:
+          "riding",
+
+        ridingAt:
+          serverTimestamp()
+
+      }
+
+    );
+
+
+    await setDriverStatus(
+      "riding"
+    );
+
+
+    openNavigation(
+      destination
+    );
+
+  }
+  catch(error){
+
+    alert(
+      "お送り中への変更に失敗しました。\n\n" +
+      getErrorMessage(error)
+    );
+
+  }
+
+}
+
+
+/* =====================================================
+   完了
+===================================================== */
+
+async function completeRide(
+  rideId
+){
+
+  try{
+
+    await updateDoc(
+
+      doc(
+        db,
+        "rides",
+        rideId
+      ),
+
+      {
+
+        status:
+          "completed",
+
+        completedAt:
+          serverTimestamp()
+
+      }
+
+    );
+
+
+    await deleteDoc(
+
+      doc(
+        db,
+        "rides",
+        rideId
+      )
+
+    );
+
+
+    await setDriverStatus(
+      "available"
+    );
+
+
+    alert(
+      "✅ 配車完了❤️"
+    );
+
+  }
+  catch(error){
+
+    alert(
+      "完了処理に失敗しました。\n\n" +
+      getErrorMessage(error)
+    );
+
+  }
+
+}
+
+
+/* =====================================================
+   ドライバー状態変更
+===================================================== */
+
+async function setDriverStatus(
+  status
+){
+
+  if(!currentUser){
+
+    return;
+
+  }
+
+
+  try{
+
+    await updateDoc(
+
+      doc(
+        db,
+        "drivers",
+        currentUser.uid
+      ),
+
+      {
+
+        name:
+          driverName,
+
+        status:
+          status,
+
+        updatedAt:
+          serverTimestamp()
+
+      }
+
+    );
+
+
+    document
+      .getElementById(
+        "driverCurrentStatus"
+      )
+      .textContent =
+        "状態：" +
+        statusLabel(status);
+
+  }
+  catch(error){
+
+    console.error(
+      "状態更新エラー",
+      error
+    );
+
+  }
+
+}
+
+
+/* =====================================================
+   GPS
+===================================================== */
+
+function startGPS(){
+
+  if(
+    !navigator.geolocation
+  ){
+
+    console.log(
+      "GPS非対応"
+    );
+
+    return;
+
+  }
+
+
+  const updateLocation =
+    ()=>{
+      
+      navigator.geolocation.getCurrentPosition(
+
+        async position=>{
+
+          const lat =
+            position.coords.latitude;
+
+          const lng =
+            position.coords.longitude;
+
+
+          try{
+
+            await updateDoc(
+
+              doc(
+                db,
+                "drivers",
+                currentUser.uid
+              ),
+
+              {
+
+                latitude:
+                  lat,
+
+                longitude:
+                  lng,
+
+                updatedAt:
+                  serverTimestamp()
+
+              }
+
+            );
+
+
+            updateDriverMap(
+              lat,
+              lng
+            );
+
+          }
+          catch(error){
+
+            console.error(
+              "GPS保存エラー",
+              error
+            );
+
+          }
+
+        },
+
+        error=>{
+
+          console.error(
+            "GPS取得エラー",
+            error
+          );
+
+        },
+
+        {
+
+          enableHighAccuracy:
+            true,
+
+          timeout:
+            15000,
+
+          maximumAge:
+            30000
+
+        }
+
+      );
+
+    };
+
+
+  updateLocation();
+
+
+  setInterval(
+    updateLocation,
+    60000
+  );
+
+}
+
+
+/* =====================================================
+   ドライバー地図
+===================================================== */
+
+function initDriverMap(){
+
+  if(driverMap){
+
+    return;
+
+  }
+
+
+  driverMap =
+    L.map(
+      "driverMap"
+    ).setView(
+      HACHIJO,
+      12
+    );
+
+
+  L.tileLayer(
+
+    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+
+    {
+
+      maxZoom:
+        19,
+
+      attribution:
+        '&copy; OpenStreetMap contributors'
+
+    }
+
+  ).addTo(
+    driverMap
+  );
+
+}
+
+
+function updateDriverMap(
+  lat,
+  lng
+){
+
+  if(!driverMap){
+
+    return;
+
+  }
+
+
+  if(!driverMarker){
+
+    driverMarker =
+      L.marker(
+        [lat,lng]
+      ).addTo(
+        driverMap
+      );
+
+    driverMarker.bindPopup(
+      "🚕 " +
+      driverName
+    );
+
+  }
+  else{
+
+    driverMarker.setLatLng(
+      [lat,lng]
+    );
+
+  }
+
+
+  driverMap.setView(
+    [lat,lng],
+    15
+  );
+
+}
+
+
+/* =====================================================
+   お客さん地図
+===================================================== */
+
+function initCustomerMap(){
+
+  if(customerMap){
+
+    return;
+
+  }
+
+
+  customerMap =
+    L.map(
+      "customerMap"
+    ).setView(
+      HACHIJO,
+      12
+    );
+
+
+  L.tileLayer(
+
+    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+
+    {
+
+      maxZoom:
+        19,
+
+      attribution:
+        '&copy; OpenStreetMap contributors'
+
+    }
+
+  ).addTo(
+    customerMap
+  );
+
+}
+
+
+function updateCustomerMarker(
+  id,
+  driver
+){
+
+  if(!customerMap){
+
+    return;
+
+  }
+
+
+  const lat =
+    driver.latitude;
+
+  const lng =
+    driver.longitude;
+
+
+  if(
+    !customerMarkers[id]
+  ){
+
+    customerMarkers[id] =
+      L.marker(
+        [lat,lng]
+      ).addTo(
+        customerMap
+      );
+
+    customerMarkers[id]
+      .bindPopup(
+        "🚕 " +
+        (driver.name || "") +
+        "<br>" +
+        statusLabel(
+          driver.status
+        )
+      );
+
+  }
+  else{
+
+    customerMarkers[id]
+      .setLatLng(
+        [lat,lng]
+      );
+
+    customerMarkers[id]
+      .setPopupContent(
+        "🚕 " +
+        (driver.name || "") +
+        "<br>" +
+        statusLabel(
+          driver.status
+        )
+      );
+
+  }
+
+}
+
+
+/* =====================================================
+   お客さんの配車監視
+===================================================== */
+
+function listenCustomerRide(
+  rideId
+){
+
+  document
+    .getElementById(
+      "customerRideInfo"
+    )
+    .style.display =
+      "block";
+
+
+  onSnapshot(
+
+    doc(
+      db,
+      "rides",
+      rideId
+    ),
+
+    snapshot=>{
+
+      if(!snapshot.exists()){
+
+        document
+          .getElementById(
+            "customerQueueText"
+          )
+          .textContent =
+            "🚕 配車は完了しました。";
+
+        localStorage.removeItem(
+          "wolftaxi_customer_ride"
         );
 
+        return;
 
-      errorDiv.className =
-        "errorBox";
-
-
-      errorDiv.style.display =
-        "block";
+      }
 
 
-      errorDiv.textContent =
-        "❌ 配車情報の読み込みに失敗しました。\n" +
-        getErrorMessage(error);
+      const ride =
+        snapshot.data();
 
 
-      list.appendChild(
-        errorDiv
+      updateCustomerRideDisplay(
+        ride
+      );
+
+    },
+
+    error=>{
+
+      console.error(
+        "お客さん配車監視エラー",
+        error
       );
 
     }
@@ -1960,101 +2744,147 @@ function startDriverMode(){
 }
 
 
-/* =========================================
-   一覧から直接了解
-========================================= */
+/* =====================================================
+   お客さん側配車表示
+===================================================== */
 
-async function acceptRide(
-  rideId
+function updateCustomerRideDisplay(
+  ride
 ){
 
-  /*
-    通知中の配車なら
-    通知も止める
-  */
+  const status =
+    ride.status ||
+    "requested";
+
+
+  let text =
+    "";
+
+
+  switch(status){
+
+    case "requested":
+
+      text =
+        "🚕 配車依頼を送信しました。";
+
+      break;
+
+
+    case "pickup":
+
+      text =
+        "🟡 " +
+        (ride.assignedDriverName || "タクシー") +
+        " が迎車中です。";
+
+      break;
+
+
+    case "arrived":
+
+      text =
+        "🔵 タクシーが到着しました。";
+
+      break;
+
+
+    case "riding":
+
+      text =
+        "🔴 ただいま乗車中です。";
+
+      break;
+
+
+    default:
+
+      text =
+        "🚕 配車処理中です。";
+
+  }
+
+
+  document
+    .getElementById(
+      "customerQueueText"
+    )
+    .textContent =
+      text;
+
+
+  const ackList =
+    document.getElementById(
+      "customerAckList"
+    );
+
+
+  ackList.innerHTML =
+    "<strong>👨‍✈️ 配車確認状況</strong>";
+
+
+  const acknowledgements =
+    ride.acknowledgements ||
+    {};
+
+
+  const entries =
+    Object.values(
+      acknowledgements
+    );
+
+
+  if(entries.length === 0){
+
+    ackList.innerHTML +=
+      "<div class='small'>" +
+      "まだ了解したタクシーはありません。" +
+      "</div>";
+
+  }
+  else{
+
+    entries.forEach(
+      data=>{
+
+        ackList.innerHTML +=
+          "<div class='ackRow'>" +
+          "🟢 " +
+          escapeHtml(
+            data.name ||
+            "タクシー"
+          ) +
+          "　了解済み" +
+          "</div>";
+
+      }
+    );
+
+  }
+
 
   if(
-    currentRideId ===
-    rideId
+    ride.assignedDriverId
   ){
 
-    if(speechTimer){
-
-      clearInterval(
-        speechTimer
-      );
-
-      speechTimer =
-        null;
-
-    }
-
-
-    if(notificationCloseTimer){
-
-      clearTimeout(
-        notificationCloseTimer
-      );
-
-      notificationCloseTimer =
-        null;
-
-    }
-
-
-    stopSound();
-
-
-    notificationRunning =
-      false;
-
-    currentRideId =
-      null;
-
-
-    document
-      .getElementById(
-        "notice"
-      )
-      .style.display =
-        "none";
-
-
-    document.body.classList.remove(
-      "flash"
-    );
+    ackList.innerHTML +=
+      "<div class='ackRow'>" +
+      "🚕 担当：" +
+      escapeHtml(
+        ride.assignedDriverName ||
+        ""
+      ) +
+      "</div>";
 
   }
 
 
-  try{
+  if(
+    ride.assignedDriverId
+  ){
 
-    await deleteDoc(
-      doc(
-        db,
-        "rides",
-        rideId
-      )
-    );
-
-
-    console.log(
-      "配車処理完了",
-      rideId
-    );
-
-  }
-  catch(error){
-
-    console.error(
-      "配車削除エラー",
-      error
-    );
-
-
-    alert(
-      "配車の処理に失敗しました。\n\n" +
-      getErrorMessage(error)
+    listenAssignedDriverLocation(
+      ride.assignedDriverId
     );
 
   }
@@ -2062,11 +2892,728 @@ async function acceptRide(
 }
 
 
-/* =========================================
-   安全なHTML表示
-========================================= */
+/* =====================================================
+   担当車両の位置
+===================================================== */
 
-function escapeHtml(text){
+function listenAssignedDriverLocation(
+  driverId
+){
+
+  if(!customerRideMap){
+
+    initCustomerRideMap();
+
+  }
+
+
+  onSnapshot(
+
+    doc(
+      db,
+      "drivers",
+      driverId
+    ),
+
+    snapshot=>{
+
+      if(!snapshot.exists()){
+
+        return;
+
+      }
+
+
+      const driver =
+        snapshot.data();
+
+
+      if(
+        driver.latitude == null ||
+        driver.longitude == null
+      ){
+
+        return;
+
+      }
+
+
+      const lat =
+        driver.latitude;
+
+      const lng =
+        driver.longitude;
+
+
+      if(
+        !customerRideMarkers[
+          driverId
+        ]
+      ){
+
+        customerRideMarkers[
+          driverId
+        ] =
+          L.marker(
+            [lat,lng]
+          ).addTo(
+            customerRideMap
+          );
+
+
+        customerRideMarkers[
+          driverId
+        ].bindPopup(
+          "🚕 " +
+          (driver.name || "担当車")
+        );
+
+      }
+      else{
+
+        customerRideMarkers[
+          driverId
+        ].setLatLng(
+          [lat,lng]
+        );
+
+      }
+
+
+      customerRideMap.setView(
+        [lat,lng],
+        15
+      );
+
+    }
+
+  );
+
+}
+
+
+/* =====================================================
+   配車用地図
+===================================================== */
+
+function initCustomerRideMap(){
+
+  customerRideMap =
+    L.map(
+      "customerRideMap"
+    ).setView(
+      HACHIJO,
+      12
+    );
+
+
+  L.tileLayer(
+
+    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+
+    {
+
+      maxZoom:
+        19,
+
+      attribution:
+        '&copy; OpenStreetMap contributors'
+
+    }
+
+  ).addTo(
+    customerRideMap
+  );
+
+}
+
+
+/* =====================================================
+   通知音
+===================================================== */
+
+function getSoundFile(
+  ride
+){
+
+  const pickup =
+    (
+      ride.pickup ||
+      ""
+    ).trim();
+
+
+  const destination =
+    (
+      ride.destination ||
+      ""
+    ).trim();
+
+
+  if(
+    pickup.includes(
+      "ザイオン"
+    )
+  ){
+
+    return sounds.zaion;
+
+  }
+
+
+  if(
+    destination.includes(
+      "成田"
+    )
+  ){
+
+    return sounds.narita;
+
+  }
+
+
+  if(
+    destination.includes(
+      "羽田"
+    )
+  ){
+
+    return sounds.haneda;
+
+  }
+
+
+  return sounds.normal;
+
+}
+
+
+/* =====================================================
+   通知開始
+===================================================== */
+
+function startNotification(
+  ride,
+  rideId
+){
+
+  if(!notificationEnabled){
+
+    showNotice(
+      ride
+    );
+
+    return;
+
+  }
+
+
+  if(
+    notificationRunning &&
+    notificationRideId ===
+    rideId
+  ){
+
+    return;
+
+  }
+
+
+  stopNotificationSound();
+
+
+  notificationRunning =
+    true;
+
+  notificationRideId =
+    rideId;
+
+
+  showNotice(
+    ride
+  );
+
+
+  playNotificationSound(
+    ride
+  );
+
+
+  speakTaxi();
+
+
+  /*
+    音声ファイルが終わったら
+    2秒待ってから再生する。
+  */
+
+  soundTimer =
+    setInterval(
+
+      ()=>{
+
+        if(
+          notificationRunning
+        ){
+
+          playNotificationSound(
+            ride
+          );
+
+        }
+
+      },
+
+      5000
+
+    );
+
+
+  speechTimer =
+    setInterval(
+
+      ()=>{
+
+        if(
+          notificationRunning
+        ){
+
+          speakTaxi();
+
+        }
+
+      },
+
+      7000
+
+    );
+
+
+  soundEndTimer =
+    setTimeout(
+
+      ()=>{
+
+        stopNotificationSound();
+
+      },
+
+      30000
+
+    );
+
+}
+
+
+/* =====================================================
+   音声再生
+===================================================== */
+
+function playNotificationSound(
+  ride
+){
+
+  if(!notificationEnabled){
+
+    return;
+
+  }
+
+
+  try{
+
+    if(currentAudio){
+
+      currentAudio.pause();
+
+      currentAudio.currentTime =
+        0;
+
+    }
+
+
+    currentAudio =
+      new Audio(
+        getSoundFile(
+          ride
+        )
+      );
+
+
+    currentAudio.volume =
+      1;
+
+
+    currentAudio.play()
+      .catch(
+        error=>{
+          console.error(
+            "通知音エラー",
+            error
+          );
+        }
+      );
+
+  }
+  catch(error){
+
+    console.error(
+      error
+    );
+
+  }
+
+}
+
+
+/* =====================================================
+   音声読み上げ
+===================================================== */
+
+function speakTaxi(){
+
+  if(
+    !("speechSynthesis" in window)
+  ){
+
+    return;
+
+  }
+
+
+  window.speechSynthesis.cancel();
+
+
+  const utterance =
+    new SpeechSynthesisUtterance(
+      "配車です。配車です。了解ボタンを押してください。"
+    );
+
+
+  utterance.lang =
+    "ja-JP";
+
+  utterance.rate =
+    1;
+
+  utterance.pitch =
+    1;
+
+  utterance.volume =
+    1;
+
+
+  window.speechSynthesis.speak(
+    utterance
+  );
+
+}
+
+
+/* =====================================================
+   通知画面
+===================================================== */
+
+function showNotice(
+  ride
+){
+
+  document
+    .getElementById(
+      "noticePickup"
+    )
+    .textContent =
+      "📍 お迎え先：" +
+      ride.pickup;
+
+
+  document
+    .getElementById(
+      "noticeDestination"
+    )
+    .textContent =
+      "🏁 目的地：" +
+      ride.destination;
+
+
+  document
+    .getElementById(
+      "notice"
+    )
+    .style.display =
+      "block";
+
+}
+
+
+/* =====================================================
+   通知画面だけ閉じる
+===================================================== */
+
+window.closeNoticeOnly =
+function(){
+
+  document
+    .getElementById(
+      "notice"
+    )
+    .style.display =
+      "none";
+
+};
+
+
+/* =====================================================
+   通知停止
+===================================================== */
+
+function stopNotificationSound(){
+
+  notificationRunning =
+    false;
+
+
+  notificationRideId =
+    null;
+
+
+  if(soundTimer){
+
+    clearInterval(
+      soundTimer
+    );
+
+    soundTimer =
+      null;
+
+  }
+
+
+  if(speechTimer){
+
+    clearInterval(
+      speechTimer
+    );
+
+    speechTimer =
+      null;
+
+  }
+
+
+  if(soundEndTimer){
+
+    clearTimeout(
+      soundEndTimer
+    );
+
+    soundEndTimer =
+      null;
+
+  }
+
+
+  if(currentAudio){
+
+    currentAudio.pause();
+
+    currentAudio.currentTime =
+      0;
+
+    currentAudio =
+      null;
+
+  }
+
+
+  if(
+    "speechSynthesis"
+    in window
+  ){
+
+    window.speechSynthesis.cancel();
+
+  }
+
+}
+
+
+/* =====================================================
+   通知ON
+===================================================== */
+
+window.enableNotification =
+function(){
+
+  notificationEnabled =
+    true;
+
+
+  try{
+
+    const audio =
+      new Audio(
+        sounds.normal
+      );
+
+
+    audio.volume =
+      0;
+
+
+    audio.play()
+      .then(
+        ()=>{
+          audio.pause();
+          audio.currentTime =
+            0;
+        }
+      )
+      .catch(
+        error=>{
+          console.log(
+            error
+          );
+        }
+      );
+
+  }
+  catch(error){
+
+    console.error(
+      error
+    );
+
+  }
+
+
+  document
+    .getElementById(
+      "soundButton"
+    )
+    .textContent =
+      "🔔 配車通知ON";
+
+
+  document
+    .getElementById(
+      "soundStatus"
+    )
+    .textContent =
+      "🔔 配車通知がONになっています";
+
+};
+
+
+/* =====================================================
+   Google Mapsナビ起動
+===================================================== */
+
+function openNavigation(
+  destination
+){
+
+  if(!destination){
+
+    return;
+
+  }
+
+
+  const encoded =
+    encodeURIComponent(
+      destination
+    );
+
+
+  const url =
+    "https://www.google.com/maps/dir/?api=1&destination=" +
+    encoded +
+    "&travelmode=driving";
+
+
+  window.open(
+    url,
+    "_blank"
+  );
+
+}
+
+
+/* =====================================================
+   エラー
+===================================================== */
+
+function showError(
+  message
+){
+
+  const box =
+    document.getElementById(
+      "errorBox"
+    );
+
+
+  box.textContent =
+    "❌ " +
+    message;
+
+
+  box.style.display =
+    "block";
+
+}
+
+
+function clearError(){
+
+  const box =
+    document.getElementById(
+      "errorBox"
+    );
+
+
+  box.textContent =
+    "";
+
+
+  box.style.display =
+    "none";
+
+}
+
+
+function getErrorMessage(
+  error
+){
+
+  if(!error){
+
+    return "原因不明のエラーです。";
+
+  }
+
+
+  return (
+    error.code
+      ? error.code + "\n"
+      : ""
+  ) +
+  (
+    error.message ||
+    String(error)
+  );
+
+}
+
+
+/* =====================================================
+   HTMLエスケープ
+===================================================== */
+
+function escapeHtml(
+  text
+){
 
   const div =
     document.createElement(
@@ -2075,12 +3622,21 @@ function escapeHtml(text){
 
 
   div.textContent =
-    text;
+    text == null
+      ? ""
+      : String(text);
 
 
   return div.innerHTML;
 
 }
+
+
+/* =====================================================
+   起動
+===================================================== */
+
+start();
 
 </script>
 

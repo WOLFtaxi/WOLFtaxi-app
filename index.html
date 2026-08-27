@@ -2,4368 +2,4504 @@
 <html lang="ja">
 
 <head>
-  <meta charset="UTF-8">
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
+<meta charset="UTF-8">
 
-  <title>WOLFtaxi</title>
+<meta
+  name="viewport"
+  content="width=device-width,initial-scale=1.0"
+>
 
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-  >
+<title>WOLFtaxi</title>
 
-  <style>
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+>
 
-    * {
-      box-sizing: border-box;
-    }
+<style>
 
-    body {
-      margin: 0;
-      font-family: sans-serif;
-      background: #f7f7f7;
-      color: #333;
-    }
+*{
+  box-sizing:border-box;
+}
 
-    .header {
-      background: #111;
-      color: #fff;
-      padding: 20px;
-      text-align: center;
-      font-size: 28px;
-      font-weight: bold;
-    }
+body{
+  margin:0;
+  font-family:sans-serif;
+  background:#f7f7f7;
+  color:#333;
+}
 
-    .sub {
-      font-size: 14px;
-      margin-top: 5px;
-      opacity: .8;
-    }
+.header{
+  background:#111;
+  color:#fff;
+  padding:20px;
+  text-align:center;
+  font-size:28px;
+  font-weight:bold;
+}
 
-    .card {
-      background: #fff;
-      margin: 15px;
-      padding: 20px;
-      border-radius: 18px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, .12);
-    }
+.sub{
+  font-size:14px;
+  margin-top:5px;
+  opacity:.8;
+}
 
-    h2 {
-      margin-top: 0;
-    }
+.card{
+  background:#fff;
+  margin:15px;
+  padding:20px;
+  border-radius:18px;
+  box-shadow:0 4px 12px rgba(0,0,0,.12);
+}
 
-    input {
-      width: 100%;
-      padding: 15px;
-      margin: 8px 0 20px;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      font-size: 16px;
-    }
+h2{
+  margin-top:0;
+}
 
-    button {
-      width: 100%;
-      padding: 16px;
-      margin-top: 7px;
-      border: 0;
-      border-radius: 12px;
-      background: #111;
-      color: #fff;
-      font-size: 17px;
-      font-weight: bold;
-    }
+input{
+  width:100%;
+  padding:15px;
+  margin:8px 0 20px;
+  border:1px solid #ddd;
+  border-radius:10px;
+  font-size:16px;
+}
 
-    button:disabled {
-      opacity: .5;
-    }
+button{
+  width:100%;
+  padding:16px;
+  margin-top:7px;
+  border:0;
+  border-radius:12px;
+  background:#111;
+  color:#fff;
+  font-size:17px;
+  font-weight:bold;
+}
 
-    .confirm {
-      background: #e60023;
-    }
+button:disabled{
+  opacity:.5;
+}
 
-    .green {
-      background: #087f23;
-    }
+.confirm{
+  background:#e60023;
+}
 
-    .blue {
-      background: #174ea6;
-    }
+.green{
+  background:#087f23;
+}
 
-    .orange {
-      background: #d97700;
-    }
+.blue{
+  background:#174ea6;
+}
 
-    .gray {
-      background: #666;
-    }
+.orange{
+  background:#d97700;
+}
 
-    .driver {
-      text-align: center;
-      margin-top: 12px;
-      font-size: 14px;
-    }
+.gray{
+  background:#666;
+}
 
-    #customerScreen,
-    #driverScreen {
-      display: none;
-    }
+.driver{
+  text-align:center;
+  margin-top:12px;
+  font-size:14px;
+}
 
-    #result {
-      display: none;
-      margin-top: 20px;
-      padding: 15px;
-      background: #f1f1f1;
-      border-radius: 12px;
-    }
+#customerScreen,
+#driverScreen{
+  display:none;
+}
 
-    #complete {
-      display: none;
-      margin-top: 20px;
-      padding: 20px;
-      background: #fff0f2;
-      border-radius: 12px;
-      text-align: center;
-    }
+#result{
+  display:none;
+  margin-top:20px;
+  padding:15px;
+  background:#f1f1f1;
+  border-radius:12px;
+}
 
-    #complete h2 {
-      color: #e60023;
-    }
+#complete{
+  display:none;
+  margin-top:20px;
+  padding:20px;
+  background:#fff0f2;
+  border-radius:12px;
+  text-align:center;
+}
 
-    .loadingBox {
-      display: none;
-      margin-top: 15px;
-      padding: 15px;
-      background: #eef5ff;
-      color: #174ea6;
-      border-radius: 12px;
-      text-align: center;
-      font-weight: bold;
-    }
+#complete h2{
+  color:#e60023;
+}
 
-    .errorBox {
-      display: none;
-      margin-top: 15px;
-      padding: 15px;
-      background: #ffe5e8;
-      color: #b00020;
-      border: 2px solid #e60023;
-      border-radius: 12px;
-      font-weight: bold;
-      white-space: pre-wrap;
-      word-break: break-word;
-    }
+.loadingBox{
+  display:none;
+  margin-top:15px;
+  padding:15px;
+  background:#eef5ff;
+  color:#174ea6;
+  border-radius:12px;
+  text-align:center;
+  font-weight:bold;
+}
 
-    .notice {
-      display: none;
-      position: fixed;
-      z-index: 9999;
-      inset: 0;
-      background: #e60023;
-      color: #fff;
-      padding: 25px 20px;
-      text-align: center;
-    }
+.errorBox{
+  display:none;
+  margin-top:15px;
+  padding:15px;
+  background:#ffe5e8;
+  color:#b00020;
+  border:2px solid #e60023;
+  border-radius:12px;
+  font-weight:bold;
+  white-space:pre-wrap;
+  word-break:break-word;
+}
 
-    .notice h1 {
-      font-size: 42px;
-      margin: 15px 0;
-    }
+.notice{
+  display:none;
+  position:fixed;
+  z-index:9999;
+  inset:0;
+  background:#e60023;
+  color:#fff;
+  padding:25px 20px;
+  text-align:center;
+}
 
-    .noticeBox {
-      background: #fff;
-      color: #222;
-      border-radius: 18px;
-      padding: 20px;
-      margin-top: 20px;
-    }
+.notice h1{
+  font-size:42px;
+  margin:15px 0;
+}
 
-    .notice button {
-      background: #fff;
-      color: #e60023;
-      margin-top: 25px;
-    }
+.noticeBox{
+  background:#fff;
+  color:#222;
+  border-radius:18px;
+  padding:20px;
+  margin-top:20px;
+}
 
-    .statusCard {
-      padding: 14px;
-      margin: 10px 0;
-      border-radius: 14px;
-      background: #f5f5f5;
-      border-left: 7px solid #777;
-    }
+.notice button{
+  background:#fff;
+  color:#e60023;
+  margin-top:25px;
+}
 
-    .statusCard.available {
-      border-left-color: #087f23;
-    }
+.statusCard{
+  padding:14px;
+  margin:10px 0;
+  border-radius:14px;
+  background:#f5f5f5;
+  border-left:7px solid #777;
+}
 
-    .statusCard.pickup {
-      border-left-color: #d97700;
-    }
+.statusCard.available{
+  border-left-color:#087f23;
+}
 
-    .statusCard.riding {
-      border-left-color: #e60023;
-    }
+.statusCard.pickup{
+  border-left-color:#d97700;
+}
 
-    .statusCard.arrived {
-      border-left-color: #174ea6;
-    }
+.statusCard.riding{
+  border-left-color:#e60023;
+}
 
-    .statusName {
-      font-size: 19px;
-      font-weight: bold;
-    }
+.statusCard.arrived{
+  border-left-color:#174ea6;
+}
 
-    .statusText {
-      font-weight: bold;
-      margin-top: 5px;
-    }
+.statusName{
+  font-size:19px;
+  font-weight:bold;
+}
 
-    .small {
-      font-size: 13px;
-      color: #777;
-      margin-top: 5px;
-    }
+.statusText{
+  font-weight:bold;
+  margin-top:5px;
+}
 
-    .ride {
-      border: 2px solid #e60023;
-      border-radius: 14px;
-      padding: 15px;
-      margin-top: 15px;
-      background: #fff;
-    }
+.small{
+  font-size:13px;
+  color:#777;
+  margin-top:5px;
+}
 
-    .rideTitle {
-      color: #e60023;
-      font-weight: bold;
-      font-size: 19px;
-      margin-bottom: 15px;
-    }
+.ride{
+  border:2px solid #e60023;
+  border-radius:14px;
+  padding:15px;
+  margin-top:15px;
+  background:#fff;
+}
 
-    .ackList {
-      background: #f5f5f5;
-      border-radius: 12px;
-      padding: 12px;
-      margin: 12px 0;
-    }
+.rideTitle{
+  color:#e60023;
+  font-weight:bold;
+  font-size:19px;
+  margin-bottom:15px;
+}
 
-    .ackRow {
-      padding: 6px 0;
-    }
+.ackList{
+  background:#f5f5f5;
+  border-radius:12px;
+  padding:12px;
+  margin:12px 0;
+}
 
-    .ackRow.pending {
-      color: #888;
-    }
+.ackRow{
+  padding:6px 0;
+}
 
-    .ackRow.assigned {
-      font-weight: bold;
-      color: #d97700;
-    }
+.ackRow.pending{
+  color:#888;
+}
 
-    .map {
-      width: 100%;
-      height: 280px;
-      border-radius: 15px;
-      margin-top: 15px;
-      overflow: hidden;
-    }
+.ackRow.assigned{
+  font-weight:bold;
+  color:#d97700;
+}
 
-    #driverMap {
-      height: 300px;
-    }
+.map{
+  width:100%;
+  height:280px;
+  border-radius:15px;
+  margin-top:15px;
+  overflow:hidden;
+}
 
-    .registration {
-      text-align: center;
-    }
+#driverMap{
+  height:300px;
+}
 
-    .registration p {
-      color: #666;
-    }
+.registration{
+  text-align:center;
+}
 
-    .infoBox {
-      padding: 14px;
-      border-radius: 12px;
-      background: #eef5ff;
-      color: #174ea6;
-      margin: 12px 0;
-    }
+.registration p{
+  color:#666;
+}
 
-    .queueBox {
-      padding: 16px;
-      background: #fff4d6;
-      color: #8a5a00;
-      border-radius: 12px;
-      text-align: center;
-      font-weight: bold;
-      margin-top: 15px;
-    }
+.infoBox{
+  padding:14px;
+  border-radius:12px;
+  background:#eef5ff;
+  color:#174ea6;
+  margin:12px 0;
+}
 
-    .customerRideStatus {
-      border-radius: 15px;
-      padding: 18px;
-      margin-top: 15px;
-      background: #f5f5f5;
-      text-align: center;
-    }
+.queueBox{
+  padding:16px;
+  background:#fff4d6;
+  color:#8a5a00;
+  border-radius:12px;
+  text-align:center;
+  font-weight:bold;
+  margin-top:15px;
+}
 
-    .customerRideStatus .big {
-      font-size: 22px;
-      font-weight: bold;
-    }
+.customerRideStatus{
+  border-radius:15px;
+  padding:18px;
+  margin-top:15px;
+  background:#f5f5f5;
+  text-align:center;
+}
 
-    #driverRegistration {
-      display: none;
-    }
+.customerRideStatus .big{
+  font-size:22px;
+  font-weight:bold;
+}
 
-    #customerRideInfo {
-      display: none;
-    }
+#driverRegistration{
+  display:none;
+}
 
-    .assignedBadge {
-      display: inline-block;
-      margin-top: 8px;
-      padding: 5px 10px;
-      border-radius: 20px;
-      background: #fff0d8;
-      color: #d97700;
-      font-weight: bold;
-    }
+#customerRideInfo{
+  display:none;
+}
 
-    .queueItem {
-      padding: 8px 0;
-      border-bottom: 1px solid #ddd;
-    }
+.assignedBadge{
+  display:inline-block;
+  margin-top:8px;
+  padding:5px 10px;
+  border-radius:20px;
+  background:#fff0d8;
+  color:#d97700;
+  font-weight:bold;
+}
 
-    .queueItem:last-child {
-      border-bottom: 0;
-    }
+.queueItem{
+  padding:8px 0;
+  border-bottom:1px solid #ddd;
+}
 
-    .ok {
-      color: #087f23;
-      font-weight: bold;
-    }
+.queueItem:last-child{
+  border-bottom:0;
+}
 
-    .wait {
-      color: #777;
-    }
+.ok{
+  color:#087f23;
+  font-weight:bold;
+}
 
-    .danger {
-      color: #e60023;
-      font-weight: bold;
-    }
+.wait{
+  color:#777;
+}
 
-  </style>
+.danger{
+  color:#e60023;
+  font-weight:bold;
+}
+
+/* 全車両GPS表示 */
+
+.driverMapMarker{
+  font-weight:bold;
+}
+
+/* お客さん側の車両一覧 */
+
+.vehicleCount{
+  margin-bottom:10px;
+  padding:10px;
+  border-radius:10px;
+  background:#eef5ff;
+  color:#174ea6;
+  font-weight:bold;
+  text-align:center;
+}
+
+</style>
+
 </head>
 
 <body>
 
-  <div class="header">
-    🚕 WOLFtaxi
 
-    <div class="sub">
-      かんたんタクシー配車
-    </div>
-  </div>
+<div class="header">
 
+🚕 WOLFtaxi
 
-  <!-- ================================
-       ドライバー登録
-       ================================ -->
+<div class="sub">
+かんたんタクシー配車
+</div>
 
-  <div
-    class="card"
-    id="driverRegistration"
-  >
+</div>
 
-    <div class="registration">
 
-      <h2>
-        👨‍✈️ ドライバー登録
-      </h2>
+<!-- ================================
+     ドライバー登録
+     ================================ -->
 
-      <p>
-        お客さんに表示するドライバー名を入力してください。
-      </p>
+<div
+  class="card"
+  id="driverRegistration"
+>
 
-      <input
-        id="driverNameInput"
-        type="text"
-        placeholder="例：ドライバー 001"
-        maxlength="30"
-      >
+<div class="registration">
 
-      <button
-        class="confirm"
-        onclick="registerDriver()"
-      >
-        🚕 この名前で登録
-      </button>
+<h2>
+👨‍✈️ ドライバー登録
+</h2>
 
-    </div>
+<p>
+お客さんに表示するドライバー名を入力してください。
+</p>
 
-  </div>
+<input
+  id="driverNameInput"
+  type="text"
+  placeholder="例：ドライバー 001"
+  maxlength="30"
+>
 
+<button
+  class="confirm"
+  onclick="registerDriver()"
+>
+🚕 この名前で登録
+</button>
 
-  <!-- ================================
-       お客さん画面
-       ================================ -->
+</div>
 
-  <div
-    class="card"
-    id="customerScreen"
-  >
+</div>
 
-    <h2>
-      🚕 現在のタクシー
-    </h2>
 
-    <div id="driverStatusList">
-      読み込み中…
-    </div>
+<!-- ================================
+     お客さん画面
+     ================================ -->
 
+<div
+  class="card"
+  id="customerScreen"
+>
 
-    <div
-      class="map"
-      id="customerMap"
-    ></div>
+<h2>
+🚕 現在のタクシー
+</h2>
 
+<div id="driverStatusList">
+読み込み中…
+</div>
 
-    <hr style="margin:25px 0">
 
+<div
+  class="map"
+  id="customerMap"
+></div>
 
-    <h2>
-      📍 お迎え先
-    </h2>
 
-    <input
-      id="pickup"
-      type="text"
-      placeholder="お迎え先を入力"
-    >
+<hr style="margin:25px 0">
 
 
-    <h2>
-      🏁 目的地
-    </h2>
+<h2>
+📍 お迎え先
+</h2>
 
-    <input
-      id="destination"
-      type="text"
-      placeholder="目的地を入力"
-    >
+<input
+  id="pickup"
+  type="text"
+  placeholder="お迎え先を入力"
+>
 
 
-    <button onclick="callTaxi()">
-      🚕 タクシーを呼ぶ
-    </button>
+<h2>
+🏁 目的地
+</h2>
 
+<input
+  id="destination"
+  type="text"
+  placeholder="目的地を入力"
+>
 
-    <!-- 配車確認 -->
 
-    <div id="result">
+<button onclick="callTaxi()">
+🚕 タクシーを呼ぶ
+</button>
 
-      <h2>
-        🚕 配車内容
-      </h2>
 
-      <p>
-        📍 お迎え先
-      </p>
+<!-- 配車確認 -->
 
-      <strong id="showPickup"></strong>
+<div id="result">
 
+<h2>
+🚕 配車内容
+</h2>
 
-      <p>
-        🏁 目的地
-      </p>
+<p>
+📍 お迎え先
+</p>
 
-      <strong id="showDestination"></strong>
+<strong id="showPickup"></strong>
 
+<p>
+🏁 目的地
+</p>
 
-      <button
-        id="confirmButton"
-        class="confirm"
-        onclick="confirmTaxi()"
-      >
-        ✅ この内容で配車する
-      </button>
+<strong id="showDestination"></strong>
 
-    </div>
+<button
+  id="confirmButton"
+  class="confirm"
+  onclick="confirmTaxi()"
+>
+✅ この内容で配車する
+</button>
 
+</div>
 
-    <!-- 送信中 -->
 
-    <div
-      id="loadingBox"
-      class="loadingBox"
-    >
-      🚕 配車を送信しています…
-    </div>
+<!-- 送信中 -->
 
+<div
+  id="loadingBox"
+  class="loadingBox"
+>
+🚕 配車を送信しています…
+</div>
 
-    <!-- エラー -->
 
-    <div
-      id="errorBox"
-      class="errorBox"
-    ></div>
+<!-- エラー -->
 
+<div
+  id="errorBox"
+  class="errorBox"
+></div>
 
-    <!-- 現在の配車 -->
 
-    <div id="customerRideInfo">
+<!-- 現在の配車 -->
 
-      <div class="customerRideStatus">
+<div id="customerRideInfo">
 
-        <div class="big">
-          🚕 配車受付済み
-        </div>
+<div class="customerRideStatus">
 
-        <p id="customerQueueText">
-          配車状況を確認しています…
-        </p>
+<div class="big">
+🚕 配車受付済み
+</div>
 
-      </div>
+<p id="customerQueueText">
+配車状況を確認しています…
+</p>
 
+</div>
 
-      <!-- 何件前か -->
 
-      <div
-        id="customerQueueBox"
-        class="queueBox"
-      ></div>
+<!-- 何件前か -->
 
+<div
+  id="customerQueueBox"
+  class="queueBox"
+></div>
 
-      <!-- 了解状況 -->
 
-      <div
-        id="customerAckList"
-        class="ackList"
-      ></div>
+<!-- 了解状況 -->
 
+<div
+  id="customerAckList"
+  class="ackList"
+></div>
 
-      <!-- 担当車両GPS -->
 
-      <div
-        id="customerRideMap"
-        class="map"
-      ></div>
+<!-- 担当車両GPS -->
 
-    </div>
+<div
+  id="customerRideMap"
+  class="map"
+></div>
 
+</div>
 
-    <!-- 完了 -->
 
-    <div id="complete">
+<!-- 完了 -->
 
-      <h2>
-        🚕 配車を受け付けました
-      </h2>
+<div id="complete">
 
-      <p>
-        ドライバーがお迎えにあがります。
-      </p>
+<h2>
+🚕 配車を受け付けました
+</h2>
 
-      <p>
-        📍 お迎え先
-      </p>
+<p>
+ドライバーがお迎えにあがります。
+</p>
 
-      <strong id="completePickup"></strong>
+<p>
+📍 お迎え先
+</p>
 
-      <p>
-        🏁 目的地
-      </p>
+<strong id="completePickup"></strong>
 
-      <strong id="completeDestination"></strong>
+<p>
+🏁 目的地
+</p>
 
-    </div>
+<strong id="completeDestination"></strong>
 
-  </div>
+</div>
 
+</div>
 
-  <!-- ================================
-       ドライバー画面
-       ================================ -->
 
-  <div
-    class="card"
-    id="driverScreen"
-  >
+<!-- ================================
+     ドライバー画面
+     ================================ -->
 
-    <h2>
-      🚕 ドライバー画面
-    </h2>
+<div
+  class="card"
+  id="driverScreen"
+>
 
+<h2>
+🚕 ドライバー画面
+</h2>
 
-    <div class="driver">
 
-      <strong id="driverDisplayName"></strong>
+<div class="driver">
 
-    </div>
+<strong id="driverDisplayName"></strong>
 
+</div>
 
-    <!-- 現在の状態 -->
 
-    <div
-      id="driverCurrentStatus"
-      class="infoBox"
-    >
-      状態：🟢 空車
-    </div>
+<!-- 現在の状態 -->
 
+<div
+  id="driverCurrentStatus"
+  class="infoBox"
+>
+状態：🟢 空車
+</div>
 
-    <!-- 通知 -->
 
-    <button
-      id="soundButton"
-      class="green"
-      onclick="enableNotification()"
-    >
-      🔔 配車通知をON
-    </button>
+<!-- 通知 -->
 
-    <p
-      id="soundStatus"
-      class="driver"
-    >
-      配車通知をONにしてください
-    </p>
+<button
+  id="soundButton"
+  class="green"
+  onclick="enableNotification()"
+>
+🔔 配車通知をON
+</button>
 
+<p
+  id="soundStatus"
+  class="driver"
+>
+配車通知をONにしてください
+</p>
 
-    <hr>
 
+<hr>
 
-    <h2>
-      🚕 配車一覧
-    </h2>
 
+<h2>
+🚕 配車一覧
+</h2>
 
-    <div id="rideList">
 
-      <div class="small">
-        配車を待っています…
-      </div>
+<div id="rideList">
 
-    </div>
+<div class="small">
+配車を待っています…
+</div>
 
+</div>
 
-    <hr>
 
+<hr>
 
-    <h2>
-      🗺️ 現在位置
-    </h2>
 
+<h2>
+🗺️ 現在位置
+</h2>
 
-    <div
-      id="driverMap"
-      class="map"
-    ></div>
 
-  </div>
+<div
+  id="driverMap"
+  class="map"
+></div>
 
+</div>
 
-  <!-- ================================
-       配車通知画面
-       ================================ -->
 
-  <div
-    id="notice"
-    class="notice"
-  >
+<!-- ================================
+     配車通知画面
+     ================================ -->
 
-    <div style="font-size:60px">
-      🚕
-    </div>
+<div
+  id="notice"
+  class="notice"
+>
 
-    <h1>
-      配車です！
-    </h1>
+<div style="font-size:60px">
+🚕
+</div>
 
+<h1>
+配車です！
+</h1>
 
-    <div class="noticeBox">
 
-      <p id="noticePickup"></p>
+<div class="noticeBox">
 
-      <p id="noticeDestination"></p>
+<p id="noticePickup"></p>
 
-    </div>
+<p id="noticeDestination"></p>
 
+</div>
 
-    <button onclick="closeNoticeOnly()">
-      🔔 通知を確認
-    </button>
 
-  </div>
+<button onclick="closeNoticeOnly()">
+🔔 通知を確認
+</button>
 
+</div>
 
-  <!-- ================================
-       JavaScript
-       ================================ -->
 
-  <script type="module">
+<script type="module">
 
-    import {
-      initializeApp
-    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 
+/* =====================================
+   Firebase
+   ===================================== */
 
-    import {
-      getAuth,
-      signInAnonymously
-    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+import {
+  initializeApp
+}
+from
+"https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 
 
-    import {
-      getFirestore,
-      collection,
-      addDoc,
-      doc,
-      getDoc,
-      setDoc,
-      updateDoc,
-      deleteDoc,
-      serverTimestamp,
-      query,
-      orderBy,
-      onSnapshot,
-      runTransaction
-    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+import {
+  getAuth,
+  signInAnonymously
+}
+from
+"https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 
 
-    import L from
-      "https://unpkg.com/leaflet@1.9.4/dist/leaflet-src.esm.js";
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc,
+  serverTimestamp,
+  query,
+  orderBy,
+  onSnapshot,
+  runTransaction
+}
+from
+"https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
 
-    /* =====================================
-       Firebase
-       ===================================== */
+import L from
+"https://unpkg.com/leaflet@1.9.4/dist/leaflet-src.esm.js";
 
-    const firebaseConfig = {
 
-      apiKey:
-        "AIzaSyDBe6rFCj51rGHfZnClQwyc-ANnQjjiZ54",
+/* =====================================
+   Firebase設定
+   ===================================== */
 
-      authDomain:
-        "wolftaxi-53314.firebaseapp.com",
+const firebaseConfig = {
 
-      projectId:
-        "wolftaxi-53314",
+apiKey:
+"AIzaSyDBe6rFCj51rGHfZnClQwyc-ANnQjjiZ54",
 
-      storageBucket:
-        "wolftaxi-53314.firebasestorage.app",
+authDomain:
+"wolftaxi-53314.firebaseapp.com",
 
-      messagingSenderId:
-        "409259660325",
+projectId:
+"wolftaxi-53314",
 
-      appId:
-        "1:409259660325:web:3506611653a617cccbdbcc",
+storageBucket:
+"wolftaxi-53314.firebasestorage.app",
 
-      measurementId:
-        "G-SX3VMEZJ92"
+messagingSenderId:
+"409259660325",
 
-    };
+appId:
+"1:409259660325:web:3506611653a617cccbdbcc",
 
+measurementId:
+"G-SX3VMEZJ92"
 
-    const app =
-      initializeApp(firebaseConfig);
+};
 
 
-    const auth =
-      getAuth(app);
+const app =
+initializeApp(
+firebaseConfig
+);
 
 
-    const db =
-      getFirestore(app);
+const auth =
+getAuth(app);
 
 
-    /* =====================================
-       基本変数
-       ===================================== */
+const db =
+getFirestore(app);
 
-    let currentUser = null;
 
+/* =====================================
+   基本変数
+   ===================================== */
 
-    let driverName =
-      localStorage.getItem("wolftaxi_driver_name") || "";
+let currentUser = null;
 
+let driverName =
+localStorage.getItem(
+"wolftaxi_driver_name"
+) || "";
 
-    let notificationEnabled = false;
+let notificationEnabled = false;
 
-    let currentAudio = null;
+let currentAudio = null;
 
-    let notificationRunning = false;
+let notificationRunning = false;
 
-    let notificationRideId = null;
+let notificationRideId = null;
 
+let notificationStopTimer = null;
 
-    let notificationStopTimer = null;
+let notificationNextSoundTimer = null;
 
-    let notificationNextSoundTimer = null;
+let speechTimer = null;
 
-    let speechTimer = null;
+let driverMap = null;
 
+let driverMarker = null;
 
-    let driverMap = null;
+let customerMap = null;
 
-    let driverMarker = null;
+let customerRideMap = null;
 
-    let customerMap = null;
+let customerRideMarkers = {};
 
-    let customerRideMap = null;
+let customerVehicleMarkers = {};
 
+let assignedDriverUnsubscribes = {};
 
-    let customerRideMarkers = {};
+let customerRideUnsubscribe = null;
 
-    let assignedDriverUnsubscribes = {};
+let customerDriverUnsubscribe = null;
 
-    let customerRideUnsubscribe = null;
+let currentCustomerRideId =
+localStorage.getItem(
+"wolftaxi_customer_ride"
+) || "";
 
+let sendingRide = false;
 
-    let currentCustomerRideId =
-      localStorage.getItem("wolftaxi_customer_ride") || "";
+let gpsStarted = false;
 
+let knownRideIds =
+new Set();
 
-    let sendingRide = false;
 
-    let gpsStarted = false;
+/* =====================================
+   通知音
+   ===================================== */
 
+const sounds = {
 
-    let knownRideIds = new Set();
+normal:
+"mixkit-software-interface-start-2574.wav",
 
+haneda:
+"mixkit-arcade-bonus-alert-767.wav",
 
-    /* =====================================
-       通知音
-       ===================================== */
+narita:
+"mixkit-manual-siren-fire-alert-1652.wav",
 
-    const sounds = {
+zaion:
+"mixkit-guitar-notification-alert-2320.wav"
 
-      normal:
-        "mixkit-software-interface-start-2574.wav",
+};
 
-      haneda:
-        "mixkit-arcade-bonus-alert-767.wav",
 
-      narita:
-        "mixkit-manual-siren-fire-alert-1652.wav",
+/* =====================================
+   八丈島初期表示位置
+   ===================================== */
 
-      zaion:
-        "mixkit-guitar-notification-alert-2320.wav"
+const HACHIJO = [
+33.1127,
+139.7858
+];
 
-    };
 
+/* =====================================
+   起動
+   ===================================== */
 
-    /* =====================================
-       八丈島 初期表示位置
-       ===================================== */
+async function start(){
 
-    const HACHIJO = [
-      33.1127,
-      139.7858
-    ];
+try{
 
+const credential =
+await signInAnonymously(
+auth
+);
 
-    /* =====================================
-       起動
-       ===================================== */
+currentUser =
+credential.user;
 
-    async function start() {
+detectMode();
 
-      try {
+}catch(error){
 
-        const credential =
-          await signInAnonymously(auth);
+alert(
+"Firebaseに接続できません。\n\n" +
+getErrorMessage(error)
+);
 
+}
 
-        currentUser =
-          credential.user;
+}
 
 
-        detectMode();
+/* =====================================
+   ドライバー登録
+   ===================================== */
 
-      } catch (error) {
+window.registerDriver =
+async function(){
 
-        alert(
-          "Firebaseに接続できません。\n\n" +
-          getErrorMessage(error)
-        );
+const input =
+document.getElementById(
+"driverNameInput"
+);
 
-      }
+const name =
+input.value.trim();
 
-    }
+if(!name){
 
+alert(
+"表示名を入力してください❤️"
+);
 
-    /* =====================================
-       ドライバー登録
-       ===================================== */
+return;
 
-    window.registerDriver = async function () {
+}
 
-      const input =
-        document.getElementById(
-          "driverNameInput"
-        );
+driverName =
+name;
 
+localStorage.setItem(
+"wolftaxi_driver_name",
+name
+);
 
-      const name =
-        input.value.trim();
+try{
 
+await ensureDriverDocument();
 
-      if (!name) {
+showDriverScreen();
 
-        alert(
-          "表示名を入力してください❤️"
-        );
+}catch(error){
 
-        return;
+alert(
+"ドライバー登録に失敗しました。\n\n" +
+getErrorMessage(error)
+);
 
-      }
+}
 
+};
 
-      driverName = name;
 
+/* =====================================
+   ドライバー情報
+   ===================================== */
 
-      localStorage.setItem(
-        "wolftaxi_driver_name",
-        name
-      );
+async function ensureDriverDocument(){
 
+const ref =
+doc(
+db,
+"drivers",
+currentUser.uid
+);
 
-      try {
+const snap =
+await getDoc(ref);
 
-        await ensureDriverDocument();
+if(!snap.exists()){
 
-        showDriverScreen();
+await setDoc(
+ref,
+{
 
-      } catch (error) {
+name:
+driverName,
 
-        alert(
-          "ドライバー登録に失敗しました。\n\n" +
-          getErrorMessage(error)
-        );
+status:
+"available",
 
-      }
+latitude:
+null,
 
-    };
+longitude:
+null,
 
+updatedAt:
+serverTimestamp()
 
-    /* =====================================
-       ドライバー情報作成・更新
-       ===================================== */
+}
+);
 
-    async function ensureDriverDocument() {
+}else{
 
-      const ref =
-        doc(
-          db,
-          "drivers",
-          currentUser.uid
-        );
+await updateDoc(
+ref,
+{
 
+name:
+driverName,
 
-      const snap =
-        await getDoc(ref);
+status:
+"available",
 
+updatedAt:
+serverTimestamp()
 
-      if (!snap.exists()) {
+}
+);
 
-        await setDoc(
-          ref,
-          {
-            name: driverName,
-            status: "available",
-            latitude: null,
-            longitude: null,
-            updatedAt: serverTimestamp()
-          }
-        );
+}
 
-      } else {
+}
 
-        await updateDoc(
-          ref,
-          {
-            name: driverName,
-            status: "available",
-            updatedAt: serverTimestamp()
-          }
-        );
 
-      }
+/* =====================================
+   お客さん画面
+   ===================================== */
 
-    }
+function showCustomerScreen(){
 
+document.getElementById(
+"customerScreen"
+).style.display =
+"block";
 
-    /* =====================================
-       お客さん画面
-       ===================================== */
+document.getElementById(
+"driverScreen"
+).style.display =
+"none";
 
-    function showCustomerScreen() {
+document.getElementById(
+"driverRegistration"
+).style.display =
+"none";
 
-      document.getElementById(
-        "customerScreen"
-      ).style.display = "block";
+initCustomerMap();
 
+listenDrivers();
 
-      document.getElementById(
-        "driverScreen"
-      ).style.display = "none";
+if(currentCustomerRideId){
 
+listenCustomerRide(
+currentCustomerRideId
+);
 
-      document.getElementById(
-        "driverRegistration"
-      ).style.display = "none";
+}
 
+}
 
-      initCustomerMap();
 
-      listenDrivers();
+/* =====================================
+   ドライバー画面
+   ===================================== */
 
+function showDriverScreen(){
 
-      if (currentCustomerRideId) {
+document.getElementById(
+"customerScreen"
+).style.display =
+"none";
 
-        listenCustomerRide(
-          currentCustomerRideId
-        );
+document.getElementById(
+"driverRegistration"
+).style.display =
+"none";
 
-      }
+document.getElementById(
+"driverScreen"
+).style.display =
+"block";
 
-    }
+document.getElementById(
+"driverDisplayName"
+).textContent =
+"👨‍✈️ " +
+driverName;
 
+initDriverMap();
 
-    /* =====================================
-       ドライバー画面
-       ===================================== */
+listenRides();
 
-    function showDriverScreen() {
+startGPS();
 
-      document.getElementById(
-        "customerScreen"
-      ).style.display = "none";
+}
 
 
-      document.getElementById(
-        "driverRegistration"
-      ).style.display = "none";
+/* =====================================
+   モード判定
+   ===================================== */
 
+function detectMode(){
 
-      document.getElementById(
-        "driverScreen"
-      ).style.display = "block";
+const params =
+new URLSearchParams(
+location.search
+);
 
+if(
+params.get("driver") === "1"
+){
 
-      document.getElementById(
-        "driverDisplayName"
-      ).textContent =
-        "👨‍✈️ " + driverName;
+if(driverName){
 
+ensureDriverDocument()
+.then(
+showDriverScreen
+)
+.catch(
+error => {
 
-      initDriverMap();
+alert(
+"ドライバー情報の読み込みに失敗しました。\n\n" +
+getErrorMessage(error)
+);
 
-      listenRides();
+}
+);
 
-      startGPS();
+}else{
 
-    }
+document.getElementById(
+"driverRegistration"
+).style.display =
+"block";
 
+document.getElementById(
+"customerScreen"
+).style.display =
+"none";
 
-    /* =====================================
-       モード判定
-       ===================================== */
+}
 
-    function detectMode() {
+}else{
 
-      const params =
-        new URLSearchParams(
-          location.search
-        );
+showCustomerScreen();
 
+}
 
-      if (
-        params.get("driver") === "1"
-      ) {
+}
 
-        if (driverName) {
 
-          ensureDriverDocument()
-            .then(
-              showDriverScreen
-            )
-            .catch(
-              error => {
+/* =====================================
+   全車両状態＋GPS監視
+   ===================================== */
 
-                alert(
-                  "ドライバー情報の読み込みに失敗しました。\n\n" +
-                  getErrorMessage(error)
-                );
+function listenDrivers(){
 
-              }
-            );
+const q =
+query(
+collection(
+db,
+"drivers"
+)
+);
 
-        } else {
+onSnapshot(
+q,
+snapshot => {
 
-          document.getElementById(
-            "driverRegistration"
-          ).style.display = "block";
+const list =
+document.getElementById(
+"driverStatusList"
+);
 
+list.innerHTML = "";
 
-          document.getElementById(
-            "customerScreen"
-          ).style.display = "none";
 
-        }
+/* -------------------------------------
+   登録車両なし
+   ------------------------------------- */
 
-      } else {
+if(snapshot.empty){
 
-        showCustomerScreen();
+list.innerHTML =
+'<div class="small">' +
+"現在登録されているタクシーはありません。" +
+"</div>";
 
-      }
+return;
 
-    }
+}
 
 
-    /* =====================================
-       全車両状態監視
-       ===================================== */
+const drivers = [];
 
-    function listenDrivers() {
 
-      const q =
-        query(
-          collection(
-            db,
-            "drivers"
-          )
-        );
+snapshot.forEach(
+ds => {
 
+drivers.push({
+id:
+ds.id,
+...ds.data()
+});
 
-      onSnapshot(
-        q,
-        snapshot => {
+});
 
-          const list =
-            document.getElementById(
-              "driverStatusList"
-            );
 
+/* -------------------------------------
+   車両一覧
+   ------------------------------------- */
 
-          list.innerHTML = "";
+const count =
+document.createElement(
+"div"
+);
 
+count.className =
+"vehicleCount";
 
-          if (snapshot.empty) {
+count.textContent =
+"🚕 登録車両 " +
+drivers.length +
+"台";
 
-            list.innerHTML =
-              '<div class="small">' +
-              "現在登録されているタクシーはありません。" +
-              "</div>";
+list.appendChild(
+count
+);
 
-            return;
 
-          }
+drivers.forEach(
+d => {
 
+const status =
+d.status ||
+"available";
 
-          snapshot.forEach(
-            ds => {
 
-              const d =
-                ds.data();
+const card =
+document.createElement(
+"div"
+);
 
+card.className =
+"statusCard " +
+status;
 
-              const status =
-                d.status ||
-                "available";
 
+card.innerHTML =
 
-              const card =
-                document.createElement(
-                  "div"
-                );
+'<div class="statusName">' +
 
+"🚕 " +
 
-              card.className =
-                "statusCard " +
-                status;
+escapeHtml(
+d.name ||
+"タクシー"
+) +
 
+"</div>" +
 
-              card.innerHTML =
+'<div class="statusText">' +
 
-                '<div class="statusName">' +
-                "🚕 " +
-                escapeHtml(
-                  d.name ||
-                  "タクシー"
-                ) +
-                "</div>" +
+statusLabel(
+status
+) +
 
-                '<div class="statusText">' +
-                statusLabel(status) +
-                "</div>" +
+"</div>" +
 
-                '<div class="small">' +
-                (
-                  d.updatedAt
-                    ? "現在位置を約60秒ごとに更新"
-                    : "位置情報取得待ち"
-                ) +
-                "</div>";
+'<div class="small">' +
 
+(
+d.latitude != null &&
+d.longitude != null
 
-              list.appendChild(
-                card
-              );
+?
 
-            }
-          );
+"📍 現在位置を約60秒ごとに更新"
 
-        },
+:
 
-        error => {
+"📍 位置情報取得待ち"
 
-          console.error(
-            "ドライバー監視エラー",
-            error
-          );
+) +
 
-        }
+"</div>";
 
-      );
 
-    }
+list.appendChild(
+card
+);
 
 
-    /* =====================================
-       状態表示
-       ===================================== */
+/* -------------------------------------
+   全車両を地図へ表示
+   ------------------------------------- */
 
-    function statusLabel(status) {
+if(
+d.latitude != null &&
+d.longitude != null
+){
 
-      switch (status) {
+updateCustomerVehicleMarker(
+d
+);
 
-        case "available":
-          return "🟢 空車";
+}
 
-        case "pickup":
-          return "🟡 迎車中";
+}
+);
 
-        case "arrived":
-          return "🔵 到着";
 
-        case "riding":
-          return "🔴 乗車中";
+/* -------------------------------------
+   古い車両マーカーを整理
+   ------------------------------------- */
 
-        default:
-          return "⚫ 休車";
+const currentIds =
+new Set(
+drivers.map(
+d => d.id
+)
+);
 
-      }
 
-    }
+Object.keys(
+customerVehicleMarkers
+).forEach(
+id => {
 
+if(
+!currentIds.has(id)
+){
 
-    /* =====================================
-       タクシーを呼ぶ
-       ===================================== */
+if(
+customerMap
+){
 
-    window.callTaxi = function () {
+customerMap.removeLayer(
+customerVehicleMarkers[id]
+);
 
-      clearError();
+}
 
+delete customerVehicleMarkers[id];
 
-      const pickup =
-        document
-          .getElementById("pickup")
-          .value
-          .trim();
+}
 
+});
 
-      const destination =
-        document
-          .getElementById("destination")
-          .value
-          .trim();
+},
 
+error => {
 
-      if (
-        !pickup ||
-        !destination
-      ) {
+console.error(
+"ドライバー監視エラー",
+error
+);
 
-        alert(
-          "お迎え先と目的地を入力してください🚕"
-        );
+}
 
-        return;
+);
 
-      }
+}
 
 
-      document.getElementById(
-        "showPickup"
-      ).textContent =
-        pickup;
+/* =====================================
+   お客さん側 全車両マーカー
+   ===================================== */
 
+function updateCustomerVehicleMarker(
+driver
+){
 
-      document.getElementById(
-        "showDestination"
-      ).textContent =
-        destination;
+if(
+!customerMap
+){
 
+return;
 
-      document.getElementById(
-        "result"
-      ).style.display =
-        "block";
+}
 
-    };
+const position = [
 
+driver.latitude,
 
-    /* =====================================
-       配車確定
-       ===================================== */
+driver.longitude
 
-    window.confirmTaxi = async function () {
+];
 
-      if (sendingRide) {
-        return;
-      }
 
+if(
+!customerVehicleMarkers[
+driver.id
+]
+){
 
-      clearError();
+customerVehicleMarkers[
+driver.id
+] =
+L.marker(
+position
+)
+.addTo(
+customerMap
+)
+.bindPopup(
+"🚕 " +
+(
+driver.name ||
+"タクシー"
+) +
+"<br>" +
+statusLabel(
+driver.status ||
+"available"
+)
+);
 
+}else{
 
-      const pickup =
-        document
-          .getElementById("pickup")
-          .value
-          .trim();
+customerVehicleMarkers[
+driver.id
+].setLatLng(
+position
+);
 
+customerVehicleMarkers[
+driver.id
+].setPopupContent(
+"🚕 " +
+(
+driver.name ||
+"タクシー"
+) +
+"<br>" +
+statusLabel(
+driver.status ||
+"available"
+)
+);
 
-      const destination =
-        document
-          .getElementById("destination")
-          .value
-          .trim();
+}
 
+}
 
-      if (
-        !pickup ||
-        !destination
-      ) {
-        return;
-      }
 
+/* =====================================
+   状態表示
+   ===================================== */
 
-      sendingRide = true;
+function statusLabel(
+status
+){
 
+switch(status){
 
-      const button =
-        document.getElementById(
-          "confirmButton"
-        );
+case "available":
+return "🟢 空車";
 
+case "pickup":
+return "🟡 迎車中";
 
-      button.disabled = true;
+case "arrived":
+return "🔵 到着";
 
+case "riding":
+return "🔴 乗車中";
 
-      button.textContent =
-        "🚕 配車を送信中…";
+default:
+return "⚫ 休車";
 
+}
 
-      document.getElementById(
-        "loadingBox"
-      ).style.display =
-        "block";
+}
 
 
-      try {
+/* =====================================
+   タクシーを呼ぶ
+   ===================================== */
 
-        const rideRef =
-          await addDoc(
-            collection(
-              db,
-              "rides"
-            ),
-            {
+window.callTaxi =
+function(){
 
-              pickup:
-                pickup,
+clearError();
 
-              destination:
-                destination,
+const pickup =
+document.getElementById(
+"pickup"
+).value.trim();
 
-              status:
-                "requested",
+const destination =
+document.getElementById(
+"destination"
+).value.trim();
 
-              acknowledgements:
-                {},
+if(
+!pickup ||
+!destination
+){
 
-              assignedDriverId:
-                null,
+alert(
+"お迎え先と目的地を入力してください🚕"
+);
 
-              assignedDriverName:
-                null,
+return;
 
-              createdAt:
-                serverTimestamp()
+}
 
-            }
-          );
+document.getElementById(
+"showPickup"
+).textContent =
+pickup;
 
+document.getElementById(
+"showDestination"
+).textContent =
+destination;
 
-        currentCustomerRideId =
-          rideRef.id;
+document.getElementById(
+"result"
+).style.display =
+"block";
 
+};
 
-        localStorage.setItem(
-          "wolftaxi_customer_ride",
-          rideRef.id
-        );
 
+/* =====================================
+   配車確定
+   ===================================== */
 
-        document.getElementById(
-          "completePickup"
-        ).textContent =
-          pickup;
+window.confirmTaxi =
+async function(){
 
+if(sendingRide){
 
-        document.getElementById(
-          "completeDestination"
-        ).textContent =
-          destination;
+return;
 
+}
 
-        document.getElementById(
-          "result"
-        ).style.display =
-          "none";
+clearError();
 
+const pickup =
+document.getElementById(
+"pickup"
+).value.trim();
 
-        document.getElementById(
-          "loadingBox"
-        ).style.display =
-          "none";
+const destination =
+document.getElementById(
+"destination"
+).value.trim();
 
+if(
+!pickup ||
+!destination
+){
 
-        document.getElementById(
-          "complete"
-        ).style.display =
-          "block";
+return;
 
+}
 
-        document.getElementById(
-          "customerRideInfo"
-        ).style.display =
-          "block";
+sendingRide =
+true;
 
+const button =
+document.getElementById(
+"confirmButton"
+);
 
-        listenCustomerRide(
-          rideRef.id
-        );
+button.disabled =
+true;
 
+button.textContent =
+"🚕 配車を送信中…";
 
-      } catch (error) {
+document.getElementById(
+"loadingBox"
+).style.display =
+"block";
 
-        document.getElementById(
-          "loadingBox"
-        ).style.display =
-          "none";
+try{
 
+const rideRef =
+await addDoc(
+collection(
+db,
+"rides"
+),
+{
 
-        showError(
-          "配車の送信に失敗しました。\n" +
-          getErrorMessage(error)
-        );
+pickup:
+pickup,
 
-      } finally {
+destination:
+destination,
 
-        sendingRide = false;
+status:
+"requested",
 
-        button.disabled = false;
+acknowledgements:
+{},
 
-        button.textContent =
-          "✅ この内容で配車する";
+assignedDriverId:
+null,
 
-      }
+assignedDriverName:
+null,
 
-    };
+assignedAt:
+null,
 
+createdAt:
+serverTimestamp()
 
-    /* =====================================
-       配車一覧監視
-       ===================================== */
+}
+);
 
-    function listenRides() {
 
-      const q =
-        query(
-          collection(
-            db,
-            "rides"
-          ),
-          orderBy(
-            "createdAt",
-            "desc"
-          )
-        );
+currentCustomerRideId =
+rideRef.id;
 
+localStorage.setItem(
+"wolftaxi_customer_ride",
+rideRef.id
+);
 
-      let firstSnapshot = true;
 
+document.getElementById(
+"completePickup"
+).textContent =
+pickup;
 
-      onSnapshot(
-        q,
-        snapshot => {
+document.getElementById(
+"completeDestination"
+).textContent =
+destination;
 
-          const list =
-            document.getElementById(
-              "rideList"
-            );
+document.getElementById(
+"result"
+).style.display =
+"none";
 
+document.getElementById(
+"loadingBox"
+).style.display =
+"none";
 
-          list.innerHTML = "";
+document.getElementById(
+"complete"
+).style.display =
+"block";
 
+document.getElementById(
+"customerRideInfo"
+).style.display =
+"block";
 
-          if (snapshot.empty) {
 
-            list.innerHTML =
-              '<div class="small">' +
-              "現在、配車依頼はありません。" +
-              "</div>";
+listenCustomerRide(
+rideRef.id
+);
 
 
-            firstSnapshot = false;
+}catch(error){
 
-            return;
+document.getElementById(
+"loadingBox"
+).style.display =
+"none";
 
-          }
+showError(
+"配車の送信に失敗しました。\n" +
+getErrorMessage(error)
+);
 
+}finally{
 
-          const rides = [];
+sendingRide =
+false;
 
+button.disabled =
+false;
 
-          snapshot.forEach(
-            ds => {
+button.textContent =
+"✅ この内容で配車する";
 
-              rides.push({
-                id: ds.id,
-                ...ds.data()
-              });
+}
 
-            }
-          );
+};
 
 
-          rides.forEach(
-            ride => {
+/* =====================================
+   配車一覧監視
+   ===================================== */
 
-              renderDriverRide(
-                list,
-                ride
-              );
+function listenRides(){
 
+const q =
+query(
+collection(
+db,
+"rides"
+),
+orderBy(
+"createdAt",
+"desc"
+)
+);
 
-              /*
-               * 初回読み込みでは通知しない。
-               * 新規requestedだけ通知する。
-               */
+let firstSnapshot =
+true;
 
-              if (
-                !firstSnapshot &&
-                !knownRideIds.has(
-                  ride.id
-                ) &&
-                ride.status ===
-                  "requested"
-              ) {
+onSnapshot(
+q,
+snapshot => {
 
-                startNotification(
-                  ride,
-                  ride.id
-                );
+const list =
+document.getElementById(
+"rideList"
+);
 
-              }
+list.innerHTML = "";
 
 
-              knownRideIds.add(
-                ride.id
-              );
+if(snapshot.empty){
 
-            }
-          );
+list.innerHTML =
+'<div class="small">' +
+"現在、配車依頼はありません。" +
+"</div>";
 
+firstSnapshot =
+false;
 
-          firstSnapshot = false;
+return;
 
-        },
+}
 
-        error => {
 
-          console.error(
-            "配車監視エラー",
-            error
-          );
+const rides = [];
 
-        }
 
-      );
+snapshot.forEach(
+ds => {
 
-    }
+rides.push({
 
+id:
+ds.id,
 
-    /* =====================================
-       ドライバー側配車表示
-       ===================================== */
+...ds.data()
 
-    function renderDriverRide(
-      list,
-      ride
-    ) {
+});
 
-      const div =
-        document.createElement(
-          "div"
-        );
+});
 
 
-      div.className =
-        "ride";
+rides.forEach(
+ride => {
 
+renderDriverRide(
+list,
+ride
+);
 
-      const ack =
-        ride.acknowledgements ||
-        {};
 
+/* -------------------------------------
+   新規配車だけ通知
+   ------------------------------------- */
 
-      const already =
-        !!ack[currentUser.uid];
+if(
+!firstSnapshot &&
+!knownRideIds.has(
+ride.id
+) &&
+ride.status ===
+"requested"
+){
 
+startNotification(
+ride,
+ride.id
+);
 
-      const assigned =
-        ride.assignedDriverId;
+}
 
 
-      let buttons = "";
+knownRideIds.add(
+ride.id
+);
 
+});
 
-      /*
-       * 受付中
-       */
 
-      if (
-        ride.status ===
-        "requested"
-      ) {
+firstSnapshot =
+false;
 
-        if (already) {
+},
 
-          buttons +=
-            '<button class="gray" disabled>' +
-            "✅ 了解済み" +
-            "</button>";
+error => {
 
-        } else {
+console.error(
+"配車監視エラー",
+error
+);
 
-          buttons +=
-            '<button class="blue" data-action="ack">' +
-            "✅ この配車を了解" +
-            "</button>";
+}
 
-        }
+);
 
+}
 
-        /*
-         * 自分が担当の場合だけ
-         * 迎車開始を表示
-         */
 
-        if (
-          assigned ===
-          currentUser.uid
-        ) {
+/* =====================================
+   ドライバー側配車表示
+   ===================================== */
 
-          buttons +=
-            '<button class="orange" data-action="pickup">' +
-            "🚕 迎車開始" +
-            "</button>";
+function renderDriverRide(
+list,
+ride
+){
 
-        }
+const div =
+document.createElement(
+"div"
+);
 
-      }
+div.className =
+"ride";
 
 
-      /*
-       * 迎車中
-       */
+const ack =
+ride.acknowledgements ||
+{};
 
-      if (
-        ride.status ===
-        "pickup" &&
-        assigned ===
-        currentUser.uid
-      ) {
 
-        buttons +=
-          '<button class="blue" data-action="arrived">' +
-          "📍 到着報告" +
-          "</button>";
+const already =
+!!ack[
+currentUser.uid
+];
 
-      }
 
+const assigned =
+ride.assignedDriverId;
 
-      /*
-       * 到着
-       */
 
-      if (
-        ride.status ===
-        "arrived" &&
-        assigned ===
-        currentUser.uid
-      ) {
+let buttons = "";
 
-        buttons +=
-          '<button class="orange" data-action="riding">' +
-          "🚕 お送り中" +
-          "</button>";
 
-      }
+/* -------------------------------------
+   受付中
+   ------------------------------------- */
 
+if(
+ride.status ===
+"requested"
+){
 
-      /*
-       * 乗車中
-       */
+if(already){
 
-      if (
-        ride.status ===
-        "riding" &&
-        assigned ===
-        currentUser.uid
-      ) {
+buttons +=
+'<button class="gray" disabled>' +
+"✅ 了解済み" +
+"</button>";
 
-        buttons +=
-          '<button class="confirm" data-action="complete">' +
-          "✅ 完了報告" +
-          "</button>";
+}else{
 
-      }
+buttons +=
+'<button class="blue" data-action="ack">' +
+"✅ この配車を了解" +
+"</button>";
 
+}
 
-      /*
-       * 他車が担当
-       */
 
-      if (
-        assigned &&
-        assigned !==
-        currentUser.uid
-      ) {
+/* -------------------------------------
+   自分が担当の場合だけ
+   迎車開始を表示
+   ------------------------------------- */
 
-        buttons +=
-          '<div class="infoBox">' +
-          "🚕 " +
-          escapeHtml(
-            ride.assignedDriverName ||
-            "他のドライバー"
-          ) +
-          " が担当しています。" +
-          "</div>";
+if(
+assigned ===
+currentUser.uid
+){
 
-      }
+buttons +=
+'<button class="orange" data-action="pickup">' +
+"🚕 迎車開始" +
+"</button>";
 
+}
 
-      /*
-       * 了解状況
-       */
+}
 
-      let ackHtml =
-        "<strong>👨‍✈️ 了解状況</strong>";
 
+/* -------------------------------------
+   迎車中
+   ------------------------------------- */
 
-      const entries =
-        Object.values(ack);
+if(
+ride.status ===
+"pickup" &&
+assigned ===
+currentUser.uid
+){
 
+buttons +=
+'<button class="blue" data-action="arrived">' +
+"📍 到着報告" +
+"</button>";
 
-      if (
-        entries.length
-      ) {
+}
 
-        entries.forEach(
-          a => {
 
-            ackHtml +=
+/* -------------------------------------
+   到着
+   ------------------------------------- */
 
-              '<div class="ackRow">' +
-              "🟢 " +
-              escapeHtml(
-                a.name ||
-                "ドライバー"
-              ) +
-              "　了解済み" +
-              "</div>";
+if(
+ride.status ===
+"arrived" &&
+assigned ===
+currentUser.uid
+){
 
-          }
-        );
+buttons +=
+'<button class="orange" data-action="riding">' +
+"🚕 お送り中" +
+"</button>";
 
-      } else {
+}
 
-        ackHtml +=
-          '<div class="small">' +
-          "まだ了解した車両はありません。" +
-          "</div>";
 
-      }
+/* -------------------------------------
+   乗車中
+   ------------------------------------- */
 
+if(
+ride.status ===
+"riding" &&
+assigned ===
+currentUser.uid
+){
 
-      /*
-       * 担当車
-       */
+buttons +=
+'<button class="confirm" data-action="complete">' +
+"✅ 完了報告" +
+"</button>";
 
-      if (assigned) {
+}
 
-        ackHtml +=
 
-          '<div class="ackRow assigned">' +
-          "🚕 担当：" +
-          escapeHtml(
-            ride.assignedDriverName ||
-            "ドライバー"
-          ) +
-          "</div>";
+/* -------------------------------------
+   他車が担当
+   ------------------------------------- */
 
-      }
+if(
+assigned &&
+assigned !==
+currentUser.uid
+){
 
+buttons +=
+'<div class="infoBox">' +
+"🚕 " +
+escapeHtml(
+ride.assignedDriverName ||
+"他のドライバー"
+) +
+" が担当しています。" +
+"</div>";
 
-      div.innerHTML =
+}
 
-        '<div class="rideTitle">' +
-        "🚕 配車" +
-        "</div>" +
 
-        "<div>📍 お迎え先</div>" +
+/* -------------------------------------
+   了解状況
+   ------------------------------------- */
 
-        "<strong>" +
-        escapeHtml(
-          ride.pickup || ""
-        ) +
-        "</strong>" +
+let ackHtml =
+"<strong>👨‍✈️ 了解状況</strong>";
 
-        "<br><br>" +
 
-        "<div>🏁 目的地</div>" +
+const entries =
+Object.values(
+ack
+);
 
-        "<strong>" +
-        escapeHtml(
-          ride.destination || ""
-        ) +
-        "</strong>" +
 
-        '<div class="ackList">' +
-        ackHtml +
-        "</div>" +
+if(
+entries.length
+){
 
-        buttons;
+entries.forEach(
+a => {
 
+ackHtml +=
 
-      list.appendChild(
-        div
-      );
+'<div class="ackRow">' +
+"🟢 " +
+escapeHtml(
+a.name ||
+"ドライバー"
+) +
+"　了解済み" +
+"</div>";
 
+});
 
-      const bind =
-        (
-          selector,
-          fn
-        ) => {
+}else{
 
-          const b =
-            div.querySelector(
-              selector
-            );
+ackHtml +=
+'<div class="small">' +
+"まだ了解した車両はありません。" +
+"</div>";
 
+}
 
-          if (b) {
-            b.onclick = fn;
-          }
 
-        };
+/* -------------------------------------
+   担当車
+   ------------------------------------- */
 
+if(assigned){
 
-      bind(
-        '[data-action="ack"]',
-        () =>
-          acknowledgeRide(
-            ride.id
-          )
-      );
+ackHtml +=
 
+'<div class="ackRow assigned">' +
+"🚕 担当：" +
+escapeHtml(
+ride.assignedDriverName ||
+"ドライバー"
+) +
+"</div>";
 
-      bind(
-        '[data-action="pickup"]',
-        () =>
-          startPickup(
-            ride.id
-          )
-      );
+}
 
 
-      bind(
-        '[data-action="arrived"]',
-        () =>
-          reportArrived(
-            ride.id
-          )
-      );
+div.innerHTML =
 
+'<div class="rideTitle">' +
+"🚕 配車" +
+"</div>" +
 
-      bind(
-        '[data-action="riding"]',
-        () =>
-          startRiding(
-            ride.id,
-            ride.destination
-          )
-      );
+"<div>📍 お迎え先</div>" +
 
+"<strong>" +
+escapeHtml(
+ride.pickup ||
+""
+) +
+"</strong>" +
 
-      bind(
-        '[data-action="complete"]',
-        () =>
-          completeRide(
-            ride.id
-          )
-      );
+"<br><br>" +
 
-    }
-        /* =====================================
-       配車了解
-       ===================================== */
+"<div>🏁 目的地</div>" +
 
-    async function acknowledgeRide(rideId) {
+"<strong>" +
+escapeHtml(
+ride.destination ||
+""
+) +
+"</strong>" +
 
-      try {
+'<div class="ackList">' +
+ackHtml +
+"</div>" +
 
-        const ref =
-          doc(
-            db,
-            "rides",
-            rideId
-          );
+buttons;
 
 
-        const result =
-          await runTransaction(
-            db,
-            async transaction => {
+list.appendChild(
+div
+);
 
-              const snap =
-                await transaction.get(
-                  ref
-                );
 
+const bind =
+(
+selector,
+fn
+) => {
 
-              if (!snap.exists()) {
+const b =
+div.querySelector(
+selector
+);
 
-                throw new Error(
-                  "配車が見つかりません。"
-                );
+if(b){
 
-              }
+b.onclick =
+fn;
 
+}
 
-              const ride =
-                snap.data();
+};
 
 
-              if (
-                ride.status !==
-                "requested"
-              ) {
+bind(
+'[data-action="ack"]',
+() =>
+acknowledgeRide(
+ride.id
+)
+);
 
-                throw new Error(
-                  "この配車は受付中ではありません。"
-                );
 
-              }
+bind(
+'[data-action="pickup"]',
+() =>
+startPickup(
+ride.id
+)
+);
 
 
-              const acknowledgements =
-                {
-                  ...(ride.acknowledgements || {})
-                };
+bind(
+'[data-action="arrived"]',
+() =>
+reportArrived(
+ride.id
+)
+);
 
 
-              /*
-               * すでに了解済みなら何もしない
-               */
+bind(
+'[data-action="riding"]',
+() =>
+startRiding(
+ride.id,
+ride.destination
+)
+);
 
-              if (
-                acknowledgements[
-                  currentUser.uid
-                ]
-              ) {
 
-                return {
-                  already: true,
-                  becameAssigned: false
-                };
+bind(
+'[data-action="complete"]',
+() =>
+completeRide(
+ride.id
+)
+);
 
-              }
+}
 
 
-              /*
-               * 了解済みに追加
-               */
+/* =====================================
+   配車了解
+   ===================================== */
 
-              acknowledgements[
-                currentUser.uid
-              ] = {
+async function acknowledgeRide(
+rideId
+){
 
-                name:
-                  driverName,
+try{
 
-                at:
-                  serverTimestamp()
+const ref =
+doc(
+db,
+"rides",
+rideId
+);
 
-              };
 
+const result =
+await runTransaction(
+db,
+async transaction => {
 
-              /*
-               * まだ担当車が決まっていなければ
-               * 今回了解した車両を担当にする。
-               *
-               * Firestore transactionなので
-               * 同時に001・002・003が押しても
-               * 最初に確定した1台だけが担当。
-               */
+const snap =
+await transaction.get(
+ref
+);
 
-              if (
-                !ride.assignedDriverId
-              ) {
 
-                transaction.update(
-                  ref,
-                  {
+if(!snap.exists()){
 
-                    acknowledgements:
-                      acknowledgements,
+throw new Error(
+"配車が見つかりません。"
+);
 
-                    assignedDriverId:
-                      currentUser.uid,
+}
 
-                    assignedDriverName:
-                      driverName,
 
-                    assignedAt:
-                      serverTimestamp()
+const ride =
+snap.data();
 
-                  }
-                );
 
+if(
+ride.status !==
+"requested"
+){
 
-                return {
+throw new Error(
+"この配車は受付中ではありません。"
+);
 
-                  already: false,
+}
 
-                  becameAssigned: true
 
-                };
+const acknowledgements =
+{
+...(ride.acknowledgements || {})
+};
 
-              }
 
+/* -------------------------------------
+   すでに了解済み
+   ------------------------------------- */
 
-              /*
-               * 担当車がすでに決まっている場合
-               * 自分は「了解済み」だけ追加。
-               */
+if(
+acknowledgements[
+currentUser.uid
+]
+){
 
-              transaction.update(
-                ref,
-                {
+return {
 
-                  acknowledgements:
-                    acknowledgements
+already:true,
 
-                }
-              );
+becameAssigned:false
 
+};
 
-              return {
+}
 
-                already: false,
 
-                becameAssigned: false
+/* -------------------------------------
+   了解済みに追加
+   ------------------------------------- */
 
-              };
+acknowledgements[
+currentUser.uid
+] = {
 
-            }
-          );
+name:
+driverName,
 
+at:
+serverTimestamp()
 
-        if (
-          result.already
-        ) {
+};
 
-          return;
 
-        }
+/* -------------------------------------
+   最初に了解した人を担当にする
+   ------------------------------------- */
 
+if(
+!ride.assignedDriverId
+){
 
-        if (
-          result.becameAssigned
-        ) {
+transaction.update(
+ref,
+{
 
-          alert(
-            "🚕 了解しました！\n\n" +
-            "あなたが担当車両になりました❤️"
-          );
+acknowledgements:
+acknowledgements,
 
-        } else {
+assignedDriverId:
+currentUser.uid,
 
-          alert(
-            "✅ 了解済みにしました❤️\n\n" +
-            "担当は他のドライバーです。"
-          );
+assignedDriverName:
+driverName,
 
-        }
+assignedAt:
+serverTimestamp()
 
+}
+);
 
-      } catch (error) {
 
-        alert(
-          "了解処理に失敗しました。\n\n" +
-          getErrorMessage(error)
-        );
+return {
 
-      }
+already:false,
 
-    }
+becameAssigned:true
 
+};
 
-    /* =====================================
-       迎車開始
-       ===================================== */
+}
 
-    async function startPickup(
-      rideId
-    ) {
 
-      try {
+/* -------------------------------------
+   担当車はすでに決定済み
+   自分は了解済みだけ
+   ------------------------------------- */
 
-        const ref =
-          doc(
-            db,
-            "rides",
-            rideId
-          );
+transaction.update(
+ref,
+{
 
+acknowledgements:
+acknowledgements
 
-        await runTransaction(
-          db,
-          async transaction => {
+}
+);
 
-            const snap =
-              await transaction.get(
-                ref
-              );
 
+return {
 
-            if (!snap.exists()) {
+already:false,
 
-              throw new Error(
-                "配車が見つかりません。"
-              );
+becameAssigned:false
 
-            }
+};
 
+}
+);
 
-            const ride =
-              snap.data();
 
+if(
+result.already
+){
 
-            /*
-             * 担当車本人だけ実行可能
-             */
+return;
 
-            if (
-              ride.assignedDriverId !==
-              currentUser.uid
-            ) {
+}
 
-              throw new Error(
-                "この配車の担当ではありません。"
-              );
 
-            }
+if(
+result.becameAssigned
+){
 
+alert(
+"🚕 了解しました！\n\n" +
+"あなたが担当車両になりました❤️"
+);
 
-            if (
-              ride.status !==
-              "requested"
-            ) {
+}else{
 
-              throw new Error(
-                "この配車はすでに処理されています。"
-              );
+alert(
+"✅ 了解済みにしました❤️\n\n" +
+"担当は他のドライバーです。"
+);
 
-            }
+}
 
 
-            transaction.update(
-              ref,
-              {
+}catch(error){
 
-                status:
-                  "pickup",
+alert(
+"了解処理に失敗しました。\n\n" +
+getErrorMessage(error)
+);
 
-                startedAt:
-                  serverTimestamp()
+}
 
-              }
-            );
+}
 
-          }
-        );
 
+/* =====================================
+   迎車開始
+   ===================================== */
 
-        await setDriverStatus(
-          "pickup"
-        );
+async function startPickup(
+rideId
+){
 
+try{
 
-        stopNotificationSound();
+const ref =
+doc(
+db,
+"rides",
+rideId
+);
 
 
-      } catch (error) {
+await runTransaction(
+db,
+async transaction => {
 
-        alert(
-          "迎車開始に失敗しました。\n\n" +
-          getErrorMessage(error)
-        );
+const snap =
+await transaction.get(
+ref
+);
 
-      }
 
-    }
+if(!snap.exists()){
 
+throw new Error(
+"配車が見つかりません。"
+);
 
-    /* =====================================
-       到着報告
-       ===================================== */
+}
 
-    async function reportArrived(
-      rideId
-    ) {
 
-      try {
+const ride =
+snap.data();
 
-        const ref =
-          doc(
-            db,
-            "rides",
-            rideId
-          );
 
+if(
+ride.assignedDriverId !==
+currentUser.uid
+){
 
-        await transitionRide(
-          ref,
-          "pickup",
-          "arrived",
-          {
-            arrivedAt:
-              serverTimestamp()
-          }
-        );
+throw new Error(
+"この配車の担当ではありません。"
+);
 
+}
 
-        await setDriverStatus(
-          "arrived"
-        );
 
+if(
+ride.status !==
+"requested"
+){
 
-      } catch (error) {
+throw new Error(
+"この配車はすでに処理されています。"
+);
 
-        alert(
-          "到着報告に失敗しました。\n\n" +
-          getErrorMessage(error)
-        );
+}
 
-      }
 
-    }
+transaction.update(
+ref,
+{
 
+status:
+"pickup",
 
-    /* =====================================
-       乗車中
-       ===================================== */
+startedAt:
+serverTimestamp()
 
-    async function startRiding(
-      rideId,
-      destination
-    ) {
+}
+);
 
-      try {
+}
+);
 
-        const ref =
-          doc(
-            db,
-            "rides",
-            rideId
-          );
 
+await setDriverStatus(
+"pickup"
+);
 
-        await transitionRide(
-          ref,
-          "arrived",
-          "riding",
-          {
-            ridingAt:
-              serverTimestamp()
-          }
-        );
+stopNotificationSound();
 
 
-        await setDriverStatus(
-          "riding"
-        );
+}catch(error){
 
+alert(
+"迎車開始に失敗しました。\n\n" +
+getErrorMessage(error)
+);
 
-        /*
-         * 乗車開始時に
-         * Google Mapsへ目的地を渡す
-         */
+}
 
-        openNavigation(
-          destination
-        );
+}
 
 
-      } catch (error) {
+/* =====================================
+   到着報告
+   ===================================== */
 
-        alert(
-          "お送り中への変更に失敗しました。\n\n" +
-          getErrorMessage(error)
-        );
+async function reportArrived(
+rideId
+){
 
-      }
+try{
 
-    }
+const ref =
+doc(
+db,
+"rides",
+rideId
+);
 
 
-    /* =====================================
-       状態遷移共通処理
-       ===================================== */
+await transitionRide(
+ref,
+"pickup",
+"arrived",
+{
 
-    async function transitionRide(
-      ref,
-      expectedStatus,
-      nextStatus,
-      extraData
-    ) {
+arrivedAt:
+serverTimestamp()
 
-      await runTransaction(
-        db,
-        async transaction => {
+}
+);
 
-          const snap =
-            await transaction.get(
-              ref
-            );
 
+await setDriverStatus(
+"arrived"
+);
 
-          if (!snap.exists()) {
 
-            throw new Error(
-              "配車が見つかりません。"
-            );
+}catch(error){
 
-          }
+alert(
+"到着報告に失敗しました。\n\n" +
+getErrorMessage(error)
+);
 
+}
 
-          const ride =
-            snap.data();
+}
 
 
-          if (
-            ride.assignedDriverId !==
-            currentUser.uid
-          ) {
+/* =====================================
+   乗車中
+   ===================================== */
 
-            throw new Error(
-              "この配車の担当ではありません。"
-            );
+async function startRiding(
+rideId,
+destination
+){
 
-          }
+try{
 
+const ref =
+doc(
+db,
+"rides",
+rideId
+);
 
-          if (
-            ride.status !==
-            expectedStatus
-          ) {
 
-            throw new Error(
-              "現在の状態では処理できません。"
-            );
+await transitionRide(
+ref,
+"arrived",
+"riding",
+{
 
-          }
+ridingAt:
+serverTimestamp()
 
+}
+);
 
-          transaction.update(
-            ref,
-            {
 
-              status:
-                nextStatus,
+await setDriverStatus(
+"riding"
+);
 
-              ...extraData
 
-            }
-          );
+openNavigation(
+destination
+);
 
-        }
-      );
 
-    }
+}catch(error){
 
+alert(
+"お送り中への変更に失敗しました。\n\n" +
+getErrorMessage(error)
+);
 
-    /* =====================================
-       配車完了
-       ===================================== */
+}
 
-    async function completeRide(
-      rideId
-    ) {
+}
 
-      try {
 
-        const ref =
-          doc(
-            db,
-            "rides",
-            rideId
-          );
+/* =====================================
+   状態遷移
+   ===================================== */
 
+async function transitionRide(
+ref,
+expectedStatus,
+nextStatus,
+extraData
+){
 
-        await runTransaction(
-          db,
-          async transaction => {
+await runTransaction(
+db,
+async transaction => {
 
-            const snap =
-              await transaction.get(
-                ref
-              );
+const snap =
+await transaction.get(
+ref
+);
 
 
-            if (!snap.exists()) {
+if(!snap.exists()){
 
-              return;
+throw new Error(
+"配車が見つかりません。"
+);
 
-            }
+}
 
 
-            const ride =
-              snap.data();
+const ride =
+snap.data();
 
 
-            if (
-              ride.assignedDriverId !==
-              currentUser.uid
-            ) {
+if(
+ride.assignedDriverId !==
+currentUser.uid
+){
 
-              throw new Error(
-                "この配車の担当ではありません。"
-              );
+throw new Error(
+"この配車の担当ではありません。"
+);
 
-            }
+}
 
 
-            if (
-              ride.status !==
-              "riding"
-            ) {
+if(
+ride.status !==
+expectedStatus
+){
 
-              throw new Error(
-                "現在の状態では完了できません。"
-              );
+throw new Error(
+"現在の状態では処理できません。"
+);
 
-            }
+}
 
 
-            /*
-             * 完了した配車は削除
-             */
+transaction.update(
+ref,
+{
 
-            transaction.delete(
-              ref
-            );
+status:
+nextStatus,
 
-          }
-        );
+...extraData
 
+}
+);
 
-        /*
-         * ドライバーは空車へ戻る
-         */
+}
+);
 
-        await setDriverStatus(
-          "available"
-        );
+}
 
 
-        alert(
-          "✅ 配車完了❤️\n\n" +
-          "空車に戻りました。\n" +
-          "次の配車を待ちます。"
-        );
+/* =====================================
+   配車完了
+   ===================================== */
 
+async function completeRide(
+rideId
+){
 
-      } catch (error) {
+try{
 
-        alert(
-          "完了処理に失敗しました。\n\n" +
-          getErrorMessage(error)
-        );
+const ref =
+doc(
+db,
+"rides",
+rideId
+);
 
-      }
 
-    }
+await runTransaction(
+db,
+async transaction => {
 
+const snap =
+await transaction.get(
+ref
+);
 
-    /* =====================================
-       ドライバー状態更新
-       ===================================== */
 
-    async function setDriverStatus(
-      status
-    ) {
+if(!snap.exists()){
 
-      try {
+return;
 
-        await updateDoc(
-          doc(
-            db,
-            "drivers",
-            currentUser.uid
-          ),
-          {
+}
 
-            name:
-              driverName,
 
-            status:
-              status,
+const ride =
+snap.data();
 
-            updatedAt:
-              serverTimestamp()
 
-          }
-        );
+if(
+ride.assignedDriverId !==
+currentUser.uid
+){
 
+throw new Error(
+"この配車の担当ではありません。"
+);
 
-        const statusBox =
-          document.getElementById(
-            "driverCurrentStatus"
-          );
+}
 
 
-        if (statusBox) {
+if(
+ride.status !==
+"riding"
+){
 
-          statusBox.textContent =
-            "状態：" +
-            statusLabel(status);
+throw new Error(
+"現在の状態では完了できません。"
+);
 
-        }
+}
 
 
-      } catch (error) {
+transaction.delete(
+ref
+);
 
-        console.error(
-          "状態更新エラー",
-          error
-        );
+}
+);
 
-      }
 
-    }
+await setDriverStatus(
+"available"
+);
 
 
-    /* =====================================
-       GPS
-       約60秒ごとに更新
-       空車でも更新
-       ===================================== */
+alert(
+"✅ 配車完了❤️\n\n" +
+"空車に戻りました。\n" +
+"次の配車を待ちます。"
+);
 
-    function startGPS() {
 
-      if (
-        gpsStarted
-      ) {
+}catch(error){
 
-        return;
+alert(
+"完了処理に失敗しました。\n\n" +
+getErrorMessage(error)
+);
 
-      }
+}
 
+}
 
-      if (
-        !navigator.geolocation
-      ) {
 
-        console.error(
-          "この端末ではGPSが利用できません。"
-        );
+/* =====================================
+   ドライバー状態更新
+   ===================================== */
 
-        return;
+async function setDriverStatus(
+status
+){
 
-      }
+try{
 
+await updateDoc(
+doc(
+db,
+"drivers",
+currentUser.uid
+),
+{
 
-      gpsStarted = true;
+name:
+driverName,
 
+status:
+status,
 
-      const updateLocation =
-        () => {
+updatedAt:
+serverTimestamp()
 
-          navigator.geolocation.getCurrentPosition(
+}
+);
 
-            async position => {
 
-              try {
+const statusBox =
+document.getElementById(
+"driverCurrentStatus"
+);
 
-                const lat =
-                  position.coords.latitude;
 
+if(statusBox){
 
-                const lng =
-                  position.coords.longitude;
+statusBox.textContent =
+"状態：" +
+statusLabel(
+status
+);
 
+}
 
-                await updateDoc(
-                  doc(
-                    db,
-                    "drivers",
-                    currentUser.uid
-                  ),
-                  {
 
-                    latitude:
-                      lat,
+}catch(error){
 
-                    longitude:
-                      lng,
+console.error(
+"状態更新エラー",
+error
+);
 
-                    updatedAt:
-                      serverTimestamp()
+}
 
-                  }
-                );
+}
 
 
-                updateDriverMap(
-                  lat,
-                  lng
-                );
+/* =====================================
+   GPS
+   約60秒ごと
+   ===================================== */
 
+function startGPS(){
 
-              } catch (error) {
+if(gpsStarted){
 
-                console.error(
-                  "GPS保存エラー",
-                  error
-                );
+return;
 
-              }
+}
 
-            },
 
-            error => {
+if(
+!navigator.geolocation
+){
 
-              console.error(
-                "GPS取得エラー",
-                error
-              );
+console.error(
+"この端末ではGPSが利用できません。"
+);
 
-            },
+return;
 
-            {
+}
 
-              enableHighAccuracy:
-                true,
 
-              timeout:
-                15000,
+gpsStarted =
+true;
 
-              maximumAge:
-                30000
 
-            }
+const updateLocation =
+() => {
 
-          );
+navigator.geolocation.getCurrentPosition(
 
-        };
+async position => {
 
+try{
 
-      /*
-       * 起動直後にも1回更新
-       */
+const lat =
+position.coords.latitude;
 
-      updateLocation();
+const lng =
+position.coords.longitude;
 
 
-      /*
-       * その後約60秒ごと
-       */
+await updateDoc(
+doc(
+db,
+"drivers",
+currentUser.uid
+),
+{
 
-      setInterval(
-        updateLocation,
-        60000
-      );
+latitude:
+lat,
 
-    }
+longitude:
+lng,
 
+updatedAt:
+serverTimestamp()
 
-    /* =====================================
-       ドライバーマップ
-       ===================================== */
+}
+);
 
-    function initDriverMap() {
 
-      if (
-        driverMap
-      ) {
+updateDriverMap(
+lat,
+lng
+);
 
-        return;
 
-      }
+}catch(error){
 
+console.error(
+"GPS保存エラー",
+error
+);
 
-      driverMap =
-        L.map(
-          "driverMap"
-        ).setView(
-          HACHIJO,
-          12
-        );
+}
 
+},
 
-      L.tileLayer(
-        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-        {
+error => {
 
-          maxZoom:
-            19,
+console.error(
+"GPS取得エラー",
+error
+);
 
-          attribution:
-            "&copy; OpenStreetMap contributors"
+},
 
-        }
-      ).addTo(
-        driverMap
-      );
+{
 
-    }
+enableHighAccuracy:
+true,
 
+timeout:
+15000,
 
-    function updateDriverMap(
-      lat,
-      lng
-    ) {
+maximumAge:
+30000
 
-      if (
-        !driverMap
-      ) {
+}
 
-        return;
+);
 
-      }
+};
 
 
-      if (
-        !driverMarker
-      ) {
+/* 起動直後 */
 
-        driverMarker =
-          L.marker(
-            [
-              lat,
-              lng
-            ]
-          )
-          .addTo(
-            driverMap
-          )
-          .bindPopup(
-            "🚕 " +
-            driverName
-          );
+updateLocation();
 
-      } else {
 
-        driverMarker.setLatLng(
-          [
-            lat,
-            lng
-          ]
-        );
+/* 約60秒ごと */
 
-      }
+setInterval(
+updateLocation,
+60000
+);
 
+}
 
-      driverMap.setView(
-        [
-          lat,
-          lng
-        ],
-        15
-      );
 
-    }
+/* =====================================
+   ドライバーマップ
+   ===================================== */
 
+function initDriverMap(){
 
-    /* =====================================
-       お客さん用全車両マップ
-       ===================================== */
+if(driverMap){
 
-    function initCustomerMap() {
+return;
 
-      if (
-        customerMap
-      ) {
+}
 
-        return;
 
-      }
+driverMap =
+L.map(
+"driverMap"
+).setView(
+HACHIJO,
+12
+);
 
 
-      customerMap =
-        L.map(
-          "customerMap"
-        ).setView(
-          HACHIJO,
-          12
-        );
+L.tileLayer(
+"https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+{
 
+maxZoom:
+19,
 
-      L.tileLayer(
-        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-        {
+attribution:
+"&copy; OpenStreetMap contributors"
 
-          maxZoom:
-            19,
+}
+).addTo(
+driverMap
+);
 
-          attribution:
-            "&copy; OpenStreetMap contributors"
+}
 
-        }
-      ).addTo(
-        customerMap
-      );
 
-    }
+function updateDriverMap(
+lat,
+lng
+){
 
+if(!driverMap){
 
-    /* =====================================
-       お客さんの配車監視
-       ===================================== */
+return;
 
-    function listenCustomerRide(
-      rideId
-    ) {
+}
 
-      document.getElementById(
-        "customerRideInfo"
-      ).style.display =
-        "block";
 
+if(!driverMarker){
 
-      if (
-        customerRideUnsubscribe
-      ) {
+driverMarker =
+L.marker(
+[
+lat,
+lng
+]
+)
+.addTo(
+driverMap
+)
+.bindPopup(
+"🚕 " +
+driverName
+);
 
-        customerRideUnsubscribe();
+}else{
 
-      }
+driverMarker.setLatLng(
+[
+lat,
+lng
+]
+);
 
+}
 
-      customerRideUnsubscribe =
-        onSnapshot(
 
-          doc(
-            db,
-            "rides",
-            rideId
-          ),
+driverMap.setView(
+[
+lat,
+lng
+],
+15
+);
 
-          snapshot => {
+}
 
-            /*
-             * 完了して削除された場合
-             */
 
-            if (
-              !snapshot.exists()
-            ) {
+/* =====================================
+   お客さん用全車両マップ
+   ===================================== */
 
-              document.getElementById(
-                "customerQueueText"
-              ).textContent =
-                "🚕 配車は完了しました。";
+function initCustomerMap(){
 
+if(customerMap){
 
-              document.getElementById(
-                "customerQueueBox"
-              ).innerHTML =
-                "";
+return;
 
+}
 
-              localStorage.removeItem(
-                "wolftaxi_customer_ride"
-              );
 
+customerMap =
+L.map(
+"customerMap"
+).setView(
+HACHIJO,
+12
+);
 
-              currentCustomerRideId =
-                "";
 
+L.tileLayer(
+"https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+{
 
-              stopAssignedDriverListeners();
+maxZoom:
+19,
 
+attribution:
+"&copy; OpenStreetMap contributors"
 
-              return;
+}
+).addTo(
+customerMap
+);
 
-            }
+}
 
 
-            const ride = {
+/* =====================================
+   お客さん側配車監視
+   ===================================== */
 
-              id:
-                snapshot.id,
+function listenCustomerRide(
+rideId
+){
 
-              ...snapshot.data()
+document.getElementById(
+"customerRideInfo"
+).style.display =
+"block";
 
-            };
 
+if(
+customerRideUnsubscribe
+){
 
-            updateCustomerRideDisplay(
-              ride
-            );
+customerRideUnsubscribe();
 
-          },
+}
 
-          error => {
 
-            console.error(
-              "お客さん配車監視エラー",
-              error
-            );
+customerRideUnsubscribe =
+onSnapshot(
 
-          }
+doc(
+db,
+"rides",
+rideId
+),
 
-        );
+snapshot => {
 
-    }
 
+/* -------------------------------------
+   完了して削除された
+   ------------------------------------- */
 
-    /* =====================================
-       お客さん側 配車状態表示
-       ===================================== */
+if(
+!snapshot.exists()
+){
 
-    function updateCustomerRideDisplay(
-      ride
-    ) {
+document.getElementById(
+"customerQueueText"
+).textContent =
+"🚕 配車は完了しました。";
 
-      let text = "";
+document.getElementById(
+"customerQueueBox"
+).innerHTML =
+"";
 
 
-      switch (
-        ride.status
-      ) {
+localStorage.removeItem(
+"wolftaxi_customer_ride"
+);
 
-        case "requested":
+currentCustomerRideId =
+"";
 
-          if (
-            ride.assignedDriverName
-          ) {
+stopAssignedDriverListeners();
 
-            text =
-              "🚕 " +
-              ride.assignedDriverName +
-              " が担当になりました。\n" +
-              "迎車開始を待っています。";
+return;
 
-          } else {
+}
 
-            text =
-              "🚕 配車依頼を送信しました。\n" +
-              "ドライバーの了解を待っています。";
 
-          }
+const ride = {
 
-          break;
+id:
+snapshot.id,
 
+...snapshot.data()
 
-        case "pickup":
+};
 
-          text =
-            "🟡 " +
-            (
-              ride.assignedDriverName ||
-              "タクシー"
-            ) +
-            " が迎車中です。";
 
-          break;
+updateCustomerRideDisplay(
+ride
+);
 
+},
 
-        case "arrived":
+error => {
 
-          text =
-            "🔵 " +
-            (
-              ride.assignedDriverName ||
-              "タクシー"
-            ) +
-            " が到着しました。";
+console.error(
+"お客さん配車監視エラー",
+error
+);
 
-          break;
+}
 
+);
 
-        case "riding":
+}
 
-          text =
-            "🔴 " +
-            (
-              ride.assignedDriverName ||
-              "タクシー"
-            ) +
-            " が乗車中です。";
 
-          break;
+/* =====================================
+   お客さん側配車状態
+   ===================================== */
 
+function updateCustomerRideDisplay(
+ride
+){
 
-        default:
+let text = "";
 
-          text =
-            "🚕 配車処理中です。";
 
-      }
+switch(
+ride.status
+){
 
+case "requested":
 
-      document.getElementById(
-        "customerQueueText"
-      ).textContent =
-        text;
+if(
+ride.assignedDriverName
+){
 
+text =
+"🚕 " +
+ride.assignedDriverName +
+" が担当になりました。\n" +
+"迎車開始を待っています。";
 
-      renderCustomerAcknowledgements(
-        ride
-      );
+}else{
 
+text =
+"🚕 配車依頼を送信しました。\n" +
+"ドライバーの了解を待っています。";
 
-      renderRideQueue(
-        ride
-      );
+}
 
+break;
 
-      /*
-       * 担当車両だけGPS監視
-       */
 
-      if (
-        ride.assignedDriverId
-      ) {
+case "pickup":
 
-        listenAssignedDriverLocation(
-          ride.assignedDriverId
-        );
+text =
+"🟡 " +
+(
+ride.assignedDriverName ||
+"タクシー"
+) +
+" が迎車中です。";
 
-      } else {
+break;
 
-        stopAssignedDriverListeners();
 
-      }
+case "arrived":
 
-    }
+text =
+"🔵 " +
+(
+ride.assignedDriverName ||
+"タクシー"
+) +
+" が到着しました。";
 
+break;
 
-    /* =====================================
-       お客さん側 了解状況
-       ===================================== */
 
-    let customerDriverUnsubscribe =
-      null;
+case "riding":
 
+text =
+"🔴 " +
+(
+ride.assignedDriverName ||
+"タクシー"
+) +
+" が乗車中です。";
 
-    function renderCustomerAcknowledgements(
-      ride
-    ) {
+break;
 
-      const box =
-        document.getElementById(
-          "customerAckList"
-        );
 
+default:
 
-      const ack =
-        ride.acknowledgements ||
-        {};
+text =
+"🚕 配車処理中です。";
 
+}
 
-      box.innerHTML =
-        "<strong>👨‍✈️ 配車確認状況</strong>";
 
+document.getElementById(
+"customerQueueText"
+).textContent =
+text;
 
-      /*
-       * 以前の監視があれば解除
-       */
 
-      if (
-        customerDriverUnsubscribe
-      ) {
+renderCustomerAcknowledgements(
+ride
+);
 
-        customerDriverUnsubscribe();
 
-        customerDriverUnsubscribe =
-          null;
+renderRideQueue(
+ride
+);
 
-      }
 
+/* -------------------------------------
+   担当車GPS
+   ------------------------------------- */
 
-      const q =
-        query(
-          collection(
-            db,
-            "drivers"
-          )
-        );
+if(
+ride.assignedDriverId
+){
 
+listenAssignedDriverLocation(
+ride.assignedDriverId
+);
 
-      customerDriverUnsubscribe =
-        onSnapshot(
+}else{
 
-          q,
+stopAssignedDriverListeners();
 
-          snapshot => {
+}
 
-            box.innerHTML =
-              "<strong>👨‍✈️ 配車確認状況</strong>";
+}
 
 
-            if (
-              snapshot.empty
-            ) {
+/* =====================================
+   お客さん側了解状況
+   ===================================== */
 
-              box.innerHTML +=
-                "<div class='small'>" +
-                "登録車両を確認しています…" +
-                "</div>";
+function renderCustomerAcknowledgements(
+ride
+){
 
-              return;
+const box =
+document.getElementById(
+"customerAckList"
+);
 
-            }
+const ack =
+ride.acknowledgements ||
+{};
 
 
-            snapshot.forEach(
-              ds => {
+box.innerHTML =
+"<strong>👨‍✈️ 配車確認状況</strong>";
 
-                const d =
-                  ds.data();
 
+if(
+customerDriverUnsubscribe
+){
 
-                const a =
-                  ack[ds.id];
+customerDriverUnsubscribe();
 
+customerDriverUnsubscribe =
+null;
 
-                const row =
-                  document.createElement(
-                    "div"
-                  );
+}
 
 
-                row.className =
-                  "ackRow " +
-                  (
-                    a
-                      ? ""
-                      : "pending"
-                  ) +
-                  (
-                    ds.id ===
-                    ride.assignedDriverId
-                      ? " assigned"
-                      : ""
-                  );
+const q =
+query(
+collection(
+db,
+"drivers"
+)
+);
 
 
-                if (a) {
+customerDriverUnsubscribe =
+onSnapshot(
 
-                  row.innerHTML =
+q,
 
-                    (
-                      ds.id ===
-                      ride.assignedDriverId
-                        ? "🟡 "
-                        : "🟢 "
-                    ) +
+snapshot => {
 
-                    escapeHtml(
-                      d.name ||
-                      "タクシー"
-                    ) +
+box.innerHTML =
+"<strong>👨‍✈️ 配車確認状況</strong>";
 
-                    "　了解済み" +
 
-                    (
-                      ds.id ===
-                      ride.assignedDriverId
+if(snapshot.empty){
 
-                        ? "<br>" +
-                          "<span class='small'>" +
-                          "🚕 この車両が担当" +
-                          "</span>"
+box.innerHTML +=
+"<div class='small'>" +
+"登録車両を確認しています…" +
+"</div>";
 
-                        : ""
-                    );
+return;
 
-                } else {
+}
 
-                  row.innerHTML =
 
-                    "⚪ " +
+snapshot.forEach(
+ds => {
 
-                    escapeHtml(
-                      d.name ||
-                      "タクシー"
-                    ) +
+const d =
+ds.data();
 
-                    "　未了解";
+const a =
+ack[
+ds.id
+];
 
-                }
 
+const row =
+document.createElement(
+"div"
+);
 
-                box.appendChild(
-                  row
-                );
 
-              }
-            );
+row.className =
+"ackRow " +
 
-          },
+(
+a
+?
+""
+:
+"pending"
+) +
 
-          error => {
+(
+ds.id ===
+ride.assignedDriverId
+?
+" assigned"
+:
+""
+);
 
-            console.error(
-              "了解状況取得エラー",
-              error
-            );
 
-          }
+if(a){
 
-        );
+row.innerHTML =
 
-    }
+(
+ds.id ===
+ride.assignedDriverId
 
+?
 
-    /* =====================================
-       何件前の配車か
-       前の配車の担当・状態
-       ===================================== */
+"🟡 "
 
-    async function renderRideQueue(
-      currentRide
-    ) {
+:
 
-      const box =
-        document.getElementById(
-          "customerQueueBox"
-        );
+"🟢 "
 
+) +
 
-      box.innerHTML =
-        "配車の順番を確認しています…";
+escapeHtml(
+d.name ||
+"タクシー"
+) +
 
+"　了解済み" +
 
-      try {
+(
+ds.id ===
+ride.assignedDriverId
 
-        const q =
-          query(
-            collection(
-              db,
-              "rides"
-            ),
-            orderBy(
-              "createdAt",
-              "desc"
-            )
-          );
+?
 
+"<br>" +
+"<span class='small'>" +
+"🚕 この車両が担当" +
+"</span>"
 
-        const snapshot =
-          await new Promise(
-            (
-              resolve,
-              reject
-            ) => {
+:
 
-              const unsubscribe =
-                onSnapshot(
+""
 
-                  q,
+);
 
-                  snap => {
+}else{
 
-                    unsubscribe();
+row.innerHTML =
 
-                    resolve(
-                      snap
-                    );
+"⚪ " +
 
-                  },
+escapeHtml(
+d.name ||
+"タクシー"
+) +
 
-                  reject
+"　未了解";
 
-                );
+}
 
-            }
-          );
 
+box.appendChild(
+row
+);
 
-        const rides = [];
+}
+);
 
+},
 
-        snapshot.forEach(
-          ds => {
+error => {
 
-            rides.push({
+console.error(
+"了解状況取得エラー",
+error
+);
 
-              id:
-                ds.id,
+}
 
-              ...ds.data()
+);
 
-            });
+}
 
-          }
-        );
 
+/* =====================================
+   配車順
+   ===================================== */
 
-        const index =
-          rides.findIndex(
-            ride =>
-              ride.id ===
-              currentRide.id
-          );
+async function renderRideQueue(
+currentRide
+){
 
+const box =
+document.getElementById(
+"customerQueueBox"
+);
 
-        if (
-          index < 0
-        ) {
 
-          box.innerHTML =
-            "";
+box.innerHTML =
+"配車の順番を確認しています…";
 
-          return;
 
-        }
+try{
 
+const q =
+query(
+collection(
+db,
+"rides"
+),
+orderBy(
+"createdAt",
+"desc"
+)
+);
 
-        /*
-         * 自分より前にある配車
-         */
 
-        const ahead =
-          rides.slice(
-            0,
-            index
-          );
+const snapshot =
+await new Promise(
+(
+resolve,
+reject
+) => {
 
+const unsubscribe =
+onSnapshot(
 
-        if (
-          ahead.length === 0
-        ) {
+q,
 
-          box.innerHTML =
-            "🚕 現在、この配車が先頭です。";
+snap => {
 
-          return;
+unsubscribe();
 
-        }
+resolve(
+snap
+);
 
+},
 
-        let html =
+reject
 
-          "<div>" +
-          "🚕 あなたの配車より前に " +
-          "<strong>" +
-          ahead.length +
-          "件</strong> あります。" +
-          "</div>";
+);
 
+}
+);
 
-        ahead.forEach(
-          (
-            ride,
-            i
-          ) => {
 
-            html +=
+const rides = [];
 
-              '<div class="queueItem">' +
 
-              (
-                i + 1
-              ) +
+snapshot.forEach(
+ds => {
 
-              "件前：" +
+rides.push({
 
-              escapeHtml(
-                ride.assignedDriverName ||
-                "未担当"
-              ) +
+id:
+ds.id,
 
-              "　" +
+...ds.data()
 
-              statusLabel(
-                ride.status ||
-                "requested"
-              ) +
+});
 
-              "</div>";
+}
+);
 
-          }
-        );
 
+const index =
+rides.findIndex(
+ride =>
+ride.id ===
+currentRide.id
+);
 
-        box.innerHTML =
-          html;
 
+if(index < 0){
 
-      } catch (error) {
+box.innerHTML =
+"";
 
-        console.error(
-          "配車順取得エラー",
-          error
-        );
+return;
 
+}
 
-        box.innerHTML =
-          "配車順を確認しています…";
 
-      }
+const ahead =
+rides.slice(
+0,
+index
+);
 
-    }
 
+if(
+ahead.length === 0
+){
 
-    /* =====================================
-       担当車両GPS監視
-       ===================================== */
+box.innerHTML =
+"🚕 現在、この配車が先頭です。";
 
-    function listenAssignedDriverLocation(
-      driverId
-    ) {
+return;
 
-      if (
-        !customerRideMap
-      ) {
+}
 
-        initCustomerRideMap();
 
-      }
+let html =
 
+"<div>" +
+"🚕 あなたの配車より前に " +
+"<strong>" +
+ahead.length +
+"件</strong> あります。" +
+"</div>";
 
-      /*
-       * 同じ車両を二重監視しない
-       */
 
-      if (
-        assignedDriverUnsubscribes[
-          driverId
-        ]
-      ) {
+ahead.forEach(
+(
+ride,
+i
+) => {
 
-        return;
+html +=
 
-      }
+'<div class="queueItem">' +
 
+(
+i + 1
+) +
 
-      assignedDriverUnsubscribes[
-        driverId
-      ] =
-        onSnapshot(
+"件前：" +
 
-          doc(
-            db,
-            "drivers",
-            driverId
-          ),
+escapeHtml(
+ride.assignedDriverName ||
+"未担当"
+) +
 
-          snapshot => {
+"　" +
 
-            if (
-              !snapshot.exists()
-            ) {
+statusLabel(
+ride.status ||
+"requested"
+) +
 
-              return;
+"</div>";
 
-            }
+}
+);
 
 
-            const d =
-              snapshot.data();
+box.innerHTML =
+html;
 
 
-            if (
-              d.latitude == null ||
-              d.longitude == null
-            ) {
+}catch(error){
 
-              return;
+console.error(
+"配車順取得エラー",
+error
+);
 
-            }
+box.innerHTML =
+"配車順を確認しています…";
 
+}
 
-            const position = [
+}
 
-              d.latitude,
 
-              d.longitude
+/* =====================================
+   担当車GPS監視
+   ===================================== */
 
-            ];
+function listenAssignedDriverLocation(
+driverId
+){
 
+if(
+!customerRideMap
+){
 
-            if (
-              !customerRideMarkers[
-                driverId
-              ]
-            ) {
+initCustomerRideMap();
 
-              customerRideMarkers[
-                driverId
-              ] =
-                L.marker(
-                  position
-                )
-                .addTo(
-                  customerRideMap
-                )
-                .bindPopup(
-                  "🚕 " +
-                  (
-                    d.name ||
-                    "担当車"
-                  )
-                );
+}
 
-            } else {
 
-              customerRideMarkers[
-                driverId
-              ].setLatLng(
-                position
-              );
+if(
+assignedDriverUnsubscribes[
+driverId
+]
+){
 
-            }
+return;
 
+}
 
-            customerRideMap.setView(
-              position,
-              15
-            );
 
-          },
+assignedDriverUnsubscribes[
+driverId
+] =
+onSnapshot(
 
-          error => {
+doc(
+db,
+"drivers",
+driverId
+),
 
-            console.error(
-              "担当車GPS監視エラー",
-              error
-            );
+snapshot => {
 
-          }
+if(
+!snapshot.exists()
+){
 
-        );
+return;
 
-    }
+}
 
 
-    /* =====================================
-       担当車GPS監視停止
-       ===================================== */
+const d =
+snapshot.data();
 
-    function stopAssignedDriverListeners() {
 
-      Object.values(
-        assignedDriverUnsubscribes
-      ).forEach(
-        unsubscribe => {
+if(
+d.latitude == null ||
+d.longitude == null
+){
 
-          try {
+return;
 
-            unsubscribe();
+}
 
-          } catch (error) {}
 
-        }
-      );
+const position = [
 
+d.latitude,
 
-      assignedDriverUnsubscribes =
-        {};
+d.longitude
 
+];
 
-      Object.values(
-        customerRideMarkers
-      ).forEach(
-        marker => {
 
-          if (
-            customerRideMap
-          ) {
+if(
+!customerRideMarkers[
+driverId
+]
+){
 
-            customerRideMap.removeLayer(
-              marker
-            );
+customerRideMarkers[
+driverId
+] =
+L.marker(
+position
+)
+.addTo(
+customerRideMap
+)
+.bindPopup(
+"🚕 " +
+(
+d.name ||
+"担当車"
+)
+);
 
-          }
+}else{
 
-        }
-      );
+customerRideMarkers[
+driverId
+].setLatLng(
+position
+);
 
+}
 
-      customerRideMarkers =
-        {};
 
-    }
+customerRideMap.setView(
+position,
+15
+);
 
+},
 
-    /* =====================================
-       お客さん側 配車GPSマップ
-       ===================================== */
+error => {
 
-    function initCustomerRideMap() {
+console.error(
+"担当車GPS監視エラー",
+error
+);
 
-      if (
-        customerRideMap
-      ) {
+}
 
-        return;
+);
 
-      }
+}
 
 
-      customerRideMap =
-        L.map(
-          "customerRideMap"
-        ).setView(
-          HACHIJO,
-          12
-        );
+/* =====================================
+   担当車GPS停止
+   ===================================== */
 
+function stopAssignedDriverListeners(){
 
-      L.tileLayer(
-        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-        {
+Object.values(
+assignedDriverUnsubscribes
+).forEach(
+unsubscribe => {
 
-          maxZoom:
-            19,
+try{
 
-          attribution:
-            "&copy; OpenStreetMap contributors"
+unsubscribe();
 
-        }
-      ).addTo(
-        customerRideMap
-      );
+}catch(error){}
 
-    }
+}
+);
 
 
-    /* =====================================
-       通知音振り分け
-       ===================================== */
+assignedDriverUnsubscribes =
+{};
 
-    function getSoundFile(
-      ride
-    ) {
 
-      const pickup =
-        (
-          ride.pickup ||
-          ""
-        ).trim();
+Object.values(
+customerRideMarkers
+).forEach(
+marker => {
 
+if(
+customerRideMap
+){
 
-      const destination =
-        (
-          ride.destination ||
-          ""
-        ).trim();
+customerRideMap.removeLayer(
+marker
+);
 
+}
 
-      /*
-       * ザイオン
-       */
+}
+);
 
-      if (
-        pickup.includes(
-          "ザイオン"
-        )
-      ) {
 
-        return sounds.zaion;
+customerRideMarkers =
+{};
 
-      }
+}
 
 
-      /*
-       * 成田
-       */
+/* =====================================
+   配車GPSマップ
+   ===================================== */
 
-      if (
-        destination.includes(
-          "成田"
-        )
-      ) {
+function initCustomerRideMap(){
 
-        return sounds.narita;
+if(customerRideMap){
 
-      }
+return;
 
+}
 
-      /*
-       * 羽田
-       */
 
-      if (
-        destination.includes(
-          "羽田"
-        )
-      ) {
+customerRideMap =
+L.map(
+"customerRideMap"
+).setView(
+HACHIJO,
+12
+);
 
-        return sounds.haneda;
 
-      }
+L.tileLayer(
+"https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+{
 
+maxZoom:
+19,
 
-      return sounds.normal;
+attribution:
+"&copy; OpenStreetMap contributors"
 
-    }
+}
+).addTo(
+customerRideMap
+);
 
+}
 
-    /* =====================================
-       配車通知開始
-       ===================================== */
 
-    function startNotification(
-      ride,
-      rideId
-    ) {
+/* =====================================
+   通知音振り分け
+   ===================================== */
 
-      /*
-       * 通知ONでなくても
-       * 配車画面は表示
-       */
+function getSoundFile(
+ride
+){
 
-      if (
-        !notificationEnabled
-      ) {
+const pickup =
+(
+ride.pickup ||
+""
+).trim();
 
-        showNotice(
-          ride
-        );
 
-        return;
+const destination =
+(
+ride.destination ||
+""
+).trim();
 
-      }
 
+if(
+pickup.includes(
+"ザイオン"
+)
+){
 
-      /*
-       * 同じ配車の二重通知防止
-       */
+return sounds.zaion;
 
-      if (
-        notificationRunning &&
-        notificationRideId ===
-          rideId
-      ) {
+}
 
-        return;
 
-      }
+if(
+destination.includes(
+"成田"
+)
+){
 
+return sounds.narita;
 
-      stopNotificationSound();
+}
 
 
-      notificationRunning =
-        true;
+if(
+destination.includes(
+"羽田"
+)
+){
 
+return sounds.haneda;
 
-      notificationRideId =
-        rideId;
+}
 
 
-      showNotice(
-        ride
-      );
+return sounds.normal;
 
+}
 
-      /*
-       * 最初の通知音
-       */
 
-      playNotificationSound(
-        ride
-      );
+/* =====================================
+   配車通知
+   ===================================== */
 
+function startNotification(
+ride,
+rideId
+){
 
-      /*
-       * 音声案内
-       */
+if(
+!notificationEnabled
+){
 
-      speakTaxi();
+showNotice(
+ride
+);
 
+return;
 
-      speechTimer =
-        setInterval(
-          () => {
+}
 
-            if (
-              notificationRunning
-            ) {
 
-              speakTaxi();
+if(
+notificationRunning &&
+notificationRideId ===
+rideId
+){
 
-            }
+return;
 
-          },
-          7000
-        );
+}
 
 
-      /*
-       * 30秒で自動停止
-       */
+stopNotificationSound();
 
-      notificationStopTimer =
-        setTimeout(
-          () => {
 
-            stopNotificationSound();
+notificationRunning =
+true;
 
-          },
-          30000
-        );
+notificationRideId =
+rideId;
 
-    }
 
+showNotice(
+ride
+);
 
-    /* =====================================
-       通知音再生
-       ===================================== */
 
-    function playNotificationSound(
-      ride
-    ) {
+playNotificationSound(
+ride
+);
 
-      if (
-        !notificationEnabled ||
-        !notificationRunning
-      ) {
 
-        return;
+speakTaxi();
 
-      }
 
+speechTimer =
+setInterval(
+() => {
 
-      if (
-        currentAudio
-      ) {
+if(
+notificationRunning
+){
 
-        currentAudio.pause();
+speakTaxi();
 
-        currentAudio.onended =
-          null;
+}
 
-      }
+},
+7000
+);
 
 
-      if (
-        notificationNextSoundTimer
-      ) {
+notificationStopTimer =
+setTimeout(
+() => {
 
-        clearTimeout(
-          notificationNextSoundTimer
-        );
+stopNotificationSound();
 
-        notificationNextSoundTimer =
-          null;
+},
+30000
+);
 
-      }
+}
 
 
-      currentAudio =
-        new Audio(
-          getSoundFile(
-            ride
-          )
-        );
+/* =====================================
+   通知音再生
+   ===================================== */
 
+function playNotificationSound(
+ride
+){
 
-      currentAudio.volume =
-        1;
+if(
+!notificationEnabled ||
+!notificationRunning
+){
 
+return;
 
-      /*
-       * 音声ファイル終了
-       * ↓
-       * 2秒待つ
-       * ↓
-       * 再生
-       */
+}
 
-      currentAudio.onended =
-        () => {
 
-          if (
-            notificationRunning
-          ) {
+if(currentAudio){
 
-            notificationNextSoundTimer =
-              setTimeout(
-                () => {
+currentAudio.pause();
 
-                  if (
-                    notificationRunning
-                  ) {
+currentAudio.onended =
+null;
 
-                    playNotificationSound(
-                      ride
-                    );
+}
 
-                  }
 
-                },
-                2000
-              );
+if(
+notificationNextSoundTimer
+){
 
-          }
+clearTimeout(
+notificationNextSoundTimer
+);
 
-        };
+notificationNextSoundTimer =
+null;
 
+}
 
-      currentAudio
-        .play()
-        .catch(
-          error => {
 
-            console.error(
-              "通知音エラー",
-              error
-            );
+currentAudio =
+new Audio(
+getSoundFile(
+ride
+)
+);
 
-          }
-        );
 
-    }
+currentAudio.volume =
+1;
 
 
-    /* =====================================
-       音声案内
-       ===================================== */
+currentAudio.onended =
+() => {
 
-    function speakTaxi() {
+if(
+notificationRunning
+){
 
-      if (
-        !notificationRunning
-      ) {
+notificationNextSoundTimer =
+setTimeout(
+() => {
 
-        return;
+if(
+notificationRunning
+){
 
-      }
+playNotificationSound(
+ride
+);
 
+}
 
-      if (
-        !(
-          "speechSynthesis" in
-          window
-        )
-      ) {
+},
+2000
+);
 
-        return;
+}
 
-      }
+};
 
 
-      speechSynthesis.cancel();
+currentAudio
+.play()
+.catch(
+error => {
 
+console.error(
+"通知音エラー",
+error
+);
 
-      const utterance =
-        new SpeechSynthesisUtterance(
-          "配車です。配車です。了解ボタンを押してください。"
-        );
+}
+);
 
+}
 
-      utterance.lang =
-        "ja-JP";
 
+/* =====================================
+   音声案内
+   ===================================== */
 
-      utterance.rate =
-        1;
+function speakTaxi(){
 
+if(
+!notificationRunning
+){
 
-      utterance.pitch =
-        1;
+return;
 
+}
 
-      utterance.volume =
-        1;
 
+if(
+!("speechSynthesis" in window)
+){
 
-      speechSynthesis.speak(
-        utterance
-      );
+return;
 
-    }
+}
 
 
-    /* =====================================
-       配車通知画面
-       ===================================== */
+speechSynthesis.cancel();
 
-    function showNotice(
-      ride
-    ) {
 
-      document.getElementById(
-        "noticePickup"
-      ).textContent =
-        "📍 お迎え先：" +
-        (
-          ride.pickup ||
-          ""
-        );
+const utterance =
+new SpeechSynthesisUtterance(
+"配車です。配車です。了解ボタンを押してください。"
+);
 
 
-      document.getElementById(
-        "noticeDestination"
-      ).textContent =
-        "🏁 目的地：" +
-        (
-          ride.destination ||
-          ""
-        );
+utterance.lang =
+"ja-JP";
 
+utterance.rate =
+1;
 
-      document.getElementById(
-        "notice"
-      ).style.display =
-        "block";
+utterance.pitch =
+1;
 
-    }
+utterance.volume =
+1;
 
 
-    /* =====================================
-       通知画面だけ閉じる
-       ===================================== */
+speechSynthesis.speak(
+utterance
+);
 
-    window.closeNoticeOnly =
-      function () {
+}
 
-        document.getElementById(
-          "notice"
-        ).style.display =
-          "none";
 
-      };
+/* =====================================
+   配車通知画面
+   ===================================== */
 
+function showNotice(
+ride
+){
 
-    /* =====================================
-       通知停止
-       ===================================== */
+document.getElementById(
+"noticePickup"
+).textContent =
+"📍 お迎え先：" +
+(
+ride.pickup ||
+""
+);
 
-    function stopNotificationSound() {
 
-      notificationRunning =
-        false;
+document.getElementById(
+"noticeDestination"
+).textContent =
+"🏁 目的地：" +
+(
+ride.destination ||
+""
+);
 
 
-      notificationRideId =
-        null;
+document.getElementById(
+"notice"
+).style.display =
+"block";
 
+}
 
-      if (
-        notificationNextSoundTimer
-      ) {
 
-        clearTimeout(
-          notificationNextSoundTimer
-        );
+/* =====================================
+   通知画面を閉じる
+   ===================================== */
 
-        notificationNextSoundTimer =
-          null;
+window.closeNoticeOnly =
+function(){
 
-      }
+document.getElementById(
+"notice"
+).style.display =
+"none";
 
+};
 
-      if (
-        speechTimer
-      ) {
 
-        clearInterval(
-          speechTimer
-        );
+/* =====================================
+   通知停止
+   ===================================== */
 
-        speechTimer =
-          null;
+function stopNotificationSound(){
 
-      }
+notificationRunning =
+false;
 
+notificationRideId =
+null;
 
-      if (
-        notificationStopTimer
-      ) {
 
-        clearTimeout(
-          notificationStopTimer
-        );
+if(
+notificationNextSoundTimer
+){
 
-        notificationStopTimer =
-          null;
+clearTimeout(
+notificationNextSoundTimer
+);
 
-      }
+notificationNextSoundTimer =
+null;
 
+}
 
-      if (
-        currentAudio
-      ) {
 
-        currentAudio.pause();
+if(speechTimer){
 
-        currentAudio.currentTime =
-          0;
+clearInterval(
+speechTimer
+);
 
-        currentAudio.onended =
-          null;
+speechTimer =
+null;
 
-        currentAudio =
-          null;
+}
 
-      }
 
+if(
+notificationStopTimer
+){
 
-      if (
-        "speechSynthesis" in
-        window
-      ) {
+clearTimeout(
+notificationStopTimer
+);
 
-        speechSynthesis.cancel();
+notificationStopTimer =
+null;
 
-      }
+}
 
-    }
 
+if(currentAudio){
 
-    /* =====================================
-       通知ON
-       ===================================== */
+currentAudio.pause();
 
-    window.enableNotification =
-      function () {
+currentAudio.currentTime =
+0;
 
-        notificationEnabled =
-          true;
+currentAudio.onended =
+null;
 
+currentAudio =
+null;
 
-        /*
-         * ブラウザの音声再生許可を
-         * ユーザー操作で取っておく
-         */
+}
 
-        try {
 
-          const audio =
-            new Audio(
-              sounds.normal
-            );
+if(
+"speechSynthesis" in window
+){
 
+speechSynthesis.cancel();
 
-          audio.volume =
-            0;
+}
 
+}
 
-          audio
-            .play()
-            .then(
-              () => {
 
-                audio.pause();
+/* =====================================
+   通知ON
+   ===================================== */
 
-                audio.currentTime =
-                  0;
+window.enableNotification =
+function(){
 
-              }
-            )
-            .catch(
-              () => {}
-            );
+notificationEnabled =
+true;
 
-        } catch (error) {}
 
+try{
 
-        document.getElementById(
-          "soundButton"
-        ).textContent =
-          "🔔 配車通知ON";
+const audio =
+new Audio(
+sounds.normal
+);
 
+audio.volume =
+0;
 
-        document.getElementById(
-          "soundStatus"
-        ).textContent =
-          "🔔 配車通知がONになっています";
+audio
+.play()
+.then(
+() => {
 
-      };
+audio.pause();
 
+audio.currentTime =
+0;
 
-    /* =====================================
-       Google Maps
-       ===================================== */
+}
+)
+.catch(
+() => {}
+);
 
-    function openNavigation(
-      destination
-    ) {
+}catch(error){}
 
-      if (
-        !destination
-      ) {
 
-        return;
+document.getElementById(
+"soundButton"
+).textContent =
+"🔔 配車通知ON";
 
-      }
 
+document.getElementById(
+"soundStatus"
+).textContent =
+"🔔 配車通知がONになっています";
 
-      const url =
-        "https://www.google.com/maps/dir/?" +
-        "api=1" +
-        "&destination=" +
-        encodeURIComponent(
-          destination
-        ) +
-        "&travelmode=driving";
+};
 
 
-      window.open(
-        url,
-        "_blank"
-      );
+/* =====================================
+   Google Maps
+   ===================================== */
 
-    }
+function openNavigation(
+destination
+){
 
+if(!destination){
 
-    /* =====================================
-       エラー表示
-       ===================================== */
+return;
 
-    function showError(
-      message
-    ) {
+}
 
-      const box =
-        document.getElementById(
-          "errorBox"
-        );
 
+const url =
+"https://www.google.com/maps/dir/?" +
+"api=1" +
+"&destination=" +
+encodeURIComponent(
+destination
+) +
+"&travelmode=driving";
 
-      box.textContent =
-        "❌ " +
-        message;
 
+window.open(
+url,
+"_blank"
+);
 
-      box.style.display =
-        "block";
+}
 
-    }
 
+/* =====================================
+   エラー表示
+   ===================================== */
 
-    function clearError() {
+function showError(
+message
+){
 
-      const box =
-        document.getElementById(
-          "errorBox"
-        );
+const box =
+document.getElementById(
+"errorBox"
+);
 
+box.textContent =
+"❌ " +
+message;
 
-      box.textContent =
-        "";
+box.style.display =
+"block";
 
+}
 
-      box.style.display =
-        "none";
 
-    }
+function clearError(){
 
+const box =
+document.getElementById(
+"errorBox"
+);
 
-    /* =====================================
-       エラーメッセージ
-       ===================================== */
+box.textContent =
+"";
 
-    function getErrorMessage(
-      error
-    ) {
+box.style.display =
+"none";
 
-      return (
+}
 
-        (
-          error &&
-          error.code
-            ? error.code +
-              "\n"
-            : ""
-        ) +
 
-        (
-          error &&
-          error.message
-            ? error.message
-            : String(
-                error ||
-                "原因不明のエラーです。"
-              )
-        )
+/* =====================================
+   エラーメッセージ
+   ===================================== */
 
-      );
+function getErrorMessage(
+error
+){
 
-    }
+return (
 
+(
+error &&
+error.code
+?
 
-    /* =====================================
-       HTMLエスケープ
-       ===================================== */
+error.code +
+"\n"
 
-    function escapeHtml(
-      text
-    ) {
+:
 
-      const div =
-        document.createElement(
-          "div"
-        );
+""
 
+) +
 
-      div.textContent =
-        text == null
-          ? ""
-          : String(text);
+(
+error &&
+error.message
 
+?
 
-      return div.innerHTML;
+error.message
 
-    }
+:
 
+String(
+error ||
+"原因不明のエラーです。"
+)
 
-    /* =====================================
-       起動
-       ===================================== */
+)
 
-    start();
+);
 
-  </script>
+}
+
+
+/* =====================================
+   HTMLエスケープ
+   ===================================== */
+
+function escapeHtml(
+text
+){
+
+const div =
+document.createElement(
+"div"
+);
+
+
+div.textContent =
+text == null
+?
+""
+:
+String(
+text
+);
+
+
+return div.innerHTML;
+
+}
+
+
+/* =====================================
+   起動
+   ===================================== */
+
+start();
+
+</script>
 
 </body>
 </html>
